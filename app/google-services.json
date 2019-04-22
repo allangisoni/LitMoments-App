@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1081776894517",
+    "firebase_url": "https://litmoments-de630.firebaseio.com",
+    "project_id": "litmoments-de630",
+    "storage_bucket": "litmoments-de630.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1081776894517:android:e1d165cee41b3a56",
+        "android_client_info": {
+          "package_name": "com.example.android.litmoments"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1081776894517-2m4ksvgbe9s284q29tuk54ts9eokuii3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.android.litmoments",
+            "certificate_hash": "b5a58fdbbccbd70e5d3cd58415b3b592c7b9b27b"
+          }
+        },
+        {
+          "client_id": "1081776894517-jp3a52h43pukeubn389gej0l8o3pnfid.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZIBeTApR20-ChOZNsKTYN57IlcYsftEk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1081776894517-jp3a52h43pukeubn389gej0l8o3pnfid.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

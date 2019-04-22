@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">LitMoments</string>
+    <string name="Sign_in">Sign In</string>
+    <string name="add_journal_entry">Add Journal Entry</string>
+    <string name="save_journal_entry">Save Journal Entry</string>
+    <string name="loading">Loading...</string>
+   <!-- <string name="default_web_client_id">1076030565733-aibaiu84sv5vsv54qpj6cjpo9svqtbdl.apps.googleusercontent.com</string>-->
+
+    <string name="journalDate">Date</string>
+    <string name="journalLocation">Location</string>
+    <string name="journalWeather">Weather</string>
+    <string name="journalMood">Mood</string>
+    <string name="journalTitle">Title</string>
+    <string name="journalMessage">Message</string>
+    <string name="journalPhoto">Photo</string>
+</resources>

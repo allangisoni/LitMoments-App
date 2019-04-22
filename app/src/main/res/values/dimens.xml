@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="recyclerviewPadding_Top">60dp</dimen>
+    <dimen name="recyclerviewPadding_Right">4dp</dimen>
+    <dimen name="recyclerviewPadding_Left">4dp</dimen>
+    <dimen name="recyclerviewPadding_Bottom">4dp</dimen>
+    <dimen name="fab_elevation">12dp</dimen>
+</resources>
