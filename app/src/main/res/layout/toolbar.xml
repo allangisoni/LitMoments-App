@@ -7,10 +7,12 @@
     android:id="@+id/toolbar"
     android:minHeight="?android:attr/actionBarSize"
     android:background="@color/colorPrimary"
-    app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-    app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+    app:theme="@style/MyActionBarTheme"
+    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+    >
 
     <ImageView
+        android:id="@+id/toolbarImage"
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:src="@drawable/ic_journal"
@@ -24,12 +26,22 @@
     style="@style/Base.TextAppearance.AppCompat.Headline"
     android:textColor="@color/colorAccent"/>
 
-    <ImageView
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_marginLeft="140dp"
-        android:src="@drawable/ic_search"
+   <!-- <ImageView
+        android:id="@+id/iconRefresh"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginLeft="90dp"
+        android:src="@drawable/ic_refresh"
         android:contentDescription="@string/app_name" />
+
+    <ImageView
+        android:id="@+id/iconSearch"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginLeft="25dp"
+        android:src="@drawable/ic_search"
+        android:contentDescription="@string/app_name" /> -->
+
 
 
 

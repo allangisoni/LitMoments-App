@@ -5,4 +5,6 @@
     <color name="colorAccent">#330022</color>
     <color name="background">#fbf1ea</color>
     <color name="photofab">#49ADF2</color>
+    <color name="preftitle">#cc99ff</color>
+    <color name="viewbackground">#d9d9d9</color>
 </resources>

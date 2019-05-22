@@ -8,11 +8,33 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="LitStyle" parent="Theme.AppCompat.NoActionBar">
+    <style name="LitStyle" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorControlNormal">@color/colorAccent</item>
     </style>
+
+    <style name="MyActionBarTheme" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:textColorPrimary">@color/colorAccent</item>
+    </style>
+
+    <style name="PreferenceScreen" parent="LitStyle">
+        <item name="android:textColor">@color/photofab</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="DisplayStyle" parent="AppTheme.NoActionBar">
+        <item name="windowActionBarOverlay">true</item>
+        <item name="colorPrimary">@android:color/transparent</item>
+        <item name="colorPrimaryDark">@color/colorAccent</item>
+        <item name="colorAccent">@color/quantum_white_100</item>
+        <item name="colorControlNormal">@color/quantum_white_100</item>
+    </style>
+
 
 </resources>

@@ -75,7 +75,7 @@ public class LoginActivity extends AppCompatActivity  implements
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if (firebaseAuth.getCurrentUser() != null) {
-                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    startActivity(new Intent(LoginActivity.this, SplashActivity.class));
                 }
             }
         };
@@ -208,7 +208,7 @@ private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         private void updateUI ( boolean isSignedIn){
 
             if (isSignedIn) {
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                Intent intent = new Intent(LoginActivity.this, SplashActivity.class);
                 startActivity(intent);
                 finish();
 
