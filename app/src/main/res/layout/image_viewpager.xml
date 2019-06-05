@@ -8,7 +8,7 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:srcCompat="@drawable/ic_simpson"
+        app:srcCompat="@drawable/ic_simpson2"
         android:scaleType="centerCrop"
         android:adjustViewBounds="true"
         android:id="@+id/imageView" />

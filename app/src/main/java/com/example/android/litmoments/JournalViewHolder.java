@@ -2,11 +2,14 @@ package com.example.android.litmoments;
 
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
@@ -41,14 +44,38 @@ public class JournalViewHolder  extends RecyclerView.ViewHolder{
 
         try{
         if(journalItem.getJournalImagePath().get(0) != null) {
-             Picasso.with(itemView.getContext()).load(journalItem.getJournalImagePath().get(0)).placeholder(R.drawable.ic_mesut).error(R.drawable.ic_journalfinal).into(ivJournalPhoto);
+             Picasso.with(itemView.getContext()).load(journalItem.getJournalImagePath().get(0)).networkPolicy(NetworkPolicy.OFFLINE)
+                     .placeholder(R.drawable.ic_mesut).error(R.drawable.ic_journalfinal).into(ivJournalPhoto, new Callback() {
+                 @Override
+                 public void onSuccess() {
+
+                 }
+
+                 @Override
+                 public void onError() {
+                     Picasso.with(itemView.getContext()).load(journalItem.getJournalImagePath().get(0))
+                             .placeholder(R.drawable.ic_mesut).error(R.drawable.ic_journalfinal).into(ivJournalPhoto, new Callback() {
+                         @Override
+                         public void onSuccess() {
+
+                         }
+
+                         @Override
+                         public void onError() {
+                             Log.v("Picasso","Could not fetch image");
+                         }
+                     });
+
+
+                 }
+             });
          }
          else {
-             Picasso.with(itemView.getContext()).load(R.drawable.ic_mesut).placeholder(R.drawable.ic_mesut).error(R.drawable.ic_mesut).into(ivJournalPhoto);
+             Picasso.with(itemView.getContext()).load(R.drawable.ic_journalfinal3).networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.ic_journalfinal3).error(R.drawable.ic_journalfinal3).into(ivJournalPhoto);
          } }
 
          catch (Exception e){
-             Picasso.with(itemView.getContext()).load(R.drawable.ic_mesut).placeholder(R.drawable.ic_mesut).error(R.drawable.ic_mesut).into(ivJournalPhoto);
+             Picasso.with(itemView.getContext()).load(R.drawable.ic_journalfinal3).networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.ic_journalfinal3).error(R.drawable.ic_journalfinal3).into(ivJournalPhoto);
         }
 
         // tvJournalDate.setText(journalItem.getJournalDate());
@@ -57,7 +84,7 @@ public class JournalViewHolder  extends RecyclerView.ViewHolder{
         String myDate = journalItem.getJournalDate();
         if(!myDate.isEmpty()) {
             String monthName, day, year;
-            monthName = myDate.substring(5,7);
+            monthName = journalItem.getMonth();
             try {
                 monthName = formatMonth(monthName);
 
@@ -65,9 +92,10 @@ public class JournalViewHolder  extends RecyclerView.ViewHolder{
             } catch (Exception e) {
 
             }
-            day = myDate.substring(7, 9);
+            day = journalItem.getDay();
             year = myDate.substring(0, 4);
 
+            //day = day.replace("-", "");
             tvJournalMonth.setText(monthName);
             tvJournalDay.setText(day);
             tvJournalYear.setText(year);

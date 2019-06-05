@@ -7,6 +7,10 @@ import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -15,6 +19,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -72,17 +78,26 @@ public class DisplayJournal extends AppCompatActivity {
 
         if(journalEntry != null){
            getJournalDetails();
-          //  Toast.makeText(DisplayJournal.this, "Title is" + " "+ journalEntry.getJournalImagePath()+" ", Toast.LENGTH_SHORT).show();
+
+           //  ArrayList<String> arrimageFile = new ArrayList<>();
+           // arrimageFile.addAll(journalEntry.getJournalImagePath());
+           // Toast.makeText(DisplayJournal.this, "No is " + " "+ arrimageFile.size()+" ", Toast.LENGTH_SHORT).show();
         }
 
         ivJournalPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (journalEntry.getJournalImagePath().size() == 0) {
 
-
-            Intent intent = new Intent(DisplayJournal.this, ImageSliderActivity.class);
-            intent.putExtra("displayjournal", journalEntry.getJournalImagePath().get(0));
-            startActivity(intent);
+                }
+                else {
+                    ArrayList<String> arrimageFile = new ArrayList<>();
+                    arrimageFile.addAll(journalEntry.getJournalImagePath());
+                    Intent intent = new Intent(DisplayJournal.this, ImageSliderActivity.class);
+                    // intent.putExtra("displayjournal", journalEntry.getJournalImagePath()));
+                    intent.putStringArrayListExtra("imagefiles", arrimageFile);
+                    startActivity(intent);
+                }
             }
         });
     }
@@ -116,7 +131,29 @@ public class DisplayJournal extends AppCompatActivity {
       tvJournalMessage.setText(journalEntry.getJournalMessage());
         try {
             if (journalEntry.getJournalImagePath().get(0) != null) {
-                Picasso.with(DisplayJournal.this).load(journalEntry.getJournalImagePath().get(0)).placeholder(R.drawable.ic_mesut).error(R.drawable.ic_mesut).into(ivJournalPhoto);
+                Picasso.with(DisplayJournal.this).load(journalEntry.getJournalImagePath().get(0)).networkPolicy(NetworkPolicy.OFFLINE)
+                        .placeholder(R.drawable.ic_mesut).error(R.drawable.ic_mesut).into(ivJournalPhoto, new Callback() {
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    @Override
+                    public void onError() {
+                        Picasso.with(DisplayJournal.this).load(journalEntry.getJournalImagePath().get(0))
+                                .placeholder(R.drawable.ic_mesut).error(R.drawable.ic_mesut).into(ivJournalPhoto, new Callback() {
+                            @Override
+                            public void onSuccess() {
+
+                            }
+
+                            @Override
+                            public void onError() {
+                                Log.v("Picasso","Could not fetch image");
+                            }
+                        });
+                    }
+                });
             } else {
                 Picasso.with(DisplayJournal.this).load(R.drawable.ic_mesut).placeholder(R.drawable.ic_mesut).error(R.drawable.ic_mesut).into(ivJournalPhoto);
             }
@@ -126,4 +163,28 @@ public class DisplayJournal extends AppCompatActivity {
             }
 
         }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+
+        inflater.inflate(R.menu.display_journal_menu, menu);
+
+        return true;
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_edit) {
+            // launch settings activity
+            startActivity(new Intent(this, SettingsActivity.class));
+            return true;
+        }else{
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

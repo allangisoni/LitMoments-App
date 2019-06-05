@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements JournalMainAdapte
 
         journalList.clear();
         FirebaseApp.initializeApp(getApplicationContext());
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 
 
         mAuth = FirebaseAuth.getInstance();
@@ -103,15 +104,17 @@ public class MainActivity extends AppCompatActivity implements JournalMainAdapte
     }
 
     private void getJornals(){
-        journalList.clear();
+
 
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Please wait...........");
         progressDialog.setTitle("Retrieving data");
         progressDialog.show();
         mDatabase.addValueEventListener(new ValueEventListener() {
+
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                journalList.clear();
                 if (dataSnapshot.exists()){
                     for (DataSnapshot npsnapshot : dataSnapshot.getChildren()){
 
@@ -120,7 +123,6 @@ public class MainActivity extends AppCompatActivity implements JournalMainAdapte
                     }
 
                     journalAdapter.notifyDataSetChanged();
-
 
                 }
                 progressDialog.dismiss();
@@ -219,6 +221,11 @@ public class MainActivity extends AppCompatActivity implements JournalMainAdapte
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //getJornals();
+    }
 
     /**
     @Override

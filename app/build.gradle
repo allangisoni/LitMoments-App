@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 27
     buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId "com.example.android.litmoments"
@@ -51,9 +51,15 @@ dependencies {
     implementation 'com.github.sillebille:dynamic-calendar:1.0.1'
     implementation 'com.eftimoff:android-viewpager-transformers:1.0.1@aar'
     implementation 'com.weiwangcn.betterspinner:library-material:1.1.0'
+    implementation 'com.vstechlab.easyfonts:easyfonts:1.0.0'
+    implementation 'com.ajts.androidmads.fontutils:fontutils:1.0.2'
+    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
+    implementation 'com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.6.3'
 }
 
 

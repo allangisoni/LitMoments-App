@@ -114,7 +114,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="150dp"
                 android:layout_alignParentRight="true"
-                android:src="@drawable/travel"
+                android:src="@drawable/ic_journalfinal3"
                 />
 
         </RelativeLayout>

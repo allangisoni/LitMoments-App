@@ -5,9 +5,12 @@
     android:orientation="horizontal">
 
     <ImageView
+
         android:id="@+id/imageView"
-        android:layout_width="28dp"
-        android:layout_height="28dp"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_gravity="center_vertical"
+        android:paddingLeft="4dp"
         android:src="@drawable/ic_simpson2" />
 
     <TextView
@@ -15,7 +18,9 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="8dp"
-        android:paddingRight="6dp"
+        android:paddingRight="8dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
         android:layout_gravity="center"
         android:text="Custom Text"
         android:textSize="18sp"

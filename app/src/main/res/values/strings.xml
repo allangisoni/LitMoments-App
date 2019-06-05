@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">LitMoments</string>
+    <string name="app_name">Lit Moments</string>
     <string name="Sign_in">Sign In</string>
     <string name="add_journal_entry">Add Journal Entry</string>
     <string name="save_journal_entry">Save Journal Entry</string>
@@ -28,4 +28,5 @@
     <string name="action_share">Share</string>
     <string name="acc_info">Account Info</string>
     <string name="acc_logout">Sign Out</string>
+    <string name="edit_journal">Edit</string>
 </resources>

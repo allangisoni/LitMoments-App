@@ -36,6 +36,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -53,6 +54,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.kd.dynamic.calendar.generator.ImageGenerator;
 
@@ -67,6 +69,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -95,6 +98,7 @@ public class AddJournalEntry extends AppCompatActivity {
     private JournalEntryAdapater journalEntryAdapater;
     private List<JournalPhotoModel> photoList = new ArrayList<>();
     final int numberOfColumns = 2;
+    private   String journalMonth, journalDay;
 
     private ArrayList<String> pathList = new ArrayList<>();
     private List<File> fileImages = new ArrayList<>();
@@ -120,6 +124,9 @@ public class AddJournalEntry extends AppCompatActivity {
     private DatabaseReference mDatabase;
 
     private FirebaseAuth mAuth;
+
+    private StorageTask mUploadTask;
+    private ArrayList<String> uploadedImages = new ArrayList<>();
 
     String[] weather = {"Sunny","Cloudy","Rainy"};
     int images[] = {R.drawable.ic_sunny, R.drawable.ic_cloudy, R.drawable.ic_rainy};
@@ -243,7 +250,12 @@ public class AddJournalEntry extends AppCompatActivity {
         mImageGenerator.setDateColor(Color.parseColor("#3c6eaf"));
         mImageGenerator.setMonthColor(Color.WHITE);
         String defaultDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        String defaultMonth = new SimpleDateFormat("MM", Locale.getDefault()).format(new Date());
+        String defaultDay = new SimpleDateFormat("dd", Locale.getDefault()).format(new Date());
+        defaultDay = defaultDay.replace("0"," ");
         tvJournalDate.setText(defaultDate);
+        journalDay =defaultDay;
+        journalMonth = defaultMonth;
 
         df = new SimpleDateFormat("EEE, d MMM yyyy");
 
@@ -260,6 +272,8 @@ public class AddJournalEntry extends AppCompatActivity {
                     @Override
                     public void onDateSet(DatePicker datePicker, int selectedYear, int selectedMonth, int selectedDay) {
                         mCurrentDate.set(selectedYear, selectedMonth, selectedDay);
+                        journalDay = Integer.toString(selectedDay);
+                        journalMonth = Integer.toString(selectedMonth);
                         String selectedDate = Integer.toString(selectedYear) + "-" + Integer.toString(selectedMonth) + "-" + Integer.toString(selectedDay);
                         df = new SimpleDateFormat("EEE, d MMM yyyy");
                         //String formatedDate = df.format("2018-06-09");
@@ -501,20 +515,54 @@ public  void  openImage(){
                    progressDialog.setTitle("Saving Data");
                    progressDialog.show();
                   //adding the file to reference
-                   DatabaseReference databaseReference = mDatabase.push();
-                   String refKey = databaseReference.getKey();
-                   JournalEntryModel journalEntryModel = new JournalEntryModel(tvJournalDate.getText().toString(), etJournalLocation.getText().toString(), "",
-                           " ", etJournalTitle.getText().toString(), etJournalMessage.getText().toString(),
-                           null);
+                   DatabaseReference databaseReference = mDatabase;
+                   String refKey = databaseReference.push().getKey();
+                   //databaseReference.child(refKey);
+                   ObjectMapper oMapper = new ObjectMapper();
 
 
-                   databaseReference.setValue(journalEntryModel);
+                 //  databaseReference.setValue(journalEntryModel);
                    HashMap<String, Object> myFilePath = new HashMap<String, Object>();
                        for ( int count =0; count < photoList.size(); count++ ) {
 
-                        File myFile = fileImages.get(0);
+                        File myFile = fileImages.get(count);
                           StorageReference sRef = storageReference.child(STORAGE_PATH_UPLOADS + System.currentTimeMillis() + "." + getFileExtension(Uri.fromFile(fileImages.get(count))));
-                          sRef.putFile(Uri.fromFile(fileImages.get(count))).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                          mUploadTask =  sRef.putFile(Uri.fromFile(fileImages.get(count)));
+
+
+                          mUploadTask.addOnFailureListener(exception -> Log.i("It didn't work", "double check"))
+                                  .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>(){
+                              @Override
+                              public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                  sRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                      @Override
+                                      public void onSuccess(Uri uri) {
+
+                                          Uri downloadUrl = uri;
+                                          uploadedImages.add(downloadUrl.toString());
+
+                                          JournalEntryModel journalEntryModel = new JournalEntryModel(tvJournalDate.getText().toString(), etJournalLocation.getText().toString(), "",
+                                                  " ", etJournalTitle.getText().toString(), etJournalMessage.getText().toString(), journalMonth, journalDay,
+                                                  uploadedImages);
+
+                                          Map<String, Object> productValues = oMapper.convertValue(journalEntryModel, Map.class);
+
+                                          Map<String, Object> childUpdates = new HashMap<>();
+                                          childUpdates.put(refKey, productValues);
+                                          //  childUpdates.put("/user-products/" + "userId" + "/" + refKey, productValues);
+
+                                          databaseReference.updateChildren(childUpdates);
+
+                                          progressDialog.dismiss();
+                                      }
+                                  });
+
+
+
+                              }
+                          });
+
+                         /** mUploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
 
                               @Override
                               public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -527,15 +575,17 @@ public  void  openImage(){
                                           Toast.makeText(AddJournalEntry.this, downloadUri, Toast.LENGTH_LONG).show();
                                           pathList.add(downloadUri);
 
-
-
                                           myFilePath.put(downloadUri, downloadUri);
-                                          databaseReference.child("JournalImagePath").setValue(downloadUri);
+
+                                          JournalEntryModel journalEntryModel = new JournalEntryModel(tvJournalDate.getText().toString(), etJournalLocation.getText().toString(), "",
+                                                  " ", etJournalTitle.getText().toString(), etJournalMessage.getText().toString(), journalMonth, journalDay,
+                                                  pathList);
+                                          databaseReference.setValue(journalEntryModel);
+                                         // databaseReference.child("JournalImagePath").setValue(downloadUri);
 
                                         //  JournalEntryModel journalEntryModel = new JournalEntryModel(tvJournalDate.getText().toString(), etJournalLocation.getText().toString(), etJournalWeather.getText().toString(),
                                           //        etJournalMood.getText().toString(), etJournalTitle.getText().toString(), etJournalMessage.getText().toString(),
                                             //      pathList);
-
 
 
 
@@ -565,7 +615,7 @@ public  void  openImage(){
                                           double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
                                           progressDialog.setMessage("Uploaded " + ((int) progress) + "%...");
                                       }
-                                  });
+                                  }); **/
 
 
                       }
@@ -577,21 +627,18 @@ public  void  openImage(){
 
                    pathList.clear();
                   // fileImages.clear();
-
-
                   }
 
 
              else {
                //HashMap<String, String> myFilePath = new HashMap<String, String>();
                JournalEntryModel journalEntryModel = new JournalEntryModel(tvJournalDate.getText().toString(), etJournalLocation.getText().toString(), " ",
-                   " ", etJournalTitle.getText().toString(), etJournalMessage.getText().toString(),
+                   " ", etJournalTitle.getText().toString(), etJournalMessage.getText().toString(), journalMonth, journalDay,
                    null);
 
            //adding an upload to firebase database
            DatabaseReference databaseReference = mDatabase.push();
            databaseReference.setValue(journalEntryModel);
-
            //displaying success toast
            Toast.makeText(getApplicationContext(), "Data Saved Successfully with No Image", Toast.LENGTH_LONG).show();
            }

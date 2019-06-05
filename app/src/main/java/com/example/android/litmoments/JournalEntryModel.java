@@ -9,10 +9,10 @@ import java.util.List;
 
 public class JournalEntryModel implements Parcelable {
 
-    private  String journalDate, journalLocation, journalWeather, journalMood, journalTitle, journalMessage;
+    private  String journalDate, journalLocation, journalWeather, journalMood, journalTitle, journalMessage, month, day;
     private List<String> journalImagePath = new ArrayList<>();
 
-    public JournalEntryModel(String journalDate, String journalLocation, String journalWeather, String journalMood, String journalTitle, String journalMessage, ArrayList<String>journalImagePath){
+    public JournalEntryModel(String journalDate, String journalLocation, String journalWeather, String journalMood, String journalTitle, String journalMessage, String month, String day, ArrayList<String>journalImagePath){
 
         this.journalDate = journalDate;
         this.journalLocation= journalLocation;
@@ -20,6 +20,8 @@ public class JournalEntryModel implements Parcelable {
         this.journalMood = journalMood;
         this.journalTitle= journalTitle;
         this.journalMessage = journalMessage;
+        this.month = month;
+        this.day = day;
         this.journalImagePath = journalImagePath;
     }
 
@@ -74,6 +76,22 @@ public class JournalEntryModel implements Parcelable {
 
     public void setJournalMessage(String journalMessage) {
         this.journalMessage = journalMessage;
+    }
+
+    public String getMonth() {
+        return month;
+    }
+
+    public void setMonth(String month) {
+        this.month = month;
+    }
+
+    public String getDay() {
+        return day;
+    }
+
+    public void setDay(String day) {
+        this.day = day;
     }
 
     public List<String> getJournalImagePath() {

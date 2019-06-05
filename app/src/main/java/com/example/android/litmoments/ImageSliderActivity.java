@@ -14,7 +14,11 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import com.eftimoff.viewpagertransformers.AccordionTransformer;
+import com.eftimoff.viewpagertransformers.CubeInTransformer;
+import com.eftimoff.viewpagertransformers.RotateDownTransformer;
 import com.eftimoff.viewpagertransformers.RotateUpTransformer;
 
 import java.util.ArrayList;
@@ -34,6 +38,7 @@ public class ImageSliderActivity extends AppCompatActivity {
     @BindView(R.id.entrytoolbar) Toolbar entryToolbar;
 
     private List<ViewPagerImages> journalImages = new ArrayList<>();
+     List<ViewPagerImages> imagesList = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,16 +72,23 @@ public class ImageSliderActivity extends AppCompatActivity {
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         sliderDotspanel = (LinearLayout) findViewById(R.id.SliderDots);
 
-        String imagepath = getIntent().getStringExtra("displayjournal");
-        ViewPagerImages viewPagerImages = new ViewPagerImages();
-        viewPagerImages.setJournalImagePath(imagepath);
 
-        journalImages.add(viewPagerImages);
+        ArrayList<String> imageFilePath = getIntent().getExtras().getStringArrayList("imagefiles");
+       // Toast.makeText(ImageSliderActivity.this , "" + imageFilePath.size() + "",Toast.LENGTH_SHORT).show();
+
+
+        for (String image : imageFilePath){
+            ViewPagerImages viewPagerImages = new ViewPagerImages();
+             viewPagerImages.setJournalImagePath(image);
+             //imagesList.add(image);
+            journalImages.add(viewPagerImages);
+        }
+
 
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(this, journalImages);
 
         viewPager.setAdapter(viewPagerAdapter);
-        viewPager.setPageTransformer(true, new RotateUpTransformer());
+        viewPager.setPageTransformer(true, new AccordionTransformer());
 
         dotscount = viewPagerAdapter.getCount();
         dots = new ImageView[dotscount];
@@ -87,11 +99,11 @@ public class ImageSliderActivity extends AppCompatActivity {
             dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.non_active_dot));
 
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-
             params.setMargins(8, 0, 8, 0);
-
             sliderDotspanel.addView(dots[i], params);
         }
+
+
             dots[0].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.active_dot));
 
             viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {

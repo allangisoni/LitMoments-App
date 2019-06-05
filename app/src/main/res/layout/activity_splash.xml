@@ -7,7 +7,7 @@
     tools:context=".SplashActivity"
     android:background="@color/colorAccent">
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/tvsplash"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -17,9 +17,10 @@
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:fontFamily="@font/parisienne"
         android:text="@string/app_name"
         android:textColor="@color/viewbackground"
-        android:textSize="28sp"
+        android:textSize="32sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

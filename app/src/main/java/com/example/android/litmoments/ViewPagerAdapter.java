@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -42,7 +43,8 @@ public class ViewPagerAdapter extends PagerAdapter {
         View view = layoutInflater.inflate(R.layout.image_viewpager, null);
         ImageView imageView = (ImageView) view.findViewById(R.id.imageView);
 
-        Picasso.with(context).load(images.get(position).getJournalImagePath()).placeholder(R.drawable.ic_mesut).error(R.drawable.ic_mesut).into(imageView);
+        Picasso.with(context).load(images.get(position).getJournalImagePath()).networkPolicy(NetworkPolicy.OFFLINE)
+                .placeholder(R.drawable.ic_mesut).error(R.drawable.ic_mesut).into(imageView);
         //imageView.setImageResource(images[position]);
 
 
