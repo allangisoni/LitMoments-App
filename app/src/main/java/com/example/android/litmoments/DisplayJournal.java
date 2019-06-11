@@ -2,8 +2,12 @@ package com.example.android.litmoments;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -19,6 +23,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
@@ -38,9 +46,16 @@ public class DisplayJournal extends AppCompatActivity {
     @BindView(R.id.tvdpJournalTitle)  TextView tvJournalTitle;
     @BindView(R.id.tvdpJournalMessage)  TextView tvJournalMessage;
     @BindView(R.id.ivdpJournalPhoto)  ImageView ivJournalPhoto;
+    @BindView(R.id.ivWeather)  ImageView ivJournalWeather;
+    @BindView(R.id.ivMood)  ImageView ivJournalMood;
 
     JournalEntryModel journalEntry;
     Intent intent;
+
+    String journalKey = " ";
+    private DatabaseReference mDatabase;
+    public static final String DATABASE_UPLOADS = "User's Journal Entries";
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +85,9 @@ public class DisplayJournal extends AppCompatActivity {
 
            getWindow().setStatusBarColor(Color.BLACK);
         }
+        mAuth = FirebaseAuth.getInstance();
+        String currentUid = mAuth.getCurrentUser().getUid();
+        mDatabase = FirebaseDatabase.getInstance().getReference(DATABASE_UPLOADS).child(currentUid);
 
 
         Bundle extras = getIntent().getExtras();
@@ -127,6 +145,33 @@ public class DisplayJournal extends AppCompatActivity {
       tvJournalLocation.setText(journalEntry.getJournalLocation());
       tvJournalWeather.setText(journalEntry.getJournalWeather());
       tvJournalMood.setText(journalEntry.getJournalMood());
+      if(journalEntry.getJournalWeather().equalsIgnoreCase("Sunny")){
+          Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_sunny);
+          ivJournalWeather.setImageBitmap(bitmap);
+      } else if(journalEntry.getJournalWeather().equalsIgnoreCase("Cloudy")){
+          Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_cloudy);
+          ivJournalWeather.setImageBitmap(bitmap);
+      }else if(journalEntry.getJournalWeather().equalsIgnoreCase("Rainy")){
+          Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_rainy);
+          ivJournalWeather.setImageBitmap(bitmap);
+      } else{
+
+      }
+
+        if(journalEntry.getJournalMood().equalsIgnoreCase("Happy")){
+            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_happy);
+            ivJournalMood.setImageBitmap(bitmap);
+        } else if(journalEntry.getJournalMood().equalsIgnoreCase("Sad")){
+            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_sad);
+            ivJournalMood.setImageBitmap(bitmap);
+        }else if(journalEntry.getJournalMood().equalsIgnoreCase("Surprised")){
+            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_surprised);
+            ivJournalMood.setImageBitmap(bitmap);
+        } else{
+
+        }
+
+
       tvJournalTitle.setText(journalEntry.getJournalTitle());
       tvJournalMessage.setText(journalEntry.getJournalMessage());
         try {
@@ -161,9 +206,21 @@ public class DisplayJournal extends AppCompatActivity {
          catch (Exception e){
                 Picasso.with(DisplayJournal.this).load(R.drawable.ic_mesut).placeholder(R.drawable.ic_mesut).error(R.drawable.ic_mesut).into(ivJournalPhoto);
             }
-
+      journalKey = journalEntry.getKey();
         }
 
+
+    public void deleteJournal(){
+
+       mDatabase.child(journalKey).removeValue(new DatabaseReference.CompletionListener() {
+           @Override
+           public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+               Intent intent = new Intent(DisplayJournal.this, MainActivity.class);
+               startActivity(intent);
+           }
+       });
+
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -180,9 +237,17 @@ public class DisplayJournal extends AppCompatActivity {
 
         if (id == R.id.action_edit) {
             // launch settings activity
-            startActivity(new Intent(this, SettingsActivity.class));
+            Intent intent = new Intent(DisplayJournal.this, EditJournalEntry.class);
+            intent.putExtra("journalEntry", journalEntry);
+            startActivity(intent);
             return true;
-        }else{
+        } else if(id == R.id.action_delete){
+           deleteJournal();
+           return true;
+
+        }
+
+        else{
 
         }
         return super.onOptionsItemSelected(item);

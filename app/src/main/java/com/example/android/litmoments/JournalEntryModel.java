@@ -9,10 +9,10 @@ import java.util.List;
 
 public class JournalEntryModel implements Parcelable {
 
-    private  String journalDate, journalLocation, journalWeather, journalMood, journalTitle, journalMessage, month, day;
+    private  String journalDate, journalLocation, journalWeather, journalMood, journalTitle, journalMessage, month, day, key;
     private List<String> journalImagePath = new ArrayList<>();
 
-    public JournalEntryModel(String journalDate, String journalLocation, String journalWeather, String journalMood, String journalTitle, String journalMessage, String month, String day, ArrayList<String>journalImagePath){
+    public JournalEntryModel(String journalDate, String journalLocation, String journalWeather, String journalMood, String journalTitle, String journalMessage, String month, String day, ArrayList<String>journalImagePath, String key){
 
         this.journalDate = journalDate;
         this.journalLocation= journalLocation;
@@ -23,8 +23,21 @@ public class JournalEntryModel implements Parcelable {
         this.month = month;
         this.day = day;
         this.journalImagePath = journalImagePath;
+        this.key = key;
     }
 
+    public JournalEntryModel(String journalDate, String journalLocation, String journalWeather, String journalMood, String journalTitle, String journalMessage, String month, String day, String key){
+
+        this.journalDate = journalDate;
+        this.journalLocation= journalLocation;
+        this.journalWeather = journalWeather;
+        this.journalMood = journalMood;
+        this.journalTitle= journalTitle;
+        this.journalMessage = journalMessage;
+        this.month = month;
+        this.day = day;
+        this.key = key;
+    }
     public JournalEntryModel(){
 
     }
@@ -102,6 +115,13 @@ public class JournalEntryModel implements Parcelable {
         this.journalImagePath = journalImagePath;
     }
 
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
 
     private JournalEntryModel(Parcel parcel){
 
@@ -111,6 +131,7 @@ public class JournalEntryModel implements Parcelable {
         journalMood = parcel.readString();
         journalTitle = parcel.readString();
         journalMessage = parcel.readString();
+        key = parcel.readString();
         journalImagePath = new ArrayList();
         parcel.readList(this.journalImagePath, Integer.class.getClassLoader());
 
@@ -133,6 +154,7 @@ public class JournalEntryModel implements Parcelable {
         dest.writeString(journalMood);
         dest.writeString(journalTitle);
         dest.writeString(journalMessage);
+        dest.writeString(key);
         dest.writeList(journalImagePath);
 
 

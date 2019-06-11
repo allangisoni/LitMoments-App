@@ -29,4 +29,5 @@
     <string name="acc_info">Account Info</string>
     <string name="acc_logout">Sign Out</string>
     <string name="edit_journal">Edit</string>
+    <string name="delete_journal">Delete</string>
 </resources>

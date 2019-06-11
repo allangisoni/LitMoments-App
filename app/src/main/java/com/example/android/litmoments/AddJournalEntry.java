@@ -115,6 +115,7 @@ public class AddJournalEntry extends AppCompatActivity {
     List<Place.Field> placeFields = Arrays.asList(Place.Field.NAME);
 
     String apiKey = "AIzaSyCZIBeTApR20-ChOZNsKTYN57IlcYsftEk";
+    String refKey = " ", currentWeather, currentMood;
 
 
     public static final String STORAGE_PATH_UPLOADS = "uploads/";
@@ -200,7 +201,9 @@ public class AddJournalEntry extends AppCompatActivity {
         spinnerWeather.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-               // Toast.makeText(MainActivity.this, "You Select Position: "+position+" "+fruits[position], Toast.LENGTH_SHORT).show();
+               // Toast.makeText(AddJournalEntry.this, "You Select Position: "+position+" "+weather[position], Toast.LENGTH_SHORT).show();
+
+                currentWeather = weather[position];
             }
 
             @Override
@@ -217,6 +220,7 @@ public class AddJournalEntry extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 // Toast.makeText(MainActivity.this, "You Select Position: "+position+" "+fruits[position], Toast.LENGTH_SHORT).show();
+                currentMood = mood[position];
             }
 
             @Override
@@ -252,7 +256,11 @@ public class AddJournalEntry extends AppCompatActivity {
         String defaultDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         String defaultMonth = new SimpleDateFormat("MM", Locale.getDefault()).format(new Date());
         String defaultDay = new SimpleDateFormat("dd", Locale.getDefault()).format(new Date());
-        defaultDay = defaultDay.replace("0"," ");
+        if(Integer.parseInt(defaultDay) <=9) {
+            defaultDay = defaultDay.replace("0", " ");
+        } else {
+            defaultDay = defaultDay;
+        }
         tvJournalDate.setText(defaultDate);
         journalDay =defaultDay;
         journalMonth = defaultMonth;
@@ -265,19 +273,23 @@ public class AddJournalEntry extends AppCompatActivity {
 
                 mCurrentDate = Calendar.getInstance();
                 int year = mCurrentDate.get(Calendar.YEAR);
-                int month = mCurrentDate.get(Calendar.MONTH);
+                int month = mCurrentDate.get(Calendar.MONTH) ;
                 int day = mCurrentDate.get(Calendar.DAY_OF_MONTH);
 
                 DatePickerDialog mDatePicker = new DatePickerDialog(AddJournalEntry.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker datePicker, int selectedYear, int selectedMonth, int selectedDay) {
                         mCurrentDate.set(selectedYear, selectedMonth, selectedDay);
+                        selectedMonth=selectedMonth+1;
                         journalDay = Integer.toString(selectedDay);
                         journalMonth = Integer.toString(selectedMonth);
                         String selectedDate = Integer.toString(selectedYear) + "-" + Integer.toString(selectedMonth) + "-" + Integer.toString(selectedDay);
                         df = new SimpleDateFormat("EEE, d MMM yyyy");
                         //String formatedDate = df.format("2018-06-09");
                         tvJournalDate.setText(selectedDate);
+                        journalDay = Integer.toString(month);
+                        journalMonth = Integer.toString(day);
+
 
                     }
 
@@ -516,7 +528,7 @@ public  void  openImage(){
                    progressDialog.show();
                   //adding the file to reference
                    DatabaseReference databaseReference = mDatabase;
-                   String refKey = databaseReference.push().getKey();
+                   refKey = databaseReference.push().getKey();
                    //databaseReference.child(refKey);
                    ObjectMapper oMapper = new ObjectMapper();
 
@@ -541,9 +553,9 @@ public  void  openImage(){
                                           Uri downloadUrl = uri;
                                           uploadedImages.add(downloadUrl.toString());
 
-                                          JournalEntryModel journalEntryModel = new JournalEntryModel(tvJournalDate.getText().toString(), etJournalLocation.getText().toString(), "",
-                                                  " ", etJournalTitle.getText().toString(), etJournalMessage.getText().toString(), journalMonth, journalDay,
-                                                  uploadedImages);
+                                          JournalEntryModel journalEntryModel = new JournalEntryModel(tvJournalDate.getText().toString(), etJournalLocation.getText().toString(), currentWeather,
+                                                  currentMood, etJournalTitle.getText().toString(), etJournalMessage.getText().toString(), journalMonth, journalDay,
+                                                  uploadedImages, refKey);
 
                                           Map<String, Object> productValues = oMapper.convertValue(journalEntryModel, Map.class);
 
@@ -554,6 +566,7 @@ public  void  openImage(){
                                           databaseReference.updateChildren(childUpdates);
 
                                           progressDialog.dismiss();
+                                          Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_SHORT).show();
                                       }
                                   });
 
@@ -631,16 +644,19 @@ public  void  openImage(){
 
 
              else {
-               //HashMap<String, String> myFilePath = new HashMap<String, String>();
-               JournalEntryModel journalEntryModel = new JournalEntryModel(tvJournalDate.getText().toString(), etJournalLocation.getText().toString(), " ",
-                   " ", etJournalTitle.getText().toString(), etJournalMessage.getText().toString(), journalMonth, journalDay,
-                   null);
+
 
            //adding an upload to firebase database
            DatabaseReference databaseReference = mDatabase.push();
+           refKey = databaseReference.getKey();
+           //HashMap<String, String> myFilePath = new HashMap<String, String>();
+                   JournalEntryModel journalEntryModel = new JournalEntryModel(tvJournalDate.getText().toString(), etJournalLocation.getText().toString(), currentWeather,
+                           currentMood, etJournalTitle.getText().toString(), etJournalMessage.getText().toString(), journalMonth, journalDay,
+                           null, refKey);
+
            databaseReference.setValue(journalEntryModel);
            //displaying success toast
-           Toast.makeText(getApplicationContext(), "Data Saved Successfully with No Image", Toast.LENGTH_LONG).show();
+           Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_LONG).show();
            }
 
        }

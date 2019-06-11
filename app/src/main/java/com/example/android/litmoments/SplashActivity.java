@@ -1,7 +1,9 @@
 package com.example.android.litmoments;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Handler;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.animation.Animation;
@@ -32,6 +34,9 @@ public class SplashActivity extends AppCompatActivity {
                 finish();
             }
         },splashTimeOut);
+
+        Typeface myCustomFont = ResourcesCompat.getFont(this, R.font.parisienneregular);
+        tvSplash.setTypeface(myCustomFont);
 
         Animation myanim = AnimationUtils.loadAnimation(this,R.anim.mysplashanimation);
         ivSplash.startAnimation(myanim);

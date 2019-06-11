@@ -3,11 +3,13 @@ package com.example.android.litmoments;
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
@@ -43,8 +45,32 @@ public class ViewPagerAdapter extends PagerAdapter {
         View view = layoutInflater.inflate(R.layout.image_viewpager, null);
         ImageView imageView = (ImageView) view.findViewById(R.id.imageView);
 
-        Picasso.with(context).load(images.get(position).getJournalImagePath()).networkPolicy(NetworkPolicy.OFFLINE)
-                .placeholder(R.drawable.ic_mesut).error(R.drawable.ic_mesut).into(imageView);
+        Picasso.with(context).load(images.get(position).getJournalImagePath()).networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.ic_mesut)
+                .error(R.drawable.ic_journalfinal3).into(imageView, new Callback() {
+            @Override
+            public void onSuccess() {
+
+            }
+
+            @Override
+            public void onError() {
+                Picasso.with(context).load(images.get(position).getJournalImagePath()).placeholder(R.drawable.ic_mesut)
+                        .error(R.drawable.ic_journalfinal3).into(imageView, new Callback() {
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    @Override
+                    public void onError() {
+                        Log.v("Picasso","Could not fetch image");
+
+                    }
+                });
+
+            }
+        });
+
         //imageView.setImageResource(images[position]);
 
 

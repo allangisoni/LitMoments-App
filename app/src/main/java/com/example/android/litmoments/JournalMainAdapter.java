@@ -69,7 +69,8 @@ public class JournalMainAdapter extends RecyclerView.Adapter<JournalViewHolder> 
 
                         // name match condition. this might differ depending on your requirement
                         // here we are looking for name or phone number match
-                        if (row.getJournalTitle().toLowerCase().contains(charString.toLowerCase()) || row.getJournalMessage().toLowerCase().contains(charString.toLowerCase())) {
+                        if (row.getJournalTitle().toLowerCase().contains(charString.toLowerCase()) || row.getJournalMessage().toLowerCase().contains(charString.toLowerCase()) ||
+                        row.getJournalDate().contains(charString)) {
                             filteredList.add(row);
                         }
                     }

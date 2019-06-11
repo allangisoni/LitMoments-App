@@ -22,6 +22,7 @@
         android:textColor="@color/viewbackground"
         android:textSize="32sp"
         android:textStyle="bold"
+        app:fontFamily="@font/parisienne"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

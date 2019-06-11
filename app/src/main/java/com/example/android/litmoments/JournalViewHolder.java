@@ -57,7 +57,6 @@ public class JournalViewHolder  extends RecyclerView.ViewHolder{
                              .placeholder(R.drawable.ic_mesut).error(R.drawable.ic_journalfinal).into(ivJournalPhoto, new Callback() {
                          @Override
                          public void onSuccess() {
-
                          }
 
                          @Override
@@ -118,6 +117,7 @@ public class JournalViewHolder  extends RecyclerView.ViewHolder{
                  Intent intent = new Intent(itemView.getContext(), DisplayJournal.class);
                  intent.putExtra("journalItems", journalItem);
                  itemView.getContext().startActivity(intent);
+
             }
         });
     }

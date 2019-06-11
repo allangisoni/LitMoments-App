@@ -30,6 +30,18 @@
         android:paddingRight="@dimen/recyclerviewPadding_Right"
         android:paddingBottom="@dimen/recyclerviewPadding_Bottom"
         />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminate="true"
+        android:minHeight="50dp"
+        android:visibility="invisible"
+        android:minWidth="50dp" />
+
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/addjournal_fab"
         android:layout_gravity="bottom|end"

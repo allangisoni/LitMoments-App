@@ -47,7 +47,7 @@
                 android:gravity="center"
                 android:layout_width="70dp"
                 android:layout_height="30dp"
-                android:layout_marginTop="22dp"
+                android:layout_marginTop="16dp"
                 android:textSize="14sp"
                 android:text="@string/journalDate"/>
 
@@ -80,17 +80,18 @@
                     android:layout_marginTop="10dp"
                     android:id="@+id/tvMessage"
                     android:layout_width="wrap_content"
-                    android:layout_height="80dp"
+                    android:layout_height="70dp"
                     android:ellipsize="end"
-                    android:maxLines="5" />
+                    android:maxLines="4" />
 
                 <TextView
-                    android:textSize="12sp"
+                    android:textSize="11sp"
                     android:layout_toRightOf="@id/ivLocation"
                     android:layout_below="@id/tvMessage"
                     android:text="@string/journalLocation"
                     android:id="@+id/tvLocation"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="2dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
@@ -99,8 +100,8 @@
                     android:layout_below="@id/tvMessage"
                     android:layout_marginLeft="8dp"
                     android:layout_marginTop="8dp"
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
+                    android:layout_width="22dp"
+                    android:layout_height="28dp"
                     android:contentDescription="@string/journalLocation"
                     android:src="@drawable/ic_location" />
 

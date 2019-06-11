@@ -4,9 +4,11 @@ import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -21,8 +23,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.ajts.androidmads.fontutils.FontUtils;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -44,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements JournalMainAdapte
     //@BindView(R.id.iconRefresh) ImageView ivRefresh;
     @BindView(R.id.addjournal_fab)  FloatingActionButton addJournalFab;
     @BindView(R.id.rvJournalEntries)  RecyclerView rvJournalEntries;
+    @BindView(R.id.progressBar) ProgressBar progressBar;
 
     private JournalMainAdapter journalAdapter;
     private List<JournalEntryModel> journalList = new ArrayList<>();
@@ -63,10 +68,18 @@ public class MainActivity extends AppCompatActivity implements JournalMainAdapte
             getSupportActionBar().setElevation(0);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
+        Typeface myCustomFont = ResourcesCompat.getFont(this, R.font.parisienneregular);
+        //toolbar.setTitle().setTypeface(myCustomFont);
+        // Applying Custom Font
+        //Typeface typeface = Typeface.createFromAsset(getAssets(), "custom_font.ttf");
+        FontUtils fontUtils = new FontUtils();
+        fontUtils.applyFontToToolbar(toolbar, myCustomFont);
+
 
         journalList.clear();
-        FirebaseApp.initializeApp(getApplicationContext());
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        FirebaseApp.initializeApp(getApplicationContext());
+
 
 
         mAuth = FirebaseAuth.getInstance();
@@ -106,10 +119,11 @@ public class MainActivity extends AppCompatActivity implements JournalMainAdapte
     private void getJornals(){
 
 
-        final ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Please wait...........");
-        progressDialog.setTitle("Retrieving data");
-        progressDialog.show();
+        //final ProgressDialog progressDialog = new ProgressDialog(this);
+        //progressDialog.setMessage("Please wait...........");
+       // progressDialog.setTitle("Retrieving data");
+       // progressDialog.show();
+        progressBar.setVisibility(View.VISIBLE);
         mDatabase.addValueEventListener(new ValueEventListener() {
 
             @Override
@@ -125,12 +139,14 @@ public class MainActivity extends AppCompatActivity implements JournalMainAdapte
                     journalAdapter.notifyDataSetChanged();
 
                 }
-                progressDialog.dismiss();
+               // progressDialog.dismiss();
+                progressBar.setVisibility(View.INVISIBLE);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-             progressDialog.dismiss();
+            // progressDialog.dismiss();
+             progressBar.setVisibility(View.INVISIBLE);
 
              Toast.makeText(MainActivity.this, "Please check your Internet Connection", Toast.LENGTH_SHORT).show();
             }
