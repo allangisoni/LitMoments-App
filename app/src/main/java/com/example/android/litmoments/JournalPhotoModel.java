@@ -10,6 +10,7 @@ public class JournalPhotoModel {
 
 
     public JournalPhotoModel(){
+
         this.journalImageView=journalImageView;
     }
 

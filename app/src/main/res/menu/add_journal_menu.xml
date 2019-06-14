@@ -5,6 +5,10 @@
     <item android:id="@+id/item_delete"
           android:icon="@drawable/ic_delete"
           android:title="Delete"
-          app:showAsAction="never"/>
+          app:showAsAction="ifRoom"/>
+
+ <!--   <item android:id="@+id/item_selected"
+        android:title="Selected"
+        app:showAsAction="never"/> -->
 
 </menu>

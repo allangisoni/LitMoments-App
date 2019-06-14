@@ -17,6 +17,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -80,7 +81,7 @@ import pl.tajchert.nammu.Nammu;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 
-public class AddJournalEntry extends AppCompatActivity {
+public class AddJournalEntry extends AppCompatActivity implements JournalEntryAdapater.OnClickAction {
 
     private static final String TAG = AddJournalEntry.class.getName();
     @BindView(R.id.entrytoolbar) Toolbar entryToolbar;
@@ -135,7 +136,39 @@ public class AddJournalEntry extends AppCompatActivity {
     String[] mood = {"Happy","Sad","Surprised"};
     int moodImages[] = {R.drawable.ic_happy, R.drawable.ic_sad, R.drawable.ic_surprised};
 
+    ActionMode actionMode;
 
+    private ActionMode.Callback actionModeCallback = new ActionMode.Callback() {
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            MenuInflater inflater = mode.getMenuInflater();
+            inflater.inflate(R.menu.add_journal_menu, menu);
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.item_delete:
+                    Toast.makeText(AddJournalEntry.this, journalEntryAdapater.getSelected().size() + " selected", Toast.LENGTH_SHORT).show();
+                    deleteItemFromList();
+                    mode.finish();
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            actionMode = null;
+        }
+    };
 
 
     @Override
@@ -168,12 +201,7 @@ public class AddJournalEntry extends AppCompatActivity {
         // width and height will be at least 600px long (optional).
         EasyImage.configuration(this).setImagesFolderName("Journal Images").setAllowMultiplePickInGallery(true);
 
-        journalEntryAdapater = new JournalEntryAdapater(photoList, getApplicationContext(), new JournalEntryAdapater.OnItemClickListener() {
-            @Override
-            public void onItemClick(JournalPhotoModel photoItem) {
-
-            }
-        });
+        journalEntryAdapater = new JournalEntryAdapater(photoList, getApplicationContext());
 
 
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, numberOfColumns);
@@ -304,7 +332,7 @@ public class AddJournalEntry extends AppCompatActivity {
             }
         });
 
-
+        journalEntryAdapater.setActionModeReceiver((JournalEntryAdapater.OnClickAction) AddJournalEntry.this);
         getUserLocation();
 
     }
@@ -377,7 +405,7 @@ public  void  openImage(){
                             fileImages.add(file);
                             Toast.makeText(AddJournalEntry.this, file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
 
-                            if(photoList != null){
+                            if(photoList.size() != 0){
 
                                 rvPhotos.setVisibility(View.VISIBLE);
                             }
@@ -399,21 +427,22 @@ public  void  openImage(){
 
                         break;
                     case REQUEST_CODE_GALLERY:
+
                         for(File file:imageFiles){
                             JournalPhotoModel journalImage = new JournalPhotoModel();
                             journalImage.setJournalImage(file);
                             photoList.add(journalImage);
                             fileImages.add(file);
-                           // Toast.makeText(AddJournalEntry.this, file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+                          // Toast.makeText(AddJournalEntry.this, " "+ photoList.size()+" ", Toast.LENGTH_SHORT).show();
 
-                            if(photoList != null){
+                            if(photoList.size() != 0){
 
                                 rvPhotos.setVisibility(View.VISIBLE);
-                                Toast.makeText(AddJournalEntry.this, photoList.size(), Toast.LENGTH_SHORT).show();
-
+                                Toast.makeText(AddJournalEntry.this, " "+photoList.size()+" ", Toast.LENGTH_SHORT).show();
                             }
 
                         }
+                        //journalEntryAdapater.addAll(photoList);
                         journalEntryAdapater.notifyDataSetChanged();
 
 
@@ -699,4 +728,73 @@ public  void  openImage(){
                 return super.onOptionsItemSelected(item);
         }
     }
+
+ 
+    public void selectAll(View v) {
+        journalEntryAdapater.selectAll();
+        if (actionMode == null) {
+            actionMode = startSupportActionMode(actionModeCallback);
+            actionMode.setTitle("Selected: " + journalEntryAdapater.getSelected().size());
+        }
+    }
+
+    public void deselectAll(View v) {
+        journalEntryAdapater.clearSelected();
+        if (actionMode != null) {
+            actionMode.finish();
+            actionMode = null;
+        }
+    }
+
+    public void onClickAction() {
+        int selected = journalEntryAdapater.getSelected().size();
+        if (actionMode == null) {
+            actionMode = startSupportActionMode(actionModeCallback);
+            actionMode.setTitle("Selected: " + selected);
+        } else {
+            if (selected == 0) {
+                actionMode.finish();
+            } else {
+                actionMode.setTitle("Selected: " + selected);
+            }
+        }
+    }
+
+    // confirmation dialog box to delete an unit
+    private void deleteItemFromList() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        //builder.setTitle("Dlete ");
+        builder.setMessage("Delete selected items ?")
+                .setCancelable(false)
+                .setPositiveButton("CONFIRM",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+
+                               // journalEntryAdapater.getSelected().remove(true);
+                                List<JournalPhotoModel> selected = new ArrayList<>();
+                                selected = journalEntryAdapater.getSelected();
+                                //journalEntryAdapater.clearAll(true);
+                                for (JournalPhotoModel journalPhotoModel : selected) {
+                                    photoList.remove(journalPhotoModel);
+                                }
+                                journalEntryAdapater.notifyDataSetChanged();
+
+
+                            }
+                        })
+                .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+
+                    }
+                });
+
+        builder.show();
+
+    }
+
+
+
 }
