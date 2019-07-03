@@ -60,7 +60,7 @@ public void onBindViewHolder(final JournalEntryViewHolder holder, int position) 
         //holder.bind(photolist.get(position), listener);
         final JournalPhotoModel journalPhotoModel = photolist.get(position);
         //holder.tvAuthor.setText(moviz.getReviews().getAuthor());
-        Picasso.with(context).load(journalPhotoModel.getJournalImage()).fit().centerCrop().into(holder.ivaddJournalPhoto);
+        Picasso.with(context).load(journalPhotoModel.getJournalImage()).into(holder.ivaddJournalPhoto);
 
         holder.cbaddJournalCheck.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -61,7 +61,7 @@ public class DisplayImagesAdapter extends RecyclerView.Adapter<DisplayImagesView
 
         final DisplayImagesModel displayImagesModel = photolist.get(position);
         //holder.tvAuthor.setText(moviz.getReviews().getAuthor());
-        Picasso.with(context).load(displayImagesModel.getJournalImageView()).into(holder.ivJournalPhoto);
+      //  Picasso.with(context).load(displayImagesModel.getJournalImageView()).into(holder.ivJournalPhoto);
 
         Picasso.with(context).load(displayImagesModel.getJournalImageView()).networkPolicy(NetworkPolicy.OFFLINE).into(holder.ivJournalPhoto, new Callback() {
             @Override
@@ -71,7 +71,7 @@ public class DisplayImagesAdapter extends RecyclerView.Adapter<DisplayImagesView
 
             @Override
             public void onError() {
-                Picasso.with(context).load(new File(displayImagesModel.getJournalImageView())).networkPolicy(NetworkPolicy.OFFLINE).into(holder.ivJournalPhoto, new Callback() {
+                Picasso.with(context).load(displayImagesModel.getJournalImageView()).networkPolicy(NetworkPolicy.OFFLINE).into(holder.ivJournalPhoto, new Callback() {
                     @Override
                     public void onSuccess() {
 

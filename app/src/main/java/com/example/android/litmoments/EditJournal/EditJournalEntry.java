@@ -124,6 +124,7 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
     private ArrayList<String> pathList = new ArrayList<>();
     private ArrayList<String> imageUploads = new ArrayList<>();
     private List<File> fileImages = new ArrayList<>();
+    private List<Uri> imagesUri = new ArrayList<>();
     private static final int REQUEST_CODE_CHOOSE = 23;
     public static final int REQUEST_CODE_CAMERA = 0012;
     public static final int REQUEST_CODE_GALLERY = 0013;
@@ -267,6 +268,7 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
 
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, numberOfColumns);
         rvPhotos.setLayoutManager(mLayoutManager);
+        rvPhotos.setNestedScrollingEnabled(false);
         rvPhotos.setItemAnimator(new DefaultItemAnimator());
 
      /**   photoJournalFab.setOnClickListener(new View.OnClickListener() {
@@ -482,14 +484,14 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
 
                 JournalPhotoModel journalImage = new JournalPhotoModel();
                 DisplayImagesModel displayImage = new DisplayImagesModel();
-                File uriFile =new File(uri.getPath());
+                File uriFile =new File(getPathFromGooglePhotosUri(uri));
                // journalImage.setJournalImage(uri);
                 photoList.add(journalImage);
                 fileImages.add(uriFile);
-                displayImage.setJournalImageView(uri.getPath());
+                displayImage.setJournalImageView(uri.toString());
                 retrievedphotoList.add(displayImage);
 
-                //imagesUri.add(uri);
+                imagesUri.add(uri);
 
                 Log.d("Matisse", "selected file: " + uri.getPath());
 
@@ -497,10 +499,6 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
                 Random random = new Random();
                 int a = random.nextInt(100);
                 File destFile = new File(file, "img_"+a+ dateFormatter.format(new Date()).toString() + ".png");
-
-
-
-
 
 
                 Log.d(TAG, "Source File Path :" + sourceFile);
@@ -602,22 +600,6 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
 
                 HashMap<String, Object> myFilePath = new HashMap<String, Object>();
 
-               /** for(String imageinUploads : imageUploads ){
-                    StorageReference photoRef = storageReference.child(STORAGE_PATH_UPLOADS).child(imageinUploads);
-                    photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            // File deleted successfully
-                            Log.d(TAG, "onSuccess: deleted file");
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                            // Uh-oh, an error occurred!
-                            Log.d(TAG, "onFailure: did not delete file");
-                        }
-                    });
-                } **/
 
 
                 for ( int count =0; count < fileImages.size(); count++ ) {
@@ -691,8 +673,8 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
 
                         if(urlExists == false ){
                       StorageReference sRef = storageReference.child(STORAGE_PATH_UPLOADS + System.currentTimeMillis() + "." + getFileExtension(Uri.fromFile(fileImages.get(count))));
-                      mUploadTask = sRef.putFile(Uri.fromFile(fileImages.get(count)));
 
+                      mUploadTask = sRef.putFile(Uri.fromFile(fileImages.get(count)));
 
                       mUploadTask.addOnFailureListener(exception -> Log.i("It didn't work", "double check"))
                               .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -1274,11 +1256,11 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
         }
         else if (userTheme.equals("1")) {
             setTheme(R.style.ReddishLitStyle);
-            isWhite = false;
+            isWhite = true;
         }
         else if (userTheme.equals("0")) {
             setTheme(R.style.BlueLitStyle);
-            isWhite = false;
+            isWhite = true;
         } else{
 
         }

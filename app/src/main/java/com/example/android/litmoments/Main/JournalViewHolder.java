@@ -21,11 +21,14 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+import io.supercharge.shimmerlayout.ShimmerLayout;
+
 public class JournalViewHolder  extends RecyclerView.ViewHolder{
 
     public TextView tvJournalMonth,tvJournalDay, tvJournalYear,  tvJournalTitle, tvJournalMessage, tvJournalLocation;
 
     public ImageView ivJournalPhoto;
+    ShimmerLayout shimmerText;
 
     private  List<JournalEntryModel> filteredJournallist;
 
@@ -40,6 +43,7 @@ public class JournalViewHolder  extends RecyclerView.ViewHolder{
       tvJournalMessage = itemView.findViewById(R.id.tvMessage);
       tvJournalLocation = itemView.findViewById(R.id.tvLocation);
       ivJournalPhoto = itemView.findViewById(R.id.ivJournalImage);
+
 
     }
 
@@ -84,7 +88,6 @@ public class JournalViewHolder  extends RecyclerView.ViewHolder{
 
         // tvJournalDate.setText(journalItem.getJournalDate());
        // Toast.makeText(AddJournalEntry.this, monthName, Toast.LENGTH_LONG).show();
-
         String myDate = journalItem.getJournalDate();
         if(!myDate.isEmpty()) {
             String monthName, day, year;

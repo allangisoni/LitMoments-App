@@ -10,6 +10,7 @@
         android:summary="@string/summary_uiTheme"
         android:title="@string/title_uiTheme" />
 
+
     <ListPreference
         android:defaultValue="0"
         android:dialogTitle="@string/uiThemeFont"

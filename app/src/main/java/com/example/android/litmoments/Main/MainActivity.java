@@ -47,6 +47,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.supercharge.shimmerlayout.ShimmerLayout;
 
 public class MainActivity extends AppCompatActivity implements JournalMainAdapter.OnItemClickListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -84,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements JournalMainAdapte
             setUpThemeContent();
             loadWidgetColors(sharedPreferences);
         }
+
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
