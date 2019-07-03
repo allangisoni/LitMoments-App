@@ -14,10 +14,59 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorControlNormal">@color/colorAccent</item>
         <item name="windowActionModeOverlay">true</item>
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:actionModeBackground">@color/colorPrimaryDark</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
     </style>
+
+    <style name="BlueLitStyle" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/bluecolorPrimary</item>
+        <item name="colorPrimaryDark">@color/bluecolorPrimaryDark</item>
+        <item name="colorAccent">@color/bluecolorAccent</item>
+        <item name="colorControlNormal">@color/background</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:actionModeBackground">@color/bluecolorPrimaryDark</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+     <!--   <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item> -->
+    </style>
+
+    <style name="ReddishLitStyle" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/reddishcolorPrimary</item>
+        <item name="colorPrimaryDark">@color/reddishcolorPrimaryDark</item>
+        <item name="colorAccent">@color/reddishcolorAccent</item>
+        <item name="colorControlNormal">@color/background</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:actionModeBackground">@color/reddishcolorPrimaryDark</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+    </style>
+
+
+    <!-- This will set the fade in animation on all your activities by default -->
+<style name="WindowAnimationTransition">
+<item name="android:windowEnterAnimation">@android:anim/slide_in_left</item>
+<item name="android:windowExitAnimation">@android:anim/slide_out_right</item>
+</style>
+
+    <style name="SettingsStyle" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorControlNormal">@color/colorAccent</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="android:actionModeBackground">@color/colorPrimaryDark</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+
+    </style>
+
 
     <style name="MyActionBarTheme" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="android:textColorPrimary">@color/colorAccent</item>
+    </style>
+
+    <style name="MySplashTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@color/colorAccent</item>
     </style>
 
     <style name="PreferenceScreen" parent="LitStyle">
@@ -28,7 +77,6 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
-
     <style name="DisplayStyle" parent="AppTheme.NoActionBar">
         <item name="windowActionBarOverlay">true</item>
         <item name="colorPrimary">@android:color/transparent</item>

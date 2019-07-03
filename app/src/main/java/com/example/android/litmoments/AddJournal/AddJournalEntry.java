@@ -1,22 +1,32 @@
-package com.example.android.litmoments;
+package com.example.android.litmoments.AddJournal;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
+import android.os.Build;
+import android.os.Environment;
+import android.os.ParcelFileDescriptor;
+import android.support.annotation.ColorRes;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -37,9 +47,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.ajts.androidmads.fontutils.FontUtils;
+import com.example.android.litmoments.R;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.android.flexbox.FlexDirection;
+import com.google.android.flexbox.FlexWrap;
+import com.google.android.flexbox.FlexboxLayoutManager;
+import com.google.android.flexbox.JustifyContent;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
@@ -53,15 +68,23 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.kd.dynamic.calendar.generator.ImageGenerator;
+import com.zhihu.matisse.Matisse;
+import com.zhihu.matisse.MimeType;
+import com.zhihu.matisse.engine.impl.PicassoEngine;
 
+import java.io.Closeable;
 import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.URI;
+import java.nio.channels.FileChannel;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -71,17 +94,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import id.zelory.compressor.Compressor;
 import pl.aprilapps.easyphotopicker.DefaultCallback;
 import pl.aprilapps.easyphotopicker.EasyImage;
-import pl.tajchert.nammu.Nammu;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 
-public class AddJournalEntry extends AppCompatActivity implements JournalEntryAdapater.OnClickAction {
+public class AddJournalEntry extends AppCompatActivity implements JournalEntryAdapater.OnClickAction, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final String TAG = AddJournalEntry.class.getName();
     @BindView(R.id.entrytoolbar) Toolbar entryToolbar;
@@ -91,8 +121,8 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
     //@BindView(R.id.etJournalMood) EditText etJournalMood;
     @BindView(R.id.etJournalTitle) EditText etJournalTitle;
     @BindView(R.id.tvJournalDate) TextView tvJournalDate;
-    @BindView(R.id.photojournal_fab) FloatingActionButton photoJournalFab;
-    @BindView(R.id.savejournal_fab) FloatingActionButton saveJournalFab;
+ //   @BindView(R.id.photojournal_fab) FloatingActionButton photoJournalFab;
+  //  @BindView(R.id.savejournal_fab) FloatingActionButton saveJournalFab;
     @BindView(R.id.rvPhotos) RecyclerView rvPhotos;
     @BindView(R.id.spinner_weather) Spinner spinnerWeather;
     @BindView(R.id.spinner_mood) Spinner spinnerMood;
@@ -103,6 +133,7 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
 
     private ArrayList<String> pathList = new ArrayList<>();
     private List<File> fileImages = new ArrayList<>();
+    private List<Uri> imagesUri = new ArrayList<>();
     private static final int REQUEST_CODE_CHOOSE = 23;
     public static final int REQUEST_CODE_CAMERA = 0012;
     public static final int REQUEST_CODE_GALLERY = 0013;
@@ -138,11 +169,25 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
 
     ActionMode actionMode;
 
+    Boolean isWhite = false;
+    MenuItem copyMenuItem;
+
+    File  file;
+    public static final String IMAGE_DIRECTORY = "Lit Moments";
+    private SimpleDateFormat dateFormatter;
+
+    private static final String SCHEME_FILE = "file";
+    private static final String SCHEME_CONTENT = "content";
+    public static final String DATE_FORMAT = "yyyyMMdd_HHmmss";
+
+    private final ScheduledExecutorService scheduler =
+            Executors.newScheduledThreadPool(1);
+
     private ActionMode.Callback actionModeCallback = new ActionMode.Callback() {
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             MenuInflater inflater = mode.getMenuInflater();
-            inflater.inflate(R.menu.add_journal_menu, menu);
+            inflater.inflate(R.menu.context_action_menu, menu);
             return true;
         }
 
@@ -155,7 +200,7 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.item_delete:
-                    Toast.makeText(AddJournalEntry.this, journalEntryAdapater.getSelected().size() + " selected", Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(AddJournalEntry.this, journalEntryAdapater.getSelected().size() + " selected", Toast.LENGTH_SHORT).show();
                     deleteItemFromList();
                     mode.finish();
                     return true;
@@ -173,6 +218,11 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SharedPreferences sharedPreferences;
+        sharedPreferences  = PreferenceManager.getDefaultSharedPreferences(this);
+        loadUiTheme(sharedPreferences);
+
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_journal_entry);
         ButterKnife.bind(this);
@@ -183,8 +233,15 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
             getSupportActionBar().setElevation(0);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
+            setUpThemeContent();
+            loadWidgetColors(sharedPreferences);
 
         }
+        //entryToolbar.setTitle(getResources().getString(R.string.add_entry));
+      /**  Typeface myCustomFont = ResourcesCompat.getFont(this, R.font.parisienneregular);
+        FontUtils fontUtils = new FontUtils();
+        fontUtils.applyFontToToolbar(entryToolbar, myCustomFont); **/
+
         FirebaseApp.initializeApp(getApplicationContext());
 
 
@@ -204,11 +261,18 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
         journalEntryAdapater = new JournalEntryAdapater(photoList, getApplicationContext());
 
 
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, numberOfColumns);
-        rvPhotos.setLayoutManager(mLayoutManager);
+       RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, numberOfColumns);
+
+
+          rvPhotos.setLayoutManager(mLayoutManager);
+       // FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(this);
+        //layoutManager.setFlexDirection(FlexDirection.ROW);
+        //layoutManager.setFlexWrap(FlexWrap.WRAP);
+        //layoutManager.setJustifyContent(JustifyContent.FLEX_START);
+        //rvPhotos.setLayoutManager(layoutManager);
         rvPhotos.setItemAnimator(new DefaultItemAnimator());
 
-        photoJournalFab.setOnClickListener(new View.OnClickListener() {
+     /**   photoJournalFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -225,7 +289,7 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
             }
         });
 
-
+      **/
         spinnerWeather.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -334,6 +398,19 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
 
         journalEntryAdapater.setActionModeReceiver((JournalEntryAdapater.OnClickAction) AddJournalEntry.this);
         getUserLocation();
+        lookupLocation();
+
+        file = new File(Environment.getExternalStorageDirectory()
+                + "/" + IMAGE_DIRECTORY);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+
+
+
+
+        dateFormatter = new SimpleDateFormat(
+                DATE_FORMAT, Locale.US);
 
     }
 
@@ -351,124 +428,182 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
         // Click on image button
         ImagePicker.pickImage(this, "Select your image:");
     } **/
+public void setUpThemeContent (){
+    if(isWhite == true) {
+        entryToolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
+        ((TextView)entryToolbar.getChildAt(0)).setTextColor(getResources().getColor(android.R.color.white));
 
-
-
-public  void  openImage(){
-
-    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-    builder.setTitle("Pick Image From");
-    builder.setItems(items, new DialogInterface.OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialog, int i) {
-            if(items[i].equals("Camera")){
-                EasyImage.openCameraForImage(AddJournalEntry.this, REQUEST_CODE_CAMERA);
-
-            }else {
-
-                EasyImage.openGallery(AddJournalEntry.this, REQUEST_CODE_GALLERY);
-            }
-        }
-    });
-
-    AlertDialog dialog = builder.create();
-    dialog.show();
-
+    } else {
+        entryToolbar.setTitleTextColor(getResources().getColor(R.color.colorAccent));
+        ((TextView)entryToolbar.getChildAt(0)).setTextColor(getResources().getColor(R.color.colorAccent));
+    }
 }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        Nammu.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
+
+public void lookupLocation(){
+    final Runnable beeper = new Runnable() {
+        public void run() {
+           if(etJournalLocation.getText().toString().trim().isEmpty()){
+                getUserLocation();
+                Log.d("place", "running");
+            }
+        }
+    };
+    final ScheduledFuture<?> beeperHandle =
+            scheduler.scheduleAtFixedRate(beeper, 10, 10, SECONDS);
+    scheduler.schedule(new Runnable() {
+        public void run() { beeperHandle.cancel(true); }
+    }, 30 * 30, SECONDS);
+}
+
+ private void openImage(){
 
 
+
+     AlertDialog.Builder builder = new AlertDialog.Builder(this);
+     builder.setTitle("Pick Image From");
+     builder.setItems(items, new DialogInterface.OnClickListener() {
+         @Override
+         public void onClick(DialogInterface dialog, int i) {
+             if(items[i].equals("Camera")){
+                 //
+
+                 if(isWriteStoragePermissionGranted() && isReadStoragePermissionGranted()) {
+
+                     EasyImage.openCameraForImage(AddJournalEntry.this, REQUEST_CODE_CAMERA);
+                 }
+
+             }else {
+                 if(isReadStoragePermissionGranted()) {
+
+                     Matisse.from(AddJournalEntry.this)
+                             .choose(MimeType.ofImage())
+                             .countable(true)
+                             .maxSelectable(9)
+                             .theme(R.style.Matisse_Dracula)
+                             .gridExpectedSize(getResources().getDimensionPixelSize(R.dimen.grid_expected_size))
+                             .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+                             .thumbnailScale(0.85f)
+                             .imageEngine(new PicassoEngine())
+                             .forResult(REQUEST_CODE_GALLERY);
+                 }
+                // EasyImage.openGallery(AddJournalEntry.this, REQUEST_CODE_GALLERY);
+             }
+         }
+     });
+
+     AlertDialog dialog = builder.create();
+     dialog.show();
+
+ }
+
+
+
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        EasyImage.handleActivityResult(requestCode, resultCode, data, this, new DefaultCallback() {
+        if (requestCode == REQUEST_CODE_GALLERY && resultCode == RESULT_OK) {
 
+            List<Uri> mSelected;
+            mSelected = Matisse.obtainResult(data);
 
+            for (Uri uri:mSelected){
 
-            @Override
-            public void onImagesPicked(List<File> imageFiles, EasyImage.ImageSource source, int type) {
-
-                switch (type){
-                    case REQUEST_CODE_CAMERA:
-
-
-                        for(File file:imageFiles){
-                            JournalPhotoModel journalImage = new JournalPhotoModel();
-                            journalImage.setJournalImage(file);
-                            photoList.add(journalImage);
-                            fileImages.add(file);
-                            Toast.makeText(AddJournalEntry.this, file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
-
-                            if(photoList.size() != 0){
-
-                                rvPhotos.setVisibility(View.VISIBLE);
-                            }
-                        }
-                        journalEntryAdapater.notifyDataSetChanged();
-
-
-
-
-                   /**
-                        Glide.with(AddJournalActivity.this)
-                         .load(imageFile)
-                         .asBitmap()
-                         .centerCrop()
-                         .diskCacheStrategy(DiskCacheStrategy.ALL);
-                         .into();
-                         tvPath.setText(imageFile.getAbsolutePath());
-                    **/
-
-                        break;
-                    case REQUEST_CODE_GALLERY:
-
-                        for(File file:imageFiles){
-                            JournalPhotoModel journalImage = new JournalPhotoModel();
-                            journalImage.setJournalImage(file);
-                            photoList.add(journalImage);
-                            fileImages.add(file);
-                          // Toast.makeText(AddJournalEntry.this, " "+ photoList.size()+" ", Toast.LENGTH_SHORT).show();
-
-                            if(photoList.size() != 0){
-
-                                rvPhotos.setVisibility(View.VISIBLE);
-                                Toast.makeText(AddJournalEntry.this, " "+photoList.size()+" ", Toast.LENGTH_SHORT).show();
-                            }
-
-                        }
-                        //journalEntryAdapater.addAll(photoList);
-                        journalEntryAdapater.notifyDataSetChanged();
-
-
-                        /** Glide.with(AddJournalActivity.this)
-                         .load(imageFile)
-                         .centerCrop()
-                         .diskCacheStrategy(DiskCacheStrategy.ALL)
-                         .into();
-                         //tvPath.setText(imageFile.getAbsolutePath());
-
-                         **/
-                        break;
+              File  file = new File(Environment.getExternalStorageDirectory()
+                        + "/" + IMAGE_DIRECTORY);
+                if (!file.exists()) {
+                    file.mkdirs();
                 }
+
+                JournalPhotoModel journalImage = new JournalPhotoModel();
+                File uriFile =new File(uri.getPath());
+                journalImage.setJournalImage(uri);
+                photoList.add(journalImage);
+               // fileImages.add(new File(uri.getPath()));
+                imagesUri.add(uri);
+                //fileImages.add(uriFile);
+                Log.d("Matisse", "selected file: " + uri.getPath());
+                 File litfile;
+                //litfile =file;
+
+                File sourceFile = new File(getPathFromGooglePhotosUri(uri));
+                Random random = new Random();
+                int a = random.nextInt(100);
+                File destFile = new File(file, "img_"+a+ dateFormatter.format(new Date()).toString() + ".png");
+
+               // fileImages.add(destFile);
+
+                fileImages.add(uriFile);
+
+
+
+                Log.d(TAG, "Source File Path :" + sourceFile);
+                Log.d(TAG, "Destination File Path :" + destFile);
+
+                try {
+                    copyFile(sourceFile, destFile);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+
+                }
+
+                destFile.delete();
+
+            }
+            if(photoList.size() != 0){
+
+                rvPhotos.setVisibility(View.VISIBLE);
+                Log.d("Matisse", "mSelected: " + photoList.size());
             }
 
+            journalEntryAdapater.notifyDataSetChanged();
 
-            @Override
-            public void onCanceled(EasyImage.ImageSource source, int type) {
-                //Cancel handling, you might wanna remove taken photo if it was canceled
-                if (source == EasyImage.ImageSource.CAMERA_IMAGE) {
-                    File photoFile = EasyImage.lastlyTakenButCanceledPhoto(AddJournalEntry.this);
-                    if (photoFile != null) photoFile.delete();
+
+        } else{
+
+
+            EasyImage.handleActivityResult(requestCode, resultCode, data, this, new DefaultCallback() {
+
+                @Override
+                public void onImagesPicked(List<File> imageFiles, EasyImage.ImageSource source, int type) {
+
+                    if(type == REQUEST_CODE_CAMERA){
+
+                            for(File file:imageFiles){
+                                JournalPhotoModel journalImage = new JournalPhotoModel();
+                                journalImage.setJournalImage(Uri.fromFile(file));
+                                photoList.add(journalImage);
+                                fileImages.add(file);
+                                Toast.makeText(AddJournalEntry.this, file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+
+                                if(photoList.size() != 0){
+
+                                    rvPhotos.setVisibility(View.VISIBLE);
+                                }
+                            }
+                            journalEntryAdapater.notifyDataSetChanged();
+
+                    }
                 }
-            }
-        });
+
+                @Override
+                public void onCanceled(EasyImage.ImageSource source, int type) {
+                    //Cancel handling, you might wanna remove taken photo if it was canceled
+                    if (source == EasyImage.ImageSource.CAMERA_IMAGE) {
+                        File photoFile = EasyImage.lastlyTakenButCanceledPhoto(AddJournalEntry.this);
+                        if (photoFile != null) photoFile.delete();
+                    }
+                }
+            });
+
+        }
     }
+
+
+
+
 
 
     public void getUserLocation(){
@@ -566,9 +701,33 @@ public  void  openImage(){
                    HashMap<String, Object> myFilePath = new HashMap<String, Object>();
                        for ( int count =0; count < photoList.size(); count++ ) {
 
-                        File myFile = fileImages.get(count);
-                          StorageReference sRef = storageReference.child(STORAGE_PATH_UPLOADS + System.currentTimeMillis() + "." + getFileExtension(Uri.fromFile(fileImages.get(count))));
-                          mUploadTask =  sRef.putFile(Uri.fromFile(fileImages.get(count)));
+                       // File myFile = fileImages.get(count);
+                           String path =imagesUri.get(count).toString();
+                           File myFile = new File(path);
+
+                           File sourceFile = new File(getPathFromGooglePhotosUri(imagesUri.get(count)));
+                           Random random = new Random();
+                           int a = random.nextInt(100);
+                           File destFile = new File(file, "img_"+a+ dateFormatter.format(new Date()).toString() + ".png");
+
+                           try {
+                               copyFile(sourceFile, destFile);
+
+                           } catch (IOException e) {
+                               e.printStackTrace();
+                           } finally {
+
+                           }
+
+                        StorageReference sRef = storageReference.child(STORAGE_PATH_UPLOADS + System.currentTimeMillis() + "." + getFileExtension(Uri.fromFile(fileImages.get(count))));
+                         //  StorageReference sRef = storageReference.child(STORAGE_PATH_UPLOADS + System.currentTimeMillis() + "." + getFileExtension(imagesUri.get(count)));
+
+
+                           //mUploadTask =  sRef.putFile(Uri.fromFile(fileImages.get(count)));
+
+                           //mUploadTask =  sRef.putFile(Uri.fromFile(myFile));
+
+                           mUploadTask=sRef.putFile(Uri.fromFile(destFile));
 
 
                           mUploadTask.addOnFailureListener(exception -> Log.i("It didn't work", "double check"))
@@ -593,7 +752,6 @@ public  void  openImage(){
                                           //  childUpdates.put("/user-products/" + "userId" + "/" + refKey, productValues);
 
                                           databaseReference.updateChildren(childUpdates);
-
                                           progressDialog.dismiss();
                                           Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_SHORT).show();
                                       }
@@ -698,7 +856,45 @@ public  void  openImage(){
     }
 
 
+// Request permissions
 
+    public  boolean isReadStoragePermissionGranted() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED) {
+                Log.v(TAG,"Permission is granted1");
+                return true;
+            } else {
+
+                Log.v(TAG,"Permission is revoked1");
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 3);
+                return false;
+            }
+        }
+        else { //permission is automatically granted on sdk<23 upon installation
+            Log.v(TAG,"Permission is granted1");
+            return true;
+        }
+    }
+
+    public  boolean isWriteStoragePermissionGranted() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED) {
+                Log.v(TAG,"Permission is granted2");
+                return true;
+            } else {
+
+                Log.v(TAG,"Permission is revoked2");
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
+                return false;
+            }
+        }
+        else { //permission is automatically granted on sdk<23 upon installation
+            Log.v(TAG,"Permission is granted2");
+            return true;
+        }
+    }
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -710,7 +906,16 @@ public  void  openImage(){
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
 
-        inflater.inflate(R.menu.add_journal_menu, menu);
+        inflater.inflate(R.menu.add_journal, menu);
+        MenuItem menuItem = menu.findItem(R.id.item_save);
+        MenuItem menuPhotoItem = menu.findItem(R.id.item_image);
+
+        if (menuItem != null) {
+            tintMenuIcon(AddJournalEntry.this, menuItem);
+        }
+        if (menuPhotoItem!= null) {
+            tintMenuIcon(AddJournalEntry.this, menuPhotoItem);
+        }
 
         return true;
     }
@@ -719,19 +924,22 @@ public  void  openImage(){
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
 
-            case R.id.item_delete:
-
+            case R.id.item_save:
+               uploadJournal();
                 return true;
-
+            case R.id.item_image:
+              openImage();
+              return true;
             default:
 
                 return super.onOptionsItemSelected(item);
         }
     }
 
- 
+
     public void selectAll(View v) {
         journalEntryAdapater.selectAll();
+
         if (actionMode == null) {
             actionMode = startSupportActionMode(actionModeCallback);
             actionMode.setTitle("Selected: " + journalEntryAdapater.getSelected().size());
@@ -765,7 +973,6 @@ public  void  openImage(){
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        //builder.setTitle("Dlete ");
         builder.setMessage("Delete selected items ?")
                 .setCancelable(false)
                 .setPositiveButton("CONFIRM",
@@ -779,6 +986,7 @@ public  void  openImage(){
                                 for (JournalPhotoModel journalPhotoModel : selected) {
                                     photoList.remove(journalPhotoModel);
                                 }
+                                journalEntryAdapater.clearSelected();
                                 journalEntryAdapater.notifyDataSetChanged();
 
 
@@ -786,8 +994,13 @@ public  void  openImage(){
                         })
                 .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-
-
+                        List<JournalPhotoModel> selected = new ArrayList<>();
+                        selected = journalEntryAdapater.getSelected();
+                        for(int i=0; i< selected.size(); i++) {
+                            journalEntryAdapater.unhighlightViewOnCancel((JournalEntryViewHolder) rvPhotos.findViewHolderForAdapterPosition(i));
+                            journalEntryAdapater.clearSelected();
+                            //journalEntryAdapater.unhighlightView((JournalEntryViewHolder) rvPhotos.findViewHolderForAdapterPosition(i));
+                        }
                     }
                 });
 
@@ -797,4 +1010,157 @@ public  void  openImage(){
 
 
 
+    public String getPathFromGooglePhotosUri(Uri uriPhoto) {
+        if (uriPhoto == null)
+            return null;
+
+        FileInputStream input = null;
+        FileOutputStream output = null;
+        try {
+            ParcelFileDescriptor pfd = getContentResolver().openFileDescriptor(uriPhoto, "r");
+            FileDescriptor fd = pfd.getFileDescriptor();
+            input = new FileInputStream(fd);
+
+            String tempFilename = getTempFilename(this);
+            output = new FileOutputStream(tempFilename);
+
+            int read;
+            byte[] bytes = new byte[4096];
+            while ((read = input.read(bytes)) != -1) {
+                output.write(bytes, 0, read);
+            }
+            return tempFilename;
+        } catch (IOException ignored) {
+            // Nothing we can do
+        } finally {
+            closeSilently(input);
+            closeSilently(output);
+        }
+        return null;
+    }
+
+    public static void closeSilently(Closeable c) {
+        if (c == null)
+            return;
+        try {
+            c.close();
+        } catch (Throwable t) {
+            // Do nothing
+        }
+    }
+
+    private static String getTempFilename(Context context) throws IOException {
+        File outputDir = context.getCacheDir();
+        File outputFile = File.createTempFile("image", "tmp", outputDir);
+        return outputFile.getAbsolutePath();
+    }
+
+    private void copyFile(File sourceFile, File destFile) throws IOException {
+        if (!sourceFile.exists()) {
+            return;
+        }
+
+        FileChannel source = null;
+        FileChannel destination = null;
+        File imgcompressed = sourceFile;
+        try {
+            File compressedImageFile = new Compressor(this).compressToFile(sourceFile);
+            imgcompressed=compressedImageFile;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        source = new FileInputStream(imgcompressed).getChannel();
+        destination = new FileOutputStream(destFile).getChannel();
+        if (destination != null && source != null) {
+            destination.transferFrom(source, 0, source.size());
+        }
+
+        if (source.size() != 0) {
+            source.close();
+        }
+        if (destination.size() != 0) {
+            destination.close();
+        }
+
+
+    }
+
+    public  void loadWidgetColors(SharedPreferences sharedPreferences){
+        String selectedFont = sharedPreferences.getString(getString(R.string.key_uiThemeFont), "0");
+        if(selectedFont.equals("0")){
+            Typeface myCustomFont = ResourcesCompat.getFont(this, R.font.parisienneregular);
+            FontUtils fontUtils = new FontUtils();
+            fontUtils.applyFontToToolbar(entryToolbar, myCustomFont);
+
+        } else if(selectedFont.equals("1")){
+            Typeface myCustomFont = ResourcesCompat.getFont(this, R.font.patrick_hand_sc);
+            FontUtils fontUtils = new FontUtils();
+            fontUtils.applyFontToToolbar(entryToolbar, myCustomFont);
+        } else if( selectedFont.equals("2")) {
+            Typeface myCustomFont = ResourcesCompat.getFont(this, R.font.sofadi_one);
+            FontUtils fontUtils = new FontUtils();
+            fontUtils.applyFontToToolbar(entryToolbar, myCustomFont);
+        } else {
+
+        }
+    }
+    private void loadUiTheme(SharedPreferences sharedPreferences){
+
+        String userTheme = sharedPreferences.getString(getString(R.string.key_uiTheme), "2");
+        if (userTheme.equals("2")) {
+            setTheme(R.style.LitStyle);
+            isWhite = false;
+        }
+        else if (userTheme.equals("1")) {
+            setTheme(R.style.ReddishLitStyle);
+            isWhite = true;
+
+        }
+        else if (userTheme.equals("0")) {
+            setTheme(R.style.BlueLitStyle);
+            isWhite = true;
+        } else{
+
+        }
+    }
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        //prefMethods.changeListenerTheme(sharedPreferences, this);
+        if(key.equals(getResources().getString(R.string.key_uiTheme))) {
+            loadUiTheme(sharedPreferences);
+            AddJournalEntry.this.recreate();
+        } else if(key.equals(getResources().getString(R.string.key_uiThemeFont))){
+            loadWidgetColors(sharedPreferences);
+            AddJournalEntry.this.recreate();
+        }
+    }
+
+    public  void tintMenuIcon(Context context, MenuItem item) {
+        Drawable normalDrawable = item.getIcon();
+        Drawable wrapDrawable = DrawableCompat.wrap(normalDrawable);
+        if(isWhite) {
+            DrawableCompat.setTint(wrapDrawable, context.getResources().getColor(android.R.color.white));
+            item.setIcon(wrapDrawable);
+        } else if (!isWhite){
+            DrawableCompat.setTint(wrapDrawable, context.getResources().getColor(R.color.colorAccent));
+            item.setIcon(wrapDrawable);
+        } else {
+
+        }
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this);
+
+    }
 }

@@ -116,6 +116,7 @@
                 android:layout_height="150dp"
                 android:layout_alignParentRight="true"
                 android:src="@drawable/ic_journalfinal3"
+                android:transitionName="journaltrans"
                 />
 
         </RelativeLayout>

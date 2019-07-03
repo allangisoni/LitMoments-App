@@ -8,7 +8,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
-        android:name=".Global"
+        android:name=".Application.Global"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/LitStyle">
         <activity
-            android:name=".MainActivity"
+            android:name=".Main.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.app.searchable"
@@ -26,26 +26,33 @@
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginActivity">
+        <activity android:name=".Login.LoginActivity">
+
+        </activity>
+        <activity android:name=".AddJournal.AddJournalEntry"
+            />
+        <activity android:name=".Settings.SettingsActivity"
+                 android:parentActivityName=".Main.MainActivity"
+            android:theme="@style/SettingsStyle"/>
+        <activity android:name=".DispJournal.DisplayJournal" />
+        <activity android:name=".DispJournal.ImageSliderActivity" />
+        <activity
+            android:name=".Login.SplashActivity"
+            android:theme="@style/MySplashTheme" >
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AddJournalEntry" />
-        <activity android:name=".SettingsActivity" />
-        <activity android:name=".DisplayJournal" />
-        <activity android:name=".ImageSliderActivity" />
-        <activity
-            android:name=".SplashActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
 
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <activity android:name=".EditJournalEntry"></activity>
+        <activity android:name=".EditJournal.EditJournalEntry" />
+        <activity android:name=".AddJournal.AddJournalImageSlider"></activity>
     </application>
 
 </manifest>

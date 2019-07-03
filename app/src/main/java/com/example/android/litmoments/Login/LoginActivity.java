@@ -1,4 +1,4 @@
-package com.example.android.litmoments;
+package com.example.android.litmoments.Login;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.Toast;
 
 
+import com.example.android.litmoments.Main.MainActivity;
+import com.example.android.litmoments.R;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -35,7 +37,7 @@ import butterknife.ButterKnife;
 public class LoginActivity extends AppCompatActivity  implements
         GoogleApiClient.OnConnectionFailedListener   {
 
-    private static final String TAG = MainActivity.class.getSimpleName();
+    private static final String TAG = LoginActivity.class.getSimpleName();
     private static final int RC_SIGN_IN = 123;
 
     @BindView(R.id.btnSignIn) Button btnSignIn;
@@ -75,7 +77,7 @@ public class LoginActivity extends AppCompatActivity  implements
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if (firebaseAuth.getCurrentUser() != null) {
-                    startActivity(new Intent(LoginActivity.this, SplashActivity.class));
+                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
                 }
             }
         };
@@ -113,12 +115,14 @@ public class LoginActivity extends AppCompatActivity  implements
         super.onActivityResult(requestCode, resultCode, data);
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
+            showProgressDialog();
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
 
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 firebaseAuthWithGoogle(account);
+                hideProgressDialog();
 
 
             } catch (ApiException e) {
@@ -168,11 +172,13 @@ private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
                        // Log.d(TAG, "signInWithCredential:success");
                        // FirebaseUser user = mAuth.getCurrentUser();
                         updateUI(true);
+                        hideProgressDialog();
                     } else {
                         // If sign in fails, display a message to the user.
                        // Log.w(TAG, "signInWithCredential:failure", task.getException());
                        // Snackbar.make(findViewById(R.id.main_layout), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
                         //updateUI(null);
+                        hideProgressDialog();
                     }
 
                     // ...
@@ -186,6 +192,7 @@ private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         // An unresolvable error has occurred and Google APIs (including Sign-In) will not
         // be available.
         Log.d(TAG, "onConnectionFailed:" + connectionResult);
+        hideProgressDialog();
     }
 
 
@@ -208,7 +215,7 @@ private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         private void updateUI ( boolean isSignedIn){
 
             if (isSignedIn) {
-                Intent intent = new Intent(LoginActivity.this, SplashActivity.class);
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();
 

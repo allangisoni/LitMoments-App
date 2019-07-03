@@ -1,4 +1,4 @@
-package com.example.android.litmoments;
+package com.example.android.litmoments.Application;
 
 import android.content.res.Configuration;
 import android.os.Bundle;

@@ -1,10 +1,9 @@
-package com.example.android.litmoments;
-
-import java.io.File;
+package com.example.android.litmoments.EditJournal;
 
 public class DisplayImagesModel {
 
     private String journalImageView;
+
 
     public DisplayImagesModel(){
 

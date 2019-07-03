@@ -1,4 +1,4 @@
-package com.example.android.litmoments;
+package com.example.android.litmoments.AddJournal;
 
 import android.os.Parcel;
 import android.os.Parcelable;

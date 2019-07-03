@@ -1,4 +1,4 @@
-package com.example.android.litmoments;
+package com.example.android.litmoments.AddJournal;
 
 import android.content.Intent;
 import android.support.v4.content.ContextCompat;
@@ -9,6 +9,7 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.android.litmoments.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;

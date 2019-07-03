@@ -1,4 +1,4 @@
-package com.example.android.litmoments;
+package com.example.android.litmoments.AddJournal;
 
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
@@ -9,20 +9,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.example.android.litmoments.R;
+import com.example.android.litmoments.ViewPagerImages;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class ViewPagerAdapter extends PagerAdapter {
+public class AddViewPagerAdapter extends PagerAdapter{
 
     private Context context;
     private LayoutInflater layoutInflater;
-   // private Integer [] images = {R.drawable.ic_simpson2, R.drawable.ic_simpson2};
-   private List<ViewPagerImages> images;
+    // private Integer [] images = {R.drawable.ic_simpson2, R.drawable.ic_simpson2};
+    private List<JournalPhotoModel> images;
 
-    public ViewPagerAdapter(Context context, List<ViewPagerImages> images ) {
+    public AddViewPagerAdapter(Context context, List<JournalPhotoModel> images ) {
 
         this.context = context;
         this.images = images;
@@ -45,7 +47,7 @@ public class ViewPagerAdapter extends PagerAdapter {
         View view = layoutInflater.inflate(R.layout.image_viewpager, null);
         ImageView imageView = (ImageView) view.findViewById(R.id.imageView);
 
-        Picasso.with(context).load(images.get(position).getJournalImagePath()).networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.backgroundloading)
+        Picasso.with(context).load(images.get(position).getJournalImage()).networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.ic_mesut)
                 .error(R.drawable.ic_journalfinal3).into(imageView, new Callback() {
             @Override
             public void onSuccess() {
@@ -54,7 +56,7 @@ public class ViewPagerAdapter extends PagerAdapter {
 
             @Override
             public void onError() {
-                Picasso.with(context).load(images.get(position).getJournalImagePath()).placeholder(R.drawable.backgroundloading)
+                Picasso.with(context).load(images.get(position).getJournalImage()).placeholder(R.drawable.ic_mesut)
                         .error(R.drawable.ic_journalfinal3).into(imageView, new Callback() {
                     @Override
                     public void onSuccess() {
@@ -88,4 +90,5 @@ public class ViewPagerAdapter extends PagerAdapter {
         vp.removeView(view);
 
     }
+
 }

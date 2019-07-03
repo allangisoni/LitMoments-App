@@ -1,4 +1,4 @@
-package com.example.android.litmoments;
+package com.example.android.litmoments.Main;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -8,6 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
+
+import com.example.android.litmoments.AddJournal.JournalEntryModel;
+import com.example.android.litmoments.R;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.example.android.litmoments;
+package com.example.android.litmoments.DispJournal;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -11,18 +11,26 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.transition.Fade;
+import android.transition.Slide;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.ScaleAnimation;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.litmoments.AddJournal.JournalEntryModel;
+import com.example.android.litmoments.EditJournal.EditJournalEntry;
+import com.example.android.litmoments.Main.MainActivity;
+import com.example.android.litmoments.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -59,10 +67,16 @@ public class DisplayJournal extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+     //   getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_journal);
         ButterKnife.bind(this);
-       if (entryToolbar != null)
+
+
+
+
+        if (entryToolbar != null)
         {
             setSupportActionBar(entryToolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -70,6 +84,9 @@ public class DisplayJournal extends AppCompatActivity {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             }
+
+
+
 
         //make translucent statusBar on kitkat devices
       if (Build.VERSION.SDK_INT >= 19 && Build.VERSION.SDK_INT < 21) {
@@ -85,6 +102,38 @@ public class DisplayJournal extends AppCompatActivity {
 
            getWindow().setStatusBarColor(Color.BLACK);
         }
+
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            /** Slide fadein = new Slide();
+             fadein.setDuration(3500);
+             Slide fadeout = new Slide();
+             fadeout.setDuration(3500);
+             // set an enter transition
+             getWindow().setSharedElementEnterTransition(fadein);
+             // set an exit transition
+             getWindow().setSharedElementExitTransition(fadeout);
+             // supportPostponeEnterTransition();
+             supportPostponeEnterTransition();
+             postponeEnterTransition();
+
+             **/
+            Fade fade= new Fade();
+            View view = getWindow().getDecorView();
+            fade.excludeTarget(view.findViewById(R.id.action_bar_container), true);
+            fade.excludeTarget(android.R.id.statusBarBackground, true);
+            fade.excludeTarget(android.R.id.navigationBarBackground, true);
+
+            getWindow().setEnterTransition(fade);
+            getWindow().setExitTransition(fade);
+           // supportPostponeEnterTransition();
+
+        }
+
+
+
+
         mAuth = FirebaseAuth.getInstance();
         String currentUid = mAuth.getCurrentUser().getUid();
         mDatabase = FirebaseDatabase.getInstance().getReference(DATABASE_UPLOADS).child(currentUid);
@@ -123,6 +172,7 @@ public class DisplayJournal extends AppCompatActivity {
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
+        supportFinishAfterTransition();
         return true;
     }
 
@@ -180,6 +230,8 @@ public class DisplayJournal extends AppCompatActivity {
                         .placeholder(R.drawable.ic_mesut).error(R.drawable.ic_mesut).into(ivJournalPhoto, new Callback() {
                     @Override
                     public void onSuccess() {
+                       // supportPostponeEnterTransition();
+                        scheduleStartPostponedTransition(ivJournalPhoto);
 
                     }
 
@@ -190,6 +242,7 @@ public class DisplayJournal extends AppCompatActivity {
                             @Override
                             public void onSuccess() {
 
+                                scheduleStartPostponedTransition(ivJournalPhoto);
                             }
 
                             @Override
@@ -201,14 +254,31 @@ public class DisplayJournal extends AppCompatActivity {
                 });
             } else {
                 Picasso.with(DisplayJournal.this).load(R.drawable.ic_mesut).placeholder(R.drawable.ic_mesut).error(R.drawable.ic_mesut).into(ivJournalPhoto);
+                scheduleStartPostponedTransition(ivJournalPhoto);
             }
         }
          catch (Exception e){
                 Picasso.with(DisplayJournal.this).load(R.drawable.ic_mesut).placeholder(R.drawable.ic_mesut).error(R.drawable.ic_mesut).into(ivJournalPhoto);
+                scheduleStartPostponedTransition(ivJournalPhoto);
             }
       journalKey = journalEntry.getKey();
         }
 
+    private void scheduleStartPostponedTransition(final View sharedElement) {
+        sharedElement.getViewTreeObserver().addOnPreDrawListener(
+                new ViewTreeObserver.OnPreDrawListener() {
+                    @Override
+                    public boolean onPreDraw() {
+                        sharedElement.getViewTreeObserver().removeOnPreDrawListener(this);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            supportStartPostponedEnterTransition();
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                });
+    }
 
     public void deleteJournal(){
 

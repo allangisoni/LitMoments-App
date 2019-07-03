@@ -7,4 +7,13 @@
     <color name="photofab">#49ADF2</color>
     <color name="preftitle">#cc99ff</color>
     <color name="viewbackground">#d9d9d9</color>
+
+    <color name="bluecolorPrimary">	#91489D</color>
+    <color name="bluecolorPrimaryDark">#8C449C</color>
+    <color name="bluecolorAccent">#DEE059</color>
+
+
+    <color name="reddishcolorPrimary">#ea2e51</color>
+    <color name="reddishcolorPrimaryDark">#da1539</color>
+    <color name="reddishcolorAccent">#74D389</color>
 </resources>

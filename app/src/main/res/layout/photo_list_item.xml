@@ -4,16 +4,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="150dp"
+    android:layout_height="225dp"
+    android:layout_margin="1dp"
     android:background="@color/background">
 
-    <ImageView
+
+    <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/ivJournalPhoto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:contentDescription="@string/journalPhoto"
         android:src="@drawable/ic_journal"
-        android:scaleType="centerCrop"/>
+        android:scaleType="centerCrop"
+        app:riv_corner_radius="10dip"
+        app:riv_border_width="2dip"
+        app:riv_border_color="#333333"
+        app:riv_mutate_background="true"
+        app:riv_oval="false"/>
 
     <CheckBox
         android:id="@+id/chJournalCheck"

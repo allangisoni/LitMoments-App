@@ -7,8 +7,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/toolbar"
     android:minHeight="?android:attr/actionBarSize"
-    android:background="@color/colorPrimary"
-    app:theme="@style/MyActionBarTheme"
     app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
     >
 
@@ -24,10 +22,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
-        android:fontFamily="@font/parisienne"
         android:textSize="28dp"
         android:text="@string/app_name"
-        android:textColor="@color/colorAccent" />
+        />
 
    <!-- <ImageView
         android:id="@+id/iconRefresh"

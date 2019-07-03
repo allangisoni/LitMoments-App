@@ -1,4 +1,4 @@
-package com.example.android.litmoments;
+package com.example.android.litmoments.AddJournal;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,14 +8,16 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class CustomMoodAdapter extends BaseAdapter {
+import com.example.android.litmoments.R;
+
+public class CustomAdapter extends BaseAdapter {
 
     Context context;
     int images[];
     String[] fruit;
     LayoutInflater inflter;
 
-    public CustomMoodAdapter(Context applicationContext, int[] flags, String[] fruit) {
+    public CustomAdapter(Context applicationContext, int[] flags, String[] fruit) {
         this.context = applicationContext;
         this.images = flags;
         this.fruit = fruit;

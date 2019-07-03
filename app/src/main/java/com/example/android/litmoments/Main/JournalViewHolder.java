@@ -1,6 +1,8 @@
-package com.example.android.litmoments;
+package com.example.android.litmoments.Main;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -8,6 +10,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.litmoments.AddJournal.JournalEntryModel;
+import com.example.android.litmoments.DispJournal.DisplayJournal;
+import com.example.android.litmoments.R;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
@@ -44,7 +49,7 @@ public class JournalViewHolder  extends RecyclerView.ViewHolder{
 
         try{
         if(journalItem.getJournalImagePath().get(0) != null) {
-             Picasso.with(itemView.getContext()).load(journalItem.getJournalImagePath().get(0)).networkPolicy(NetworkPolicy.OFFLINE)
+             Picasso.with(itemView.getContext()).load(journalItem.getJournalImagePath().get(0)).fit().centerCrop().networkPolicy(NetworkPolicy.OFFLINE)
                      .placeholder(R.drawable.ic_mesut).error(R.drawable.ic_journalfinal).into(ivJournalPhoto, new Callback() {
                  @Override
                  public void onSuccess() {
@@ -53,7 +58,7 @@ public class JournalViewHolder  extends RecyclerView.ViewHolder{
 
                  @Override
                  public void onError() {
-                     Picasso.with(itemView.getContext()).load(journalItem.getJournalImagePath().get(0))
+                     Picasso.with(itemView.getContext()).load(journalItem.getJournalImagePath().get(0)).fit().centerCrop()
                              .placeholder(R.drawable.ic_mesut).error(R.drawable.ic_journalfinal).into(ivJournalPhoto, new Callback() {
                          @Override
                          public void onSuccess() {
@@ -70,11 +75,11 @@ public class JournalViewHolder  extends RecyclerView.ViewHolder{
              });
          }
          else {
-             Picasso.with(itemView.getContext()).load(R.drawable.ic_journalfinal3).networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.ic_journalfinal3).error(R.drawable.ic_journalfinal3).into(ivJournalPhoto);
+             Picasso.with(itemView.getContext()).load(R.drawable.ic_journalfinal3).fit().centerCrop().networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.ic_journalfinal3).error(R.drawable.ic_journalfinal3).into(ivJournalPhoto);
          } }
 
          catch (Exception e){
-             Picasso.with(itemView.getContext()).load(R.drawable.ic_journalfinal3).networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.ic_journalfinal3).error(R.drawable.ic_journalfinal3).into(ivJournalPhoto);
+             Picasso.with(itemView.getContext()).load(R.drawable.ic_journalfinal3).fit().centerCrop().networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.ic_journalfinal3).error(R.drawable.ic_journalfinal3).into(ivJournalPhoto);
         }
 
         // tvJournalDate.setText(journalItem.getJournalDate());
@@ -116,7 +121,8 @@ public class JournalViewHolder  extends RecyclerView.ViewHolder{
 
                  Intent intent = new Intent(itemView.getContext(), DisplayJournal.class);
                  intent.putExtra("journalItems", journalItem);
-                 itemView.getContext().startActivity(intent);
+                 ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation((Activity) itemView.getContext(), ivJournalPhoto, "journaltrans");
+                 itemView.getContext().startActivity(intent, options.toBundle());
 
             }
         });

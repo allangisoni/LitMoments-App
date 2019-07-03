@@ -4,14 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".DisplayJournal"
+    tools:context=".DispJournal.DisplayJournal"
     android:theme="@style/DisplayStyle">
+
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true">
+        android:layout_alignParentTop="true"
+        android:scrollbars="none">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
@@ -23,8 +25,8 @@
                 android:layout_height="500dp"
                 android:contentDescription="@string/journalPhoto"
                 android:scaleType="centerCrop"
-                android:tint="#6F000000"
-                android:src="@drawable/ic_mesut"/>
+                android:src="@drawable/ic_mesut"
+                android:transitionName="journaltrans"/>
 
 
             <TextView
@@ -191,6 +193,8 @@
     </ScrollView>
 
     <android.support.v7.widget.Toolbar
+        android:tint="#6F000000"
+        android:backgroundTint="#6f000000"
         android:id="@+id/entrytoolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"

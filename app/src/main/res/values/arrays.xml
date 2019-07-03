@@ -2,11 +2,22 @@
 <resources>
 
     <string-array name="pref_upload_theme_entries">
-        <item>Blue</item>
-        <item>Blach</item>
-        <item>LightPink</item>
+        <item>Magical Purple</item>
+        <item>Strawberry Red</item>
+        <item>Innocent Pink</item>
     </string-array>
     <string-array name="pref_upload_theme_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
+    <string-array name="pref_upload_font_entries">
+        <item>Parisienne</item>
+        <item>Patrick Hand</item>
+        <item>Calligraffitti</item>
+    </string-array>
+    <string-array name="pref_upload_font_values">
         <item>0</item>
         <item>1</item>
         <item>2</item>

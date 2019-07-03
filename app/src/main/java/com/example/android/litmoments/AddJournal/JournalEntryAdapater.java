@@ -1,13 +1,18 @@
-package com.example.android.litmoments;
+package com.example.android.litmoments.AddJournal;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.example.android.litmoments.R;
+import com.google.android.flexbox.FlexboxLayoutManager;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -55,7 +60,7 @@ public void onBindViewHolder(final JournalEntryViewHolder holder, int position) 
         //holder.bind(photolist.get(position), listener);
         final JournalPhotoModel journalPhotoModel = photolist.get(position);
         //holder.tvAuthor.setText(moviz.getReviews().getAuthor());
-        Picasso.with(context).load(journalPhotoModel.getJournalImage()).into(holder.ivaddJournalPhoto);
+        Picasso.with(context).load(journalPhotoModel.getJournalImage()).fit().centerCrop().into(holder.ivaddJournalPhoto);
 
         holder.cbaddJournalCheck.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -76,6 +81,23 @@ public void onBindViewHolder(final JournalEntryViewHolder holder, int position) 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                        ArrayList<String> arrimageFile = new ArrayList<>();
+
+                        for (JournalPhotoModel image : photolist) {
+
+                                arrimageFile.add(image.getJournalImage().toString());
+                        }
+                        Intent intent = new Intent(view.getContext(), AddJournalImageSlider.class);
+                        // intent.putExtra("displayjournal", journalEntry.getJournalImagePath()));
+                        intent.putStringArrayListExtra("journalImageFiles", arrimageFile);
+                        Log.d("filepath", arrimageFile.get(0));
+                        view.getContext().startActivity(intent);
+                }
+        });
+
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
                         if (selected.contains(journalPhotoModel)) {
                                 selected.remove(journalPhotoModel);
                                 unhighlightView(holder);
@@ -85,6 +107,7 @@ public void onBindViewHolder(final JournalEntryViewHolder holder, int position) 
                         }
 
                         receiver.onClickAction();
+                        return true;
                 }
         });
 
@@ -95,6 +118,11 @@ public void onBindViewHolder(final JournalEntryViewHolder holder, int position) 
                 unhighlightView(holder);
         }
 
+
+        ViewGroup.LayoutParams lp = holder.ivaddJournalPhoto.getLayoutParams();
+        if (lp instanceof FlexboxLayoutManager.LayoutParams) {
+                FlexboxLayoutManager.LayoutParams flexboxLp = (FlexboxLayoutManager.LayoutParams)lp;
+                flexboxLp.setFlexGrow(1.0f);        }
 
 }
 
@@ -107,10 +135,17 @@ public void onBindViewHolder(final JournalEntryViewHolder holder, int position) 
 
         public void unhighlightView(JournalEntryViewHolder holder) {
                 holder.itemView.setBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent));
+                holder.cbaddJournalCheck.setChecked(false);
                 holder.cbaddJournalCheck.setVisibility(View.INVISIBLE);
-                holder.cbaddJournalCheck.setChecked(true);
+
         }
 
+        public void unhighlightViewOnCancel(JournalEntryViewHolder holder) {
+                holder.itemView.setBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent));
+                holder.cbaddJournalCheck.setChecked(false);
+                holder.cbaddJournalCheck.setVisibility(View.GONE);
+
+        }
 
 
         public void addAll(List<JournalPhotoModel> items) {
@@ -118,6 +153,7 @@ public void onBindViewHolder(final JournalEntryViewHolder holder, int position) 
                 this.photolist = items;
                 notifyDataSetChanged();
         }
+
 
         public void clearAll(boolean isNotify) {
                 photolist.clear();

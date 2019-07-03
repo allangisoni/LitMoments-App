@@ -1,4 +1,4 @@
-package com.example.android.litmoments;
+package com.example.android.litmoments.Settings;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -7,6 +7,8 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.example.android.litmoments.R;
 
 public class MyPreferenceCategory extends PreferenceCategory {
 

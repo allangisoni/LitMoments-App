@@ -10,7 +10,7 @@
     android:paddingRight="0dp"
     android:paddingTop="0dp"
     android:theme="@style/DisplayStyle"
-    tools:context="com.example.android.litmoments.ImageSliderActivity">
+    tools:context=".DispJournal.ImageSliderActivity">
 
 
     <android.support.v4.view.ViewPager

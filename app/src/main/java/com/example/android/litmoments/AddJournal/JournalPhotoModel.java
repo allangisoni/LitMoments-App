@@ -1,12 +1,14 @@
-package com.example.android.litmoments;
+package com.example.android.litmoments.AddJournal;
 
+
+import android.net.Uri;
 
 import java.io.File;
 
 public class JournalPhotoModel {
 
 
-    private File journalImageView;
+    private Uri journalImageView;
 
 
     public JournalPhotoModel(){
@@ -14,11 +16,11 @@ public class JournalPhotoModel {
         this.journalImageView=journalImageView;
     }
 
-    public File getJournalImage() {
+    public Uri getJournalImage() {
         return journalImageView;
     }
 
-    public void setJournalImage(File journalImageView) {
+    public void setJournalImage(Uri journalImageView) {
         this.journalImageView = journalImageView;
     }
 }

@@ -1,45 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory  android:layout="@layout/settings_toolbar"/>
+    <ListPreference
+        android:defaultValue="2"
+        android:dialogTitle="@string/uiTheme"
+        android:entries="@array/pref_upload_theme_entries"
+        android:entryValues="@array/pref_upload_theme_values"
+        android:key="@string/key_uiTheme"
+        android:summary="@string/summary_uiTheme"
+        android:title="@string/title_uiTheme" />
 
-    <com.example.android.litmoments.MyPreferenceCategory
-        android:title="General">
+    <ListPreference
+        android:defaultValue="0"
+        android:dialogTitle="@string/uiThemeFont"
+        android:entries="@array/pref_upload_font_entries"
+        android:entryValues="@array/pref_upload_font_values"
+        android:key="@string/key_uiThemeFont"
+        android:summary="@string/summary_uiThemeFont"
+        android:title="@string/title_uiThemeFont" />
 
-        <ListPreference
-            android:defaultValue="2"
-            android:dialogTitle="@string/uiTheme"
-            android:entries="@array/pref_upload_theme_entries"
-            android:entryValues="@array/pref_upload_theme_values"
-            android:key="@string/key_uiTheme"
-            android:summary="@string/summary_uiTheme"
-            android:title="@string/title_uiTheme" />
+    <Preference
+        android:selectable="false"
+        android:summary="@string/summary_about" />
 
-    </com.example.android.litmoments.MyPreferenceCategory>
+    <Preference
+        android:summary="@string/app_version"
+        android:title="@string/title_version" />
 
-    <com.example.android.litmoments.MyPreferenceCategory
-        android:title="@string/pref_header_about">
-        <Preference
-            android:selectable="false"
-            android:summary="@string/summary_about" />
-
-        <Preference
-            android:summary="@string/app_version"
-            android:title="@string/title_version" />
-
-    </com.example.android.litmoments.MyPreferenceCategory>
-
-    <com.example.android.litmoments.MyPreferenceCategory
-        android:title="@string/acc_info"
-        >
-
-        <Preference
-            android:selectable="true"
-            android:title="@string/acc_logout"/>
-
-
-
-
-    </com.example.android.litmoments.MyPreferenceCategory>
 
 </PreferenceScreen>

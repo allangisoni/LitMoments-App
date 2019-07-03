@@ -1,6 +1,6 @@
-package com.example.android.litmoments;
+package com.example.android.litmoments.DispJournal;
 
-import android.content.Intent;
+import android.app.Activity;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
@@ -11,15 +11,15 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.eftimoff.viewpagertransformers.AccordionTransformer;
-import com.eftimoff.viewpagertransformers.CubeInTransformer;
-import com.eftimoff.viewpagertransformers.RotateDownTransformer;
-import com.eftimoff.viewpagertransformers.RotateUpTransformer;
+import com.example.android.litmoments.R;
+import com.example.android.litmoments.ViewPagerAdapter;
+import com.example.android.litmoments.ViewPagerImages;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.example.android.litmoments.DisplayJournal.setWindowFlag;
 
 public class ImageSliderActivity extends AppCompatActivity {
 
@@ -155,5 +154,17 @@ public class ImageSliderActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+    public static void setWindowFlag(Activity activity, final int bits, boolean on) {
+        Window win = activity.getWindow();
+        WindowManager.LayoutParams winParams = win.getAttributes();
+        if (on) {
+            winParams.flags |= bits;
+        } else {
+            winParams.flags &= ~bits;
+        }
+        win.setAttributes(winParams);
     }
 }
