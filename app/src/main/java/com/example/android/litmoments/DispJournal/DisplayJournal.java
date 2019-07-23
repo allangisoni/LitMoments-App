@@ -1,10 +1,13 @@
 package com.example.android.litmoments.DispJournal;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -64,6 +67,7 @@ public class DisplayJournal extends AppCompatActivity {
     private DatabaseReference mDatabase;
     public static final String DATABASE_UPLOADS = "User's Journal Entries";
     private FirebaseAuth mAuth;
+    private MenuItem mMenuItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +105,7 @@ public class DisplayJournal extends AppCompatActivity {
            setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
 
            getWindow().setStatusBarColor(Color.BLACK);
+
         }
 
 
@@ -130,7 +135,7 @@ public class DisplayJournal extends AppCompatActivity {
            // supportPostponeEnterTransition();
 
         }
-
+        supportPostponeEnterTransition();
 
 
 
@@ -140,8 +145,13 @@ public class DisplayJournal extends AppCompatActivity {
 
 
         Bundle extras = getIntent().getExtras();
-        journalEntry = extras.getParcelable("journalItems");
 
+        if(savedInstanceState != null){
+            journalEntry = savedInstanceState.getParcelable("JournalParcelable");
+        } else {
+
+            journalEntry = extras.getParcelable("journalItems");
+        }
 
         if(journalEntry != null){
            getJournalDetails();
@@ -231,7 +241,8 @@ public class DisplayJournal extends AppCompatActivity {
                     @Override
                     public void onSuccess() {
                        // supportPostponeEnterTransition();
-                        scheduleStartPostponedTransition(ivJournalPhoto);
+                       // scheduleStartPostponedTransition(ivJournalPhoto);
+                        supportStartPostponedEnterTransition();
 
                     }
 
@@ -242,24 +253,28 @@ public class DisplayJournal extends AppCompatActivity {
                             @Override
                             public void onSuccess() {
 
-                                scheduleStartPostponedTransition(ivJournalPhoto);
+                               // scheduleStartPostponedTransition(ivJournalPhoto);
+                                supportStartPostponedEnterTransition();
                             }
 
                             @Override
                             public void onError() {
                                 Log.v("Picasso","Could not fetch image");
+                                supportStartPostponedEnterTransition();
                             }
                         });
                     }
                 });
             } else {
                 Picasso.with(DisplayJournal.this).load(R.drawable.ic_mesut).placeholder(R.drawable.ic_mesut).error(R.drawable.ic_mesut).into(ivJournalPhoto);
-                scheduleStartPostponedTransition(ivJournalPhoto);
+                supportStartPostponedEnterTransition();
+               // scheduleStartPostponedTransition(ivJournalPhoto);
             }
         }
          catch (Exception e){
                 Picasso.with(DisplayJournal.this).load(R.drawable.ic_mesut).placeholder(R.drawable.ic_mesut).error(R.drawable.ic_mesut).into(ivJournalPhoto);
-                scheduleStartPostponedTransition(ivJournalPhoto);
+                supportStartPostponedEnterTransition();
+                //scheduleStartPostponedTransition(ivJournalPhoto);
             }
       journalKey = journalEntry.getKey();
         }
@@ -292,10 +307,36 @@ public class DisplayJournal extends AppCompatActivity {
 
     }
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        setCount(this, Integer.toString(journalEntry.getJournalImagePath().size()));
+        return  true;
+    }
+
+    public void setCount(Context context, String count) {
+        MenuItem menuItem = mMenuItem;
+        LayerDrawable icon = (LayerDrawable) menuItem.getIcon();
+
+        CountDrawable badge;
+
+        // Reuse drawable if possible
+        Drawable reuse = icon.findDrawableByLayerId(R.id.ic_group_count);
+        if (reuse != null && reuse instanceof CountDrawable) {
+            badge = (CountDrawable) reuse;
+        } else {
+            badge = new CountDrawable(context);
+        }
+
+        badge.setCount(count);
+        icon.mutate();
+        icon.setDrawableByLayerId(R.id.ic_group_count, badge);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
 
         inflater.inflate(R.menu.display_journal_menu, menu);
+        mMenuItem = menu.findItem(R.id.ic_photosize);
 
         return true;
 
@@ -315,11 +356,39 @@ public class DisplayJournal extends AppCompatActivity {
            deleteJournal();
            return true;
 
+        } else  if(id == R.id.ic_photosize){
+
+            if(journalEntry.getJournalImagePath().size() !=0 ) {
+                ArrayList<String> arrimageFile = new ArrayList<>();
+                arrimageFile.addAll(journalEntry.getJournalImagePath());
+                Intent intent = new Intent(DisplayJournal.this, ImageSliderActivity.class);
+                // intent.putExtra("displayjournal", journalEntry.getJournalImagePath()));
+                intent.putStringArrayListExtra("imagefiles", arrimageFile);
+                startActivity(intent);
+                return true;
+            } else {
+
+            }
         }
 
         else{
 
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable("JournalParcelable", journalEntry);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        journalEntry = savedInstanceState.getParcelable("JournalParcelable");
+        getJournalDetails();
     }
 }

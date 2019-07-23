@@ -134,6 +134,9 @@ public class JournalEntryModel implements Parcelable {
         key = parcel.readString();
         journalImagePath = new ArrayList();
         parcel.readList(this.journalImagePath, Integer.class.getClassLoader());
+        day = parcel.readString();
+        month = parcel.readString();
+
 
 
 
@@ -156,6 +159,8 @@ public class JournalEntryModel implements Parcelable {
         dest.writeString(journalMessage);
         dest.writeString(key);
         dest.writeList(journalImagePath);
+        dest.writeString(day);
+        dest.writeString(month);
 
 
     }

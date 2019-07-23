@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/bluecolorPrimaryDark"
+    android:orientation="vertical">
+
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/journalanimation"
+        android:layout_width="wrap_content"
+        android:layout_height="170dp"
+        android:layout_marginTop="210dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="50dp"
+        android:layout_centerHorizontal="true"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_fileName="analytics.json" />
+
+    <TextView
+        android:id="@+id/introtitle"
+        android:layout_marginTop="115dp"
+        android:layout_below="@id/journalanimation"
+        android:textColor="@color/bluecolorAccent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="@string/intro_slider3title"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:gravity="left"
+
+        />
+
+    <TextView
+        android:layout_below="@id/introtitle"
+        android:textColor="@color/slider2bgtextcolor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="@string/intro_slider3"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="15dp"
+        />
+
+</RelativeLayout>

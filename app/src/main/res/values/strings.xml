@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Lit Moments</string>
-    <string name="Sign_in">Sign In</string>
+    <string name="Sign_in">CONNECT WITH GOOGLE</string>
     <string name="add_journal_entry">Add Journal Entry</string>
     <string name="add_entry">Add Entry</string>
     <string name="edit_entry">Edit Entry</string>
@@ -23,9 +23,11 @@
     <string name="key_uiThemeFont">key_uiThemeFont</string>
     <string name="summary_uiThemeFont">Lit Font</string>
     <string name="title_uiThemeFont">Font</string>
+    <string name="key_userAccount">key_userAccount</string>
     <string name="pref_header_about">About</string>
     <string name="summary_about">Lit Momentos is your newest travel companion. Capture and share your travel experiences with family and friends!!!</string>
     <string name="app_version">1.0</string>
+    <string name="app_versionsplash">v1.0</string>
     <string name="title_version">Version</string>
     <string name="action_settings">Settings</string>
     <string name="action_refresh">Refresh</string>
@@ -38,4 +40,16 @@
     <string name="delete_journal">Delete</string>
     <string name="save_journal">Save</string>
     <string name="photo_journal">Image</string>
+    <string name="group_title">Photo Size</string>
+    <string name="intro_slidertitle">Capture Special Moments </string>
+    <string name="intro_slider2title">Share Your Moments </string>
+    <string name="intro_slider3title">Realtime Dashboard </string>
+    <string name="intro_slider">Create and edit your travel experiences easily with our simplified user interface.</string>
+    <string name="intro_slider2">Share your precious travel moments with your loved ones and friends with a single click.</string>
+    <string name="intro_slider3">Get Informative Insights and track your Lit moments with our easy-to-use dashboard.</string>
+    <string name="account">Account</string>
+    <string name="dashtoolbar">LitBoard</string>
+    <string name="piechartMood">Lit Mood Stats</string>
+    <string name="barchartTitle">Lit Moments Stats</string>
+    <string name="TreechartTitle">Favorite Places</string>
 </resources>

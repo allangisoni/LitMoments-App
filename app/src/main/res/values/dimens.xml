@@ -7,5 +7,7 @@
     <dimen name="recyclerviewPadding_Bottom">4dp</dimen>
     <dimen name="fab_elevation">12dp</dimen>
     <dimen name="grid_expected_size">120dp</dimen>
+    <dimen name="badge_count_textsize">12dp</dimen>
+    <dimen name="settingsTitle">26dp</dimen>
 
 </resources>

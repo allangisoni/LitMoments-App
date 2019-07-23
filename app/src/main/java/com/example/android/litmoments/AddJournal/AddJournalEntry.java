@@ -11,15 +11,22 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.ParcelFileDescriptor;
+import android.os.Parcelable;
 import android.support.annotation.ColorRes;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
@@ -103,46 +110,57 @@ import java.util.concurrent.ScheduledFuture;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import icepick.Icepick;
+import icepick.State;
 import id.zelory.compressor.Compressor;
 import pl.aprilapps.easyphotopicker.DefaultCallback;
 import pl.aprilapps.easyphotopicker.EasyImage;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 
 public class AddJournalEntry extends AppCompatActivity implements JournalEntryAdapater.OnClickAction, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final String TAG = AddJournalEntry.class.getName();
-    @BindView(R.id.entrytoolbar) Toolbar entryToolbar;
-    @BindView(R.id.etJournalMessage) EditText etJournalMessage;
-    @BindView(R.id.etJournalLocation) EditText etJournalLocation;
-   // @BindView(R.id.etJournalWeather) EditText etJournalWeather;
+    @BindView(R.id.entrytoolbar)
+    Toolbar entryToolbar;
+    @BindView(R.id.etJournalMessage)
+    EditText etJournalMessage;
+    @BindView(R.id.etJournalLocation)
+     EditText etJournalLocation;
+    // @BindView(R.id.etJournalWeather) EditText etJournalWeather;
     //@BindView(R.id.etJournalMood) EditText etJournalMood;
-    @BindView(R.id.etJournalTitle) EditText etJournalTitle;
-    @BindView(R.id.tvJournalDate) TextView tvJournalDate;
- //   @BindView(R.id.photojournal_fab) FloatingActionButton photoJournalFab;
-  //  @BindView(R.id.savejournal_fab) FloatingActionButton saveJournalFab;
-    @BindView(R.id.rvPhotos) RecyclerView rvPhotos;
-    @BindView(R.id.spinner_weather) Spinner spinnerWeather;
-    @BindView(R.id.spinner_mood) Spinner spinnerMood;
+    @BindView(R.id.etJournalTitle)
+    EditText etJournalTitle;
+    @BindView(R.id.tvJournalDate)  TextView tvJournalDate;
+    //   @BindView(R.id.photojournal_fab) FloatingActionButton photoJournalFab;
+    //  @BindView(R.id.savejournal_fab) FloatingActionButton saveJournalFab;
+    @BindView(R.id.rvPhotos)
+    RecyclerView rvPhotos;
+    @BindView(R.id.spinner_weather)
+    Spinner spinnerWeather;
+    @BindView(R.id.spinner_mood)
+    Spinner spinnerMood;
     private JournalEntryAdapater journalEntryAdapater;
-    private List<JournalPhotoModel> photoList = new ArrayList<>();
+     List<JournalPhotoModel> photoList = new ArrayList<>();
     final int numberOfColumns = 2;
-    private   String journalMonth, journalDay;
+    private String journalMonth, journalDay;
 
-    private ArrayList<String> pathList = new ArrayList<>();
-    private List<File> fileImages = new ArrayList<>();
-    private List<Uri> imagesUri = new ArrayList<>();
-    private static final int REQUEST_CODE_CHOOSE = 23;
-    public static final int REQUEST_CODE_CAMERA = 0012;
-    public static final int REQUEST_CODE_GALLERY = 0013;
-    private String [] items = {"Camera","Gallery"};
+    ArrayList<String> pathList = new ArrayList<>();
+    ArrayList <File> fileImages = new ArrayList<>();
+     ArrayList<Uri> imagesUri = new ArrayList<>();
+     private static final int REQUEST_CODE_CHOOSE = 23;
+     public static final int REQUEST_CODE_CAMERA = 0012;
+     public static final int REQUEST_CODE_GALLERY = 0013;
+    private String[] items = {"Camera", "Gallery"};
     Calendar mCurrentDate;
     ImageGenerator mImageGenerator;
     Bitmap mGeneratedDateIcon;
     private Date date;
     DateFormat df;
+
 
     List<Place.Field> placeFields = Arrays.asList(Place.Field.NAME);
 
@@ -161,24 +179,31 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
     private StorageTask mUploadTask;
     private ArrayList<String> uploadedImages = new ArrayList<>();
 
-    String[] weather = {"Sunny","Cloudy","Rainy"};
+    String[] weather = {"Sunny", "Cloudy", "Rainy"};
     int images[] = {R.drawable.ic_sunny, R.drawable.ic_cloudy, R.drawable.ic_rainy};
 
-    String[] mood = {"Happy","Sad","Surprised"};
+    String[] mood = {"Happy", "Sad", "Surprised"};
     int moodImages[] = {R.drawable.ic_happy, R.drawable.ic_sad, R.drawable.ic_surprised};
 
     ActionMode actionMode;
 
-    Boolean isWhite = false;
+    Boolean isWhite = false, isLit = false;
     MenuItem copyMenuItem;
 
-    File  file;
+    File file;
     public static final String IMAGE_DIRECTORY = "Lit Moments";
     private SimpleDateFormat dateFormatter;
+
+    double longitude = 0.0, latitude = 0.0;
 
     private static final String SCHEME_FILE = "file";
     private static final String SCHEME_CONTENT = "content";
     public static final String DATE_FORMAT = "yyyyMMdd_HHmmss";
+
+    private static final int MY_WRITESTORAGE_REQUEST_CODE = 100;
+    private static final int MY_CAMERA_REQUEST_CODE = 102;
+    private static final int MY_LOCATION_REQUEST_CODE = 104;
+
 
     private final ScheduledExecutorService scheduler =
             Executors.newScheduledThreadPool(1);
@@ -200,7 +225,7 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.item_delete:
-                   // Toast.makeText(AddJournalEntry.this, journalEntryAdapater.getSelected().size() + " selected", Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(AddJournalEntry.this, journalEntryAdapater.getSelected().size() + " selected", Toast.LENGTH_SHORT).show();
                     deleteItemFromList();
                     mode.finish();
                     return true;
@@ -219,7 +244,7 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         SharedPreferences sharedPreferences;
-        sharedPreferences  = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         loadUiTheme(sharedPreferences);
 
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
@@ -238,9 +263,9 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
 
         }
         //entryToolbar.setTitle(getResources().getString(R.string.add_entry));
-      /**  Typeface myCustomFont = ResourcesCompat.getFont(this, R.font.parisienneregular);
-        FontUtils fontUtils = new FontUtils();
-        fontUtils.applyFontToToolbar(entryToolbar, myCustomFont); **/
+        /**  Typeface myCustomFont = ResourcesCompat.getFont(this, R.font.parisienneregular);
+         FontUtils fontUtils = new FontUtils();
+         fontUtils.applyFontToToolbar(entryToolbar, myCustomFont); **/
 
         FirebaseApp.initializeApp(getApplicationContext());
 
@@ -251,49 +276,71 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
         mDatabase = FirebaseDatabase.getInstance().getReference(DATABASE_UPLOADS).child(currentUid);
 
 
-        photoList.clear();
-        fileImages.clear();
+        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, numberOfColumns);
 
 
-        // width and height will be at least 600px long (optional).
-        EasyImage.configuration(this).setImagesFolderName("Journal Images").setAllowMultiplePickInGallery(true);
-
-        journalEntryAdapater = new JournalEntryAdapater(photoList, getApplicationContext());
-
-
-       RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, numberOfColumns);
-
-
-          rvPhotos.setLayoutManager(mLayoutManager);
-       // FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(this);
+        rvPhotos.setLayoutManager(mLayoutManager);
+        // FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(this);
         //layoutManager.setFlexDirection(FlexDirection.ROW);
         //layoutManager.setFlexWrap(FlexWrap.WRAP);
         //layoutManager.setJustifyContent(JustifyContent.FLEX_START);
         //rvPhotos.setLayoutManager(layoutManager);
         rvPhotos.setItemAnimator(new DefaultItemAnimator());
+        rvPhotos.setNestedScrollingEnabled(false);
 
-     /**   photoJournalFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                // onPickImage(v);
-                openImage();
 
-            }
+        if(savedInstanceState != null){
+
+          //  Icepick.restoreInstanceState(this, savedInstanceState);
+
+            tvJournalDate.setText(savedInstanceState.getString("JournalDate"));
+            etJournalLocation.setText(savedInstanceState.getString("JournalLocation"));
+            etJournalTitle.setText(savedInstanceState.getString("JournalTitle"));
+            etJournalMessage.setText(savedInstanceState.getString("JournalMessage"));
+            pathList = savedInstanceState.getStringArrayList("PathList");
+            photoList = savedInstanceState.getParcelableArrayList("PhotoList");
+            imagesUri = savedInstanceState.getParcelableArrayList("ImagesUri");
+            fileImages = (ArrayList<File>) savedInstanceState.getSerializable("FileImages");
+            journalEntryAdapater = new JournalEntryAdapater(photoList, getApplicationContext());
+
+            rvPhotos.setVisibility(View.VISIBLE);
+            rvPhotos.setAdapter(journalEntryAdapater);
+
+        }
+        else {
+            photoList.clear();
+            fileImages.clear();
+            journalEntryAdapater = new JournalEntryAdapater(photoList, getApplicationContext());
+            rvPhotos.setAdapter(journalEntryAdapater);
+        }
+        // width and height will be at least 600px long (optional).
+        EasyImage.configuration(this).setImagesFolderName("Journal Images").setAllowMultiplePickInGallery(true);
+
+
+
+
+
+        /**   photoJournalFab.setOnClickListener(new View.OnClickListener() {
+        @Override public void onClick(View v) {
+
+        // onPickImage(v);
+        openImage();
+
+        }
         });
 
-        saveJournalFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                uploadJournal();
-            }
+         saveJournalFab.setOnClickListener(new View.OnClickListener() {
+        @Override public void onClick(View view) {
+        uploadJournal();
+        }
         });
 
-      **/
+         **/
         spinnerWeather.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-               // Toast.makeText(AddJournalEntry.this, "You Select Position: "+position+" "+weather[position], Toast.LENGTH_SHORT).show();
+                // Toast.makeText(AddJournalEntry.this, "You Select Position: "+position+" "+weather[position], Toast.LENGTH_SHORT).show();
 
                 currentWeather = weather[position];
             }
@@ -304,7 +351,7 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
             }
         });
 
-        CustomAdapter customAdapter=new CustomAdapter(getApplicationContext(),images,weather);
+        CustomAdapter customAdapter = new CustomAdapter(getApplicationContext(), images, weather);
         spinnerWeather.setAdapter(customAdapter);
 
 
@@ -321,12 +368,11 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
             }
         });
 
-        CustomMoodAdapter custommoodAdapter=new CustomMoodAdapter(getApplicationContext(),moodImages,mood);
+        CustomMoodAdapter custommoodAdapter = new CustomMoodAdapter(getApplicationContext(), moodImages, mood);
         spinnerMood.setAdapter(custommoodAdapter);
 
 
 
-        rvPhotos.setAdapter(journalEntryAdapater);
 
 
         mImageGenerator = new ImageGenerator(this);
@@ -348,13 +394,13 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
         String defaultDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         String defaultMonth = new SimpleDateFormat("MM", Locale.getDefault()).format(new Date());
         String defaultDay = new SimpleDateFormat("dd", Locale.getDefault()).format(new Date());
-        if(Integer.parseInt(defaultDay) <=9) {
+        if (Integer.parseInt(defaultDay) <= 9) {
             defaultDay = defaultDay.replace("0", " ");
         } else {
             defaultDay = defaultDay;
         }
         tvJournalDate.setText(defaultDate);
-        journalDay =defaultDay;
+        journalDay = defaultDay;
         journalMonth = defaultMonth;
 
         df = new SimpleDateFormat("EEE, d MMM yyyy");
@@ -365,14 +411,14 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
 
                 mCurrentDate = Calendar.getInstance();
                 int year = mCurrentDate.get(Calendar.YEAR);
-                int month = mCurrentDate.get(Calendar.MONTH) ;
+                int month = mCurrentDate.get(Calendar.MONTH);
                 int day = mCurrentDate.get(Calendar.DAY_OF_MONTH);
 
                 DatePickerDialog mDatePicker = new DatePickerDialog(AddJournalEntry.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker datePicker, int selectedYear, int selectedMonth, int selectedDay) {
                         mCurrentDate.set(selectedYear, selectedMonth, selectedDay);
-                        selectedMonth=selectedMonth+1;
+                        selectedMonth = selectedMonth + 1;
                         journalDay = Integer.toString(selectedDay);
                         journalMonth = Integer.toString(selectedMonth);
                         String selectedDate = Integer.toString(selectedYear) + "-" + Integer.toString(selectedMonth) + "-" + Integer.toString(selectedDay);
@@ -397,8 +443,28 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
         });
 
         journalEntryAdapater.setActionModeReceiver((JournalEntryAdapater.OnClickAction) AddJournalEntry.this);
-        getUserLocation();
-        lookupLocation();
+        // getUserLocation();
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED) {
+
+                ActivityCompat.requestPermissions(AddJournalEntry.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION}, MY_LOCATION_REQUEST_CODE);
+
+            } else {
+                try {
+                    LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                    Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                    longitude = location.getLongitude();
+                    latitude = location.getLatitude();
+                    getAddress(this, latitude, longitude);
+                } catch (Exception e) {
+
+                }
+            }
+        }
+
 
         file = new File(Environment.getExternalStorageDirectory()
                 + "/" + IMAGE_DIRECTORY);
@@ -407,97 +473,164 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
         }
 
 
-
-
         dateFormatter = new SimpleDateFormat(
                 DATE_FORMAT, Locale.US);
 
-    }
-
-
-/**
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Bitmap bitmap = ImagePicker.getImageFromResult(this, requestCode, resultCode, data);
-        //pathList.add()
-
-        // TODO do something with the bitmap
-    }
-
-    public void onPickImage(View view) {
-        // Click on image button
-        ImagePicker.pickImage(this, "Select your image:");
-    } **/
-public void setUpThemeContent (){
-    if(isWhite == true) {
-        entryToolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
-        ((TextView)entryToolbar.getChildAt(0)).setTextColor(getResources().getColor(android.R.color.white));
-
-    } else {
-        entryToolbar.setTitleTextColor(getResources().getColor(R.color.colorAccent));
-        ((TextView)entryToolbar.getChildAt(0)).setTextColor(getResources().getColor(R.color.colorAccent));
-    }
-}
-
-
-public void lookupLocation(){
-    final Runnable beeper = new Runnable() {
-        public void run() {
-           if(etJournalLocation.getText().toString().trim().isEmpty()){
-                getUserLocation();
-                Log.d("place", "running");
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (isLit == false) {
+                etJournalLocation.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.bluecolorAccent)));
+            } else if (isLit == true) {
+                etJournalLocation.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.reddishcolorAccent)));
             }
         }
-    };
-    final ScheduledFuture<?> beeperHandle =
-            scheduler.scheduleAtFixedRate(beeper, 10, 10, SECONDS);
-    scheduler.schedule(new Runnable() {
-        public void run() { beeperHandle.cancel(true); }
-    }, 30 * 30, SECONDS);
-}
 
- private void openImage(){
+    }
 
 
+    /**
+     @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+     Bitmap bitmap = ImagePicker.getImageFromResult(this, requestCode, resultCode, data);
+     //pathList.add()
 
-     AlertDialog.Builder builder = new AlertDialog.Builder(this);
-     builder.setTitle("Pick Image From");
-     builder.setItems(items, new DialogInterface.OnClickListener() {
-         @Override
-         public void onClick(DialogInterface dialog, int i) {
-             if(items[i].equals("Camera")){
-                 //
+     // TODO do something with the bitmap
+     }
 
-                 if(isWriteStoragePermissionGranted() && isReadStoragePermissionGranted()) {
+     public void onPickImage(View view) {
+     // Click on image button
+     ImagePicker.pickImage(this, "Select your image:");
+     } **/
+    public void setUpThemeContent() {
+        if (isWhite == true) {
+            entryToolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
+            ((TextView) entryToolbar.getChildAt(0)).setTextColor(getResources().getColor(android.R.color.white));
+
+
+        } else {
+            entryToolbar.setTitleTextColor(getResources().getColor(R.color.colorAccent));
+            ((TextView) entryToolbar.getChildAt(0)).setTextColor(getResources().getColor(R.color.colorAccent));
+        }
+    }
+
+
+    public void lookupLocation() {
+        final Runnable beeper = new Runnable() {
+            public void run() {
+                if (etJournalLocation.getText().toString().trim().isEmpty()) {
+                    // getUserLocation();
+
+                    Log.d("place", "running");
+                }
+            }
+        };
+        final ScheduledFuture<?> beeperHandle =
+                scheduler.scheduleAtFixedRate(beeper, 10, 10, SECONDS);
+        scheduler.schedule(new Runnable() {
+            public void run() {
+                beeperHandle.cancel(true);
+            }
+        }, 30 * 30, SECONDS);
+    }
+
+    private void openImage() {
+
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Pick Image From");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int i) {
+                if (items[i].equals("Camera")) {
+                    //
+
+                    /**  if(isWriteStoragePermissionGranted() && isReadStoragePermissionGranted()) {
 
                      EasyImage.openCameraForImage(AddJournalEntry.this, REQUEST_CODE_CAMERA);
-                 }
+                     } **/
 
-             }else {
-                 if(isReadStoragePermissionGranted()) {
+                    if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                            && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(AddJournalEntry.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_CAMERA_REQUEST_CODE);
 
-                     Matisse.from(AddJournalEntry.this)
-                             .choose(MimeType.ofImage())
-                             .countable(true)
-                             .maxSelectable(9)
-                             .theme(R.style.Matisse_Dracula)
-                             .gridExpectedSize(getResources().getDimensionPixelSize(R.dimen.grid_expected_size))
-                             .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
-                             .thumbnailScale(0.85f)
-                             .imageEngine(new PicassoEngine())
-                             .forResult(REQUEST_CODE_GALLERY);
-                 }
-                // EasyImage.openGallery(AddJournalEntry.this, REQUEST_CODE_GALLERY);
-             }
-         }
-     });
+                    } else {
+                        EasyImage.openCameraForImage(AddJournalEntry.this, REQUEST_CODE_CAMERA);
+                    }
 
-     AlertDialog dialog = builder.create();
-     dialog.show();
+                } else {
 
- }
+                    if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                            && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(AddJournalEntry.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_WRITESTORAGE_REQUEST_CODE);
+
+                    } else {
+                        Matisse.from(AddJournalEntry.this)
+                                .choose(MimeType.ofImage())
+                                .countable(true)
+                                .maxSelectable(9)
+                                .theme(R.style.Matisse_Dracula)
+                                .gridExpectedSize(getResources().getDimensionPixelSize(R.dimen.grid_expected_size))
+                                .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+                                .thumbnailScale(0.85f)
+                                .imageEngine(new PicassoEngine())
+                                .forResult(REQUEST_CODE_GALLERY);
+                    }
+
+                    // EasyImage.openGallery(AddJournalEntry.this, REQUEST_CODE_GALLERY);
+                }
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == MY_WRITESTORAGE_REQUEST_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                Matisse.from(AddJournalEntry.this)
+                        .choose(MimeType.ofImage())
+                        .countable(true)
+                        .maxSelectable(9)
+                        .theme(R.style.Matisse_Dracula)
+                        .gridExpectedSize(getResources().getDimensionPixelSize(R.dimen.grid_expected_size))
+                        .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+                        .thumbnailScale(0.85f)
+                        .imageEngine(new PicassoEngine())
+                        .forResult(REQUEST_CODE_GALLERY);
+
+            } else {
+
+            }
+        } else if (requestCode == MY_CAMERA_REQUEST_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                EasyImage.openCameraForImage(AddJournalEntry.this, REQUEST_CODE_CAMERA);
+            } else {
+
+            }
+        } else if (requestCode == MY_LOCATION_REQUEST_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                try {
+                    LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        // TODO: Consider calling
+                        return;
+                    }
+                    Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                        longitude = location.getLongitude();
+                        latitude = location.getLatitude();
+                        getAddress(this, latitude, longitude);
+                    } catch (Exception e) {
 
 
+                    }
+                }
+            }
+
+        }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -571,12 +704,15 @@ public void lookupLocation(){
 
                     if(type == REQUEST_CODE_CAMERA){
 
+                        //Uri myuri = data.getData();
                             for(File file:imageFiles){
                                 JournalPhotoModel journalImage = new JournalPhotoModel();
                                 journalImage.setJournalImage(Uri.fromFile(file));
                                 photoList.add(journalImage);
                                 fileImages.add(file);
-                                Toast.makeText(AddJournalEntry.this, file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+                               // Toast.makeText(AddJournalEntry.this, file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+                                Log.d(TAG, " uri from file" + Uri.fromFile(file));
+                             //   Log.d(TAG, " uri from file" + myuri);
 
                                 if(photoList.size() != 0){
 
@@ -616,7 +752,7 @@ public void lookupLocation(){
         FindCurrentPlaceRequest request =
                 FindCurrentPlaceRequest.builder(placeFields).build();
 
-// Call findCurrentPlace and handle the response (first check that the user has granted permission).
+   // Call findCurrentPlace and handle the response (first check that the user has granted permission).
         if (ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             Task<FindCurrentPlaceResponse> placeResponse = placesClient.findCurrentPlace(request);
             placeResponse.addOnCompleteListener(task -> {
@@ -651,6 +787,44 @@ public void lookupLocation(){
 
     }
 
+    public  void getAddress(Context context, double LATITUDE, double LONGITUDE) {
+
+//Set Address
+        try {
+            Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+            List<Address> addresses = geocoder.getFromLocation(LATITUDE, LONGITUDE, 1);
+            if (addresses != null && addresses.size() > 0) {
+
+
+
+                String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+                String city = addresses.get(0).getLocality();
+                String state = addresses.get(0).getAdminArea();
+                String country = addresses.get(0).getCountryName();
+                String postalCode = addresses.get(0).getPostalCode();
+                String knownName = addresses.get(0).getFeatureName(); // Only if available else return NULL
+
+                Log.d(TAG, "getAddress:  address" + address);
+                Log.d(TAG, "getAddress:  city" + city);
+                Log.d(TAG, "getAddress:  state" + state);
+                Log.d(TAG, "getAddress:  country" + country);
+                Log.d(TAG, "getAddress:  postalCode" + postalCode);
+                Log.d(TAG, "getAddress:  knownName" + knownName);
+
+                if(city != null) {
+                    etJournalLocation.setText(city +","+" "+ country);
+                } else if (state !=null){
+                    etJournalLocation.setText(state +","+ " "+  country);
+                } else{
+                    etJournalLocation.setText(country);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return;
+    }
+
    public void getLocationPermission() {
 
 
@@ -659,7 +833,7 @@ public void lookupLocation(){
            ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 101);
        }
 
-      getUserLocation();
+    //  getUserLocation();
 
    }
 
@@ -1115,11 +1289,13 @@ public void lookupLocation(){
         else if (userTheme.equals("1")) {
             setTheme(R.style.ReddishLitStyle);
             isWhite = true;
+            isLit = true;
 
         }
         else if (userTheme.equals("0")) {
             setTheme(R.style.BlueLitStyle);
             isWhite = true;
+            isLit =  false;
         } else{
 
         }
@@ -1136,6 +1312,21 @@ public void lookupLocation(){
         }
     }
 
+  @Override
+  protected void onResume() {
+  super.onResume();
+  PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
+  }
+
+  @Override
+  protected void onDestroy() {
+  super.onDestroy();
+  PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this);
+
+  }
+
+
+
     public  void tintMenuIcon(Context context, MenuItem item) {
         Drawable normalDrawable = item.getIcon();
         Drawable wrapDrawable = DrawableCompat.wrap(normalDrawable);
@@ -1151,16 +1342,38 @@ public void lookupLocation(){
 
     }
 
+
     @Override
-    protected void onResume() {
-        super.onResume();
-        PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
+    protected void onSaveInstanceState(Bundle outState) {
+
+        outState.putString("JournalDate", tvJournalDate.getText().toString());
+        outState.putString("JournalLocation", etJournalLocation.getText().toString());
+        //outState.putString("JournalMood", currentMood);
+        //outState.putString("JournalWeather", currentWeather);
+        outState.putString("JournalTitle", etJournalTitle.getText().toString());
+        outState.putString("JournalMessage", etJournalMessage.getText().toString());
+        outState.putStringArrayList("PathList", pathList);
+        outState.putParcelableArrayList("PhotoList", (ArrayList) photoList);
+        outState.putParcelableArrayList("ImagesUri", imagesUri);
+        outState.putSerializable("FileImages", fileImages);
+
+        super.onSaveInstanceState(outState);
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this);
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+
+        //Icepick.restoreInstanceState(this, savedInstanceState);
+        tvJournalDate.setText(savedInstanceState.getString("JournalDate"));
+        etJournalLocation.setText(savedInstanceState.getString("JournalLocation"));
+        etJournalTitle.setText(savedInstanceState.getString("JournalTitle"));
+        etJournalMessage.setText(savedInstanceState.getString("JournalMessage"));
+        pathList = savedInstanceState.getStringArrayList("PathList");
+        photoList = savedInstanceState.getParcelableArrayList("PhotoList");
+        imagesUri =savedInstanceState.getParcelableArrayList("ImagesUri");
+        fileImages = (ArrayList<File>) savedInstanceState.getSerializable("FileImages");
+
+        super.onRestoreInstanceState(savedInstanceState);
 
     }
 }

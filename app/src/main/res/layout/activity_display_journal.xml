@@ -45,6 +45,24 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/ivdpJournalPhoto" />
 
+            <TextView
+
+                android:id="@+id/textView3"
+                style="@style/Base.TextAppearance.AppCompat.Medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="356dp"
+                android:fontFamily="sans-serif"
+                android:hint="Dumy"
+                android:visibility="invisible"
+                android:textColor="@color/quantum_white_100"
+                android:textColorHint="@color/colorAccent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/ivdpJournalPhoto" />
+
 
             <TextView
                 android:id="@+id/tvdpJournalLocation"
@@ -68,13 +86,14 @@
                 android:layout_below="@id/ivdpJournalPhoto"
                 android:layout_marginLeft="8dp"
                 android:layout_marginStart="8dp"
+                android:layout_marginTop="24dp"
                 android:layout_toRightOf="@id/tvdpJournalLocation"
                 android:hint="@string/journalWeather"
                 android:textColor="@color/colorAccent"
                 android:textColorHint="@color/colorAccent"
                 android:textSize="14sp"
                 app:layout_constraintStart_toEndOf="@+id/ivWeather"
-                app:layout_constraintTop_toTopOf="@+id/tvdpJournalLocation" />
+                app:layout_constraintTop_toBottomOf="@+id/ivdpJournalPhoto" />
 
             <TextView
                 android:id="@+id/tvdpJournalDate"
@@ -138,12 +157,12 @@
                 android:id="@+id/ivWeather"
                 android:layout_width="22dp"
                 android:layout_height="22dp"
-                android:layout_marginLeft="103dp"
-                android:layout_marginStart="103dp"
+                android:layout_marginLeft="106dp"
+                android:layout_marginStart="106dp"
                 android:layout_marginTop="24dp"
                 android:contentDescription="@string/journalWeather"
                 android:src="@drawable/ic_weather"
-                app:layout_constraintStart_toStartOf="@+id/tvdpJournalTitle"
+                app:layout_constraintStart_toStartOf="@+id/textView3"
                 app:layout_constraintTop_toBottomOf="@+id/ivdpJournalPhoto" />
 
             <ImageView
@@ -193,8 +212,8 @@
     </ScrollView>
 
     <android.support.v7.widget.Toolbar
-        android:tint="#6F000000"
-        android:backgroundTint="#6f000000"
+        android:tint="@color/displaytoolbrColor"
+        android:backgroundTint="@color/displaytoolbrColor"
         android:id="@+id/entrytoolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"

@@ -16,6 +16,8 @@ buildscript {
         // in the individual module build.gradle files
         classpath 'com.google.gms:google-services:4.0.2'
     }
+
+
 }
 
 allprojects {
@@ -23,11 +25,13 @@ allprojects {
         google()
         jcenter()
         maven { url "https://jitpack.io" }
+        maven {url "https://clojars.org/repo/"}
 
     }
     ext {
         androidSupportVersion = "27.1.1"
     }
+
 
 }
 

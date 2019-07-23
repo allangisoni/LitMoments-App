@@ -13,6 +13,11 @@
             android:title="@string/action_settings"
             app:showAsAction="never" />
         <item
+            android:id="@+id/action_dashboard"
+            android:icon="@drawable/ic_dashboard"
+            android:orderInCategory="90"
+            android:title="@string/dashtoolbar" />
+        <item
             android:id="@+id/action_search"
             android:icon="@drawable/ic_search"
             android:orderInCategory="60"

@@ -16,4 +16,12 @@
     <color name="reddishcolorPrimary">#ea2e51</color>
     <color name="reddishcolorPrimaryDark">#da1539</color>
     <color name="reddishcolorAccent">#74D389</color>
+
+    <color name="slider2bg">#f64c73</color>
+    <color name="slider2bgtextcolor">#262626</color>
+    <color name="displaytoolbrColor">#e6e6e6</color>
+
+    <color name="dashbackground">#13253D</color>
+    <color name="piechartBackground">#213550</color>
+
 </resources>

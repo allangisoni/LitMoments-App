@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -19,10 +20,13 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.ParcelFileDescriptor;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.preference.PreferenceManager;
@@ -117,14 +121,14 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
     private JournalEntryAdapater journalEntryAdapater;
     private DisplayImagesAdapter retrievedjournalEntryAdapater;
     private List<JournalPhotoModel> photoList = new ArrayList<>();
-    private List<DisplayImagesModel> retrievedphotoList = new ArrayList<>();
+     List<DisplayImagesModel> retrievedphotoList = new ArrayList<>();
     final int numberOfColumns = 2;
     private   String journalMonth, journalDay,  currentWeather, currentMood;
 
     private ArrayList<String> pathList = new ArrayList<>();
     private ArrayList<String> imageUploads = new ArrayList<>();
-    private List<File> fileImages = new ArrayList<>();
-    private List<Uri> imagesUri = new ArrayList<>();
+    ArrayList<File> fileImages = new ArrayList<>();
+    private ArrayList<Uri> imagesUri = new ArrayList<>();
     private static final int REQUEST_CODE_CHOOSE = 23;
     public static final int REQUEST_CODE_CAMERA = 0012;
     public static final int REQUEST_CODE_GALLERY = 0013;
@@ -165,7 +169,7 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
     CustomAdapter customAdapter;
     CustomMoodAdapter custommoodAdapter;
 
-    Boolean urlExists =true, isWhite=false, isNewImage=false;
+    Boolean urlExists =true, isWhite=false, isNewImage=false, isLit= false;
 
     File  file;
     public static final String IMAGE_DIRECTORY = "Lit Moments";
@@ -174,6 +178,10 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
     private static final String SCHEME_FILE = "file";
     private static final String SCHEME_CONTENT = "content";
     public static final String DATE_FORMAT = "yyyyMMdd_HHmmss";
+
+    private static final int MY_WRITESTORAGE_REQUEST_CODE = 100;
+    private static final int MY_CAMERA_REQUEST_CODE = 102;
+    private static final int MY_LOCATION_REQUEST_CODE = 104;
 
     ActionMode actionMode;
 
@@ -235,15 +243,13 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
         }
         FirebaseApp.initializeApp(getApplicationContext());
 
-
         mAuth = FirebaseAuth.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference();
         String currentUid = mAuth.getCurrentUser().getUid();
         mDatabase = FirebaseDatabase.getInstance().getReference(DATABASE_UPLOADS).child(currentUid);
 
 
-        photoList.clear();
-        fileImages.clear();
+
 
 
         // width and height will be at least 600px long (optional).
@@ -262,14 +268,49 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
         journalEntry = extras.getParcelable("journalEntry");
 
 
-        if(journalEntry != null){
-            setJournal();
-        }
-
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, numberOfColumns);
         rvPhotos.setLayoutManager(mLayoutManager);
         rvPhotos.setNestedScrollingEnabled(false);
         rvPhotos.setItemAnimator(new DefaultItemAnimator());
+       ViewCompat.setNestedScrollingEnabled(rvPhotos, false);
+
+        if(savedInstanceState != null){
+            //journalEntry = savedInstanceState.getParcelable("JournalEntry");
+            tvJournalDate.setText(savedInstanceState.getString("JournalDate"));
+            etJournalLocation.setText(savedInstanceState.getString("JournalLocation"));
+            etJournalTitle.setText(savedInstanceState.getString("JournalTitle"));
+            etJournalMessage.setText(savedInstanceState.getString("JournalMessage"));
+            journalDay = savedInstanceState.getString("JournalDay");
+            journalMonth = savedInstanceState.getString("JournalMonth");
+            pathList =  savedInstanceState.getStringArrayList("PathList");
+            imageUploads = savedInstanceState.getStringArrayList("ImageUploads");
+            imagesUri = savedInstanceState.getParcelableArrayList("ImagesUri");
+            fileImages =(ArrayList<File>) savedInstanceState.getSerializable("FileImages");
+            Log.d("File size" , Integer.toString(fileImages.size()));
+            retrievedphotoList = savedInstanceState.getParcelableArrayList("RetrievedPhotoList");
+            photoList = savedInstanceState.getParcelableArrayList("PhotoList");
+            uploadedImages = savedInstanceState.getStringArrayList("UploadedImages");
+          //  getImagePaths();
+            retrievedjournalEntryAdapater = new DisplayImagesAdapter(retrievedphotoList, getApplicationContext());
+
+            rvPhotos.setVisibility(View.VISIBLE);
+            rvPhotos.setAdapter(retrievedjournalEntryAdapater);
+        }
+        else {
+            uploadedImages.clear();
+            photoList.clear();
+            fileImages.clear();
+            retrievedphotoList.clear();
+            if(journalEntry != null){
+                setJournal();
+            }
+
+
+
+            retrievedjournalEntryAdapater = new DisplayImagesAdapter(retrievedphotoList, getApplicationContext());
+            rvPhotos.setAdapter(retrievedjournalEntryAdapater);
+
+        }
 
      /**   photoJournalFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -325,7 +366,7 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
 
 
 
-        rvPhotos.setAdapter(retrievedjournalEntryAdapater);
+     //   rvPhotos.setAdapter(retrievedjournalEntryAdapater);
 
 
         mImageGenerator = new ImageGenerator(this);
@@ -354,8 +395,8 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
         }
        // defaultDay = defaultDay.replace("0"," ");
         //tvJournalDate.setText(defaultDate);
-        journalDay =defaultDay;
-        journalMonth = defaultMonth;
+        //journalDay =journalEntry.getDay();
+        //journalMonth = journalEntry.getMonth();
 
         df = new SimpleDateFormat("EEE, d MMM yyyy");
 
@@ -406,6 +447,13 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
         dateFormatter = new SimpleDateFormat(
                 DATE_FORMAT, Locale.US);
 
+        if(Build.VERSION.SDK_INT >= 23) {
+            if (isLit == false) {
+                etJournalLocation.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.bluecolorAccent)));
+            } else if(isLit == true){
+                etJournalLocation.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.reddishcolorAccent)));
+            }
+        }
 
 
     }
@@ -429,14 +477,20 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
                 if(items[i].equals("Camera")){
                     //
 
-                    if(isWriteStoragePermissionGranted() && isReadStoragePermissionGranted()) {
+                    if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                            && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(EditJournalEntry.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_CAMERA_REQUEST_CODE);
 
+                    } else {
                         EasyImage.openCameraForImage(EditJournalEntry.this, REQUEST_CODE_CAMERA);
                     }
-
                 }else {
-                    if(isReadStoragePermissionGranted() && isWriteStoragePermissionGranted()) {
 
+                    if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                            && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(EditJournalEntry.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_WRITESTORAGE_REQUEST_CODE);
+
+                    } else {
                         Matisse.from(EditJournalEntry.this)
                                 .choose(MimeType.ofImage())
                                 .countable(true)
@@ -448,6 +502,7 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
                                 .imageEngine(new PicassoEngine())
                                 .forResult(REQUEST_CODE_GALLERY);
                     }
+
 
                 }
             }
@@ -464,6 +519,37 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
         Nammu.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 **/
+
+ @Override
+ public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+     super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+     if (requestCode == MY_WRITESTORAGE_REQUEST_CODE) {
+         if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+             Matisse.from(EditJournalEntry.this)
+                     .choose(MimeType.ofImage())
+                     .countable(true)
+                     .maxSelectable(9)
+                     .theme(R.style.Matisse_Dracula)
+                     .gridExpectedSize(getResources().getDimensionPixelSize(R.dimen.grid_expected_size))
+                     .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+                     .thumbnailScale(0.85f)
+                     .imageEngine(new PicassoEngine())
+                     .forResult(REQUEST_CODE_GALLERY);
+
+         } else {
+
+         }
+     } else if (requestCode == MY_CAMERA_REQUEST_CODE) {
+         if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+             EasyImage.openCameraForImage(EditJournalEntry.this, REQUEST_CODE_CAMERA);
+         } else {
+
+         }
+     }
+
+ }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
@@ -539,11 +625,11 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
                         JournalPhotoModel journalImage = new JournalPhotoModel();
                         DisplayImagesModel displayImage = new DisplayImagesModel();
                         //   journalImage.setJournalImage(file);
-                        displayImage.setJournalImageView(file.getAbsolutePath());
+                        displayImage.setJournalImageView(Uri.fromFile(file).toString());
                         retrievedphotoList.add(displayImage);
                         photoList.add(journalImage);
                         fileImages.add(file);
-                        Toast.makeText(EditJournalEntry.this, file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+                       // Toast.makeText(EditJournalEntry.this, file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
 
                         if(photoList != null){
                             myfile=1;
@@ -826,6 +912,8 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
         etJournalLocation.setText(journalEntry.getJournalLocation());
         etJournalTitle.setText(journalEntry.getJournalTitle());
         etJournalMessage.setText(journalEntry.getJournalMessage());
+        journalDay = journalEntry.getDay();
+        journalMonth = journalEntry.getMonth();
 
          if(journalEntry.getJournalWeather().equalsIgnoreCase("Sunny")){
             //spinnerWeather.setSelection(0);
@@ -916,6 +1004,7 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
 
 
      }
+
 
 
     public String getFileExtension(Uri uri) {
@@ -1257,10 +1346,12 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
         else if (userTheme.equals("1")) {
             setTheme(R.style.ReddishLitStyle);
             isWhite = true;
+            isLit = true;
         }
         else if (userTheme.equals("0")) {
             setTheme(R.style.BlueLitStyle);
             isWhite = true;
+            isLit =  false;
         } else{
 
         }
@@ -1305,6 +1396,45 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
 
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        //outState.putParcelable("JournalEntry", journalEntry);
+        Log.d("File size" , Integer.toString(fileImages.size()));
+        outState.putString("JournalDate", tvJournalDate.getText().toString());
+        outState.putString("JournalLocation", etJournalLocation.getText().toString());
+        outState.putString("JournalTitle", etJournalTitle.getText().toString());
+        outState.putString("JournalMessage", etJournalMessage.getText().toString());
+        outState.putString("JournalDay", journalDay);
+        outState.putString("JournalMonth", journalMonth);
+        outState.putStringArrayList("PathList", pathList);
+        outState.putStringArrayList("ImageUploads", imageUploads);
+        outState.putParcelableArrayList("ImagesUri", imagesUri);
+        outState.putParcelableArrayList("RetrievedPhotoList", (ArrayList) retrievedphotoList);
+        outState.putSerializable("FileImages", fileImages);
+       outState.putParcelableArrayList("PhotoList", (ArrayList) photoList);
+       outState.putStringArrayList("UploadedImages", uploadedImages);
+        super.onSaveInstanceState(outState);
 
+    }
 
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+     //journalEntry = savedInstanceState.getParcelable("JournalEntry");
+        tvJournalDate.setText(savedInstanceState.getString("JournalDate"));
+        etJournalLocation.setText(savedInstanceState.getString("JournalLocation"));
+        etJournalTitle.setText(savedInstanceState.getString("JournalTitle"));
+        etJournalMessage.setText(savedInstanceState.getString("JournalMessage"));
+        journalDay = savedInstanceState.getString("JournalDay");
+        journalMonth = savedInstanceState.getString("JournalMonth");
+        pathList =  savedInstanceState.getStringArrayList("PathList");
+        imageUploads = savedInstanceState.getStringArrayList("ImageUploads");
+        imagesUri = savedInstanceState.getParcelableArrayList("ImagesUri");
+        retrievedphotoList = savedInstanceState.getParcelableArrayList("RetrievedPhotoList");
+        fileImages =(ArrayList<File>) savedInstanceState.getSerializable("FileImages");
+        uploadedImages = savedInstanceState.getStringArrayList("UploadedImages");
+
+        photoList = savedInstanceState.getParcelableArrayList("PhotoList");
+       // getImagePaths();
+        super.onRestoreInstanceState(savedInstanceState);
+    }
 }

@@ -17,6 +17,7 @@
         android:theme="@style/LitStyle">
         <activity
             android:name=".Main.MainActivity"
+            android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.app.searchable"
@@ -26,20 +27,19 @@
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
         </activity>
-        <activity android:name=".Login.LoginActivity">
-
-        </activity>
-        <activity android:name=".AddJournal.AddJournalEntry"
-            />
-        <activity android:name=".Settings.SettingsActivity"
-                 android:parentActivityName=".Main.MainActivity"
-            android:theme="@style/SettingsStyle"/>
+        <activity
+            android:name=".Login.LoginActivity"
+            android:theme="@style/MyLoginTheme"></activity>
+        <activity android:name=".AddJournal.AddJournalEntry" />
+        <activity
+            android:name=".Settings.SettingsActivity"
+            android:parentActivityName=".Main.MainActivity"
+            android:theme="@style/SettingsStyle" />
         <activity android:name=".DispJournal.DisplayJournal" />
         <activity android:name=".DispJournal.ImageSliderActivity" />
         <activity
             android:name=".Login.SplashActivity"
-            android:theme="@style/MySplashTheme" >
-
+            android:theme="@style/MySplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -52,7 +52,8 @@
             android:resource="@array/preloaded_fonts" />
 
         <activity android:name=".EditJournal.EditJournalEntry" />
-        <activity android:name=".AddJournal.AddJournalImageSlider"></activity>
+        <activity android:name=".AddJournal.AddJournalImageSlider" />
+        <activity android:name=".DashboardActivity"></activity>
     </application>
 
 </manifest>

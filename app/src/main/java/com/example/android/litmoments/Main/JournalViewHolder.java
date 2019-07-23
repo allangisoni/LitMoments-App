@@ -2,7 +2,11 @@ package com.example.android.litmoments.Main;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.content.res.ResourcesCompat;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -10,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ajts.androidmads.fontutils.FontUtils;
 import com.example.android.litmoments.AddJournal.JournalEntryModel;
 import com.example.android.litmoments.DispJournal.DisplayJournal;
 import com.example.android.litmoments.R;
@@ -50,8 +55,9 @@ public class JournalViewHolder  extends RecyclerView.ViewHolder{
     public void bind(final JournalEntryModel journalItem, final JournalMainAdapter.OnItemClickListener listener) {
 
        // final  JournalEntryModel journalItem =  filteredJournallist.get(getAdapterPosition());
-
+        // journalItem = filteredJournallist.get(getAdapterPosition());
         try{
+
         if(journalItem.getJournalImagePath().get(0) != null) {
              Picasso.with(itemView.getContext()).load(journalItem.getJournalImagePath().get(0)).fit().centerCrop().networkPolicy(NetworkPolicy.OFFLINE)
                      .placeholder(R.drawable.ic_mesut).error(R.drawable.ic_journalfinal).into(ivJournalPhoto, new Callback() {
@@ -117,6 +123,49 @@ public class JournalViewHolder  extends RecyclerView.ViewHolder{
          tvJournalTitle.setText(journalItem.getJournalTitle());
          tvJournalMessage.setText(journalItem.getJournalMessage());
          tvJournalLocation.setText(journalItem.getJournalLocation());
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(itemView.getContext());
+        String selectedFont = sharedPreferences.getString(itemView.getResources().getString(R.string.key_uiThemeFont), "0");
+
+        if( selectedFont != null &&selectedFont.equals("0")){
+            Typeface myCustomFont = ResourcesCompat.getFont(itemView.getContext(), R.font.parisienneregular);
+            FontUtils fontUtils = new FontUtils();
+            fontUtils.applyFontToView(tvJournalTitle,myCustomFont);
+            fontUtils.applyFontToView(tvJournalMonth,myCustomFont);
+            fontUtils.applyFontToView(tvJournalMessage,myCustomFont);
+            fontUtils.applyFontToView(tvJournalDay,myCustomFont);
+            fontUtils.applyFontToView(tvJournalYear,myCustomFont);
+            fontUtils.applyFontToView(tvJournalLocation,myCustomFont);
+
+        } else if(selectedFont.equals("1")){
+            Typeface myCustomFont = ResourcesCompat.getFont(itemView.getContext(), R.font.patrick_hand_sc);
+            FontUtils fontUtils = new FontUtils();
+            fontUtils.applyFontToView(tvJournalTitle,myCustomFont);
+            fontUtils.applyFontToView(tvJournalMonth,myCustomFont);
+            fontUtils.applyFontToView(tvJournalMessage,myCustomFont);
+            fontUtils.applyFontToView(tvJournalDay,myCustomFont);
+            fontUtils.applyFontToView(tvJournalYear,myCustomFont);
+            fontUtils.applyFontToView(tvJournalLocation,myCustomFont);
+
+        } else if( selectedFont.equals("2")) {
+            Typeface myCustomFont = ResourcesCompat.getFont(itemView.getContext(), R.font.sofadi_one);
+            FontUtils fontUtils = new FontUtils();
+            fontUtils.applyFontToView(tvJournalTitle,myCustomFont);
+            fontUtils.applyFontToView(tvJournalMonth,myCustomFont);
+            fontUtils.applyFontToView(tvJournalMessage,myCustomFont);
+            fontUtils.applyFontToView(tvJournalDay,myCustomFont);
+            fontUtils.applyFontToView(tvJournalYear,myCustomFont);
+            fontUtils.applyFontToView(tvJournalLocation,myCustomFont);
+        } else if(selectedFont.equals("3")){
+            FontUtils fontUtils = new FontUtils();
+            Typeface myCustomFont = Typeface.create("sans-serif-condensed", Typeface.NORMAL);
+            fontUtils.applyFontToView(tvJournalTitle,myCustomFont);
+            fontUtils.applyFontToView(tvJournalMonth,Typeface.SANS_SERIF);
+            fontUtils.applyFontToView(tvJournalMessage,Typeface.SANS_SERIF);
+            fontUtils.applyFontToView(tvJournalDay,Typeface.SANS_SERIF);
+            fontUtils.applyFontToView(tvJournalYear,Typeface.SANS_SERIF);
+            fontUtils.applyFontToView(tvJournalLocation,Typeface.SANS_SERIF);
+        }
 
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {

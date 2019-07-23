@@ -23,13 +23,11 @@ import butterknife.ButterKnife;
 
 public class SplashActivity extends AppCompatActivity {
 
-    private static int splashTimeOut = 8000;
-    @BindView(R.id.tvsplash)
-    TextView tvSplash;
+    private static int splashTimeOut = 2000;
+    //@BindView(R.id.tvsplash)TextView tvSplash;
     @BindView(R.id.ivSplash)
     ImageView ivSplash;
-    @BindView(R.id.splashLayout)
-    ConstraintLayout splashLayout;
+    //@BindView(R.id.splashLayout) ConstraintLayout splashLayout;
 
     private FirebaseAuth mAuth;
 
@@ -47,23 +45,32 @@ public class SplashActivity extends AppCompatActivity {
        /** if (mAuth.getCurrentUser() != null) {
             updateUI(true);
         } **/
-        splashLayout.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+       // splashLayout.setBackgroundColor(getResources().getColor(R.color.colorAccent));
 
-        Typeface myCustomFont = ResourcesCompat.getFont(this, R.font.parisienneregular);
+      /**  Typeface myCustomFont = ResourcesCompat.getFont(this, R.font.parisienneregular);
         tvSplash.setTypeface(myCustomFont);
 
         Animation myanim = AnimationUtils.loadAnimation(this, R.anim.mysplashanimation);
         ivSplash.startAnimation(myanim);
-        myanim.setRepeatCount(Animation.INFINITE);
+        myanim.setRepeatCount(Animation.INFINITE); **/
 
        // String currentUid = mAuth.getCurrentUser().getUid();
 
-        if( mAuth.getCurrentUser()==null){
-            updateUI(false);}
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //  updateUI(true);
+                if( mAuth.getCurrentUser()==null){
+                    updateUI(false);}
 
-            else{
-                updateUI(true);
+                else{
+                    updateUI(true);
+                }
             }
+        }, splashTimeOut);
+
+
+
 
 
         mAuthListner = new FirebaseAuth.AuthStateListener() {
@@ -75,12 +82,7 @@ public class SplashActivity extends AppCompatActivity {
             }
         };
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-              //  updateUI(true);
-            }
-        }, splashTimeOut);
+
 
 
 

@@ -5,7 +5,7 @@ android {
     buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId "com.example.android.litmoments"
-        minSdkVersion 16
+        minSdkVersion 19
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
@@ -17,20 +17,28 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
+
+        }
+        customDebugType {
+            debuggable true
         }
     }
     compileOptions {
         targetCompatibility 1.8
         sourceCompatibility 1.8
     }
+
+
 }
+
+
 
 
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "com.android.support:support-v4:$androidSupportVersion"
-    implementation "com.android.support:appcompat-v7:$androidSupportVersion"
+    implementation 'com.android.support:appcompat-v7:$androidSupportVersion'
+    implementation 'com.android.support:support-v4:$androidSupportVersion'
     implementation "com.android.support:design:$androidSupportVersion"
     //implementation 'com.google.android.material:material:1.0.0'
     implementation "com.android.support:recyclerview-v7:$androidSupportVersion"
@@ -61,8 +69,16 @@ dependencies {
     implementation 'com.makeramen:roundedimageview:2.3.0'
     implementation 'com.google.android:flexbox:1.0.0'
     implementation 'io.supercharge:shimmerlayout:2.1.0'
+    implementation 'com.airbnb.android:lottie:2.1.0'
+    implementation 'com.hyopark:gradationpager:1.0.0'
+    implementation 'frankiesardo:icepick:3.2.0'
+    compileOnly 'frankiesardo:icepick-processor:3.2.0'
+    annotationProcessor 'frankiesardo:icepick-processor:3.2.0'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+    implementation 'com.daimajia.easing:library:2.0@aar'
+    implementation 'com.daimajia.androidanimations:library:2.3@aar'
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.6.3'

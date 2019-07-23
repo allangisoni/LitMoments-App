@@ -2,6 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/ic_photosize"
+        android:icon="@drawable/display_image_icon"
+        android:title="@string/group_title"
+        android:orderInCategory="60"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/action_edit"
         android:orderInCategory="80"
         android:title="@string/edit_journal"

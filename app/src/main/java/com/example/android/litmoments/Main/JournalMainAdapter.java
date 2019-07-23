@@ -1,6 +1,8 @@
 package com.example.android.litmoments.Main;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,19 +11,20 @@ import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
 
+
 import com.example.android.litmoments.AddJournal.JournalEntryModel;
 import com.example.android.litmoments.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class JournalMainAdapter extends RecyclerView.Adapter<JournalViewHolder> implements Filterable{
+public class JournalMainAdapter extends RecyclerView.Adapter<JournalViewHolder> implements Filterable {
 
     private final List<JournalEntryModel> journallist;
     private  List<JournalEntryModel> filteredJournallist;
     private final Context context;
 
-    private final JournalMainAdapter.OnItemClickListener listener;
+    private final OnItemClickListener listener;
 
     public interface OnItemClickListener {
         void onItemClick(JournalEntryModel journalEntryModel);
@@ -29,7 +32,7 @@ public class JournalMainAdapter extends RecyclerView.Adapter<JournalViewHolder> 
 
 
 
-    public  JournalMainAdapter(List<JournalEntryModel> journallist, Context context, JournalMainAdapter.OnItemClickListener listener){
+    public  JournalMainAdapter(List<JournalEntryModel> journallist, Context context, OnItemClickListener listener){
 
         this.journallist = journallist;
         this.context = context;
@@ -40,14 +43,24 @@ public class JournalMainAdapter extends RecyclerView.Adapter<JournalViewHolder> 
     @NonNull
     @Override
     public JournalViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.journal_list_item, parent, false);
-        return new JournalViewHolder(view);
+        int orientation = context.getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            // In landscape
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.journal_list_item_land, parent, false);
+            return new JournalViewHolder(view);
+        } else {
+            // In portrait
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.journal_list_item, parent, false);
+            return new JournalViewHolder(view);
+        }
+
+
     }
 
     @Override
     public void onBindViewHolder(@NonNull JournalViewHolder holder, int position) {
 
-        holder.bind(journallist.get(position), listener);
+        holder.bind(filteredJournallist.get(position), listener);
         //JournalPhotoModel journalPhotoModel = photolist.get(position);
         //holder.tvAuthor.setText(moviz.getReviews().getAuthor());
     }
@@ -73,7 +86,7 @@ public class JournalMainAdapter extends RecyclerView.Adapter<JournalViewHolder> 
                         // name match condition. this might differ depending on your requirement
                         // here we are looking for name or phone number match
                         if (row.getJournalTitle().toLowerCase().contains(charString.toLowerCase()) || row.getJournalMessage().toLowerCase().contains(charString.toLowerCase()) ||
-                        row.getJournalDate().contains(charString)) {
+                        row.getJournalDate().contains(charString) || row.getJournalLocation().toLowerCase().contains(charString.toLowerCase()) ) {
                             filteredList.add(row);
                         }
                     }

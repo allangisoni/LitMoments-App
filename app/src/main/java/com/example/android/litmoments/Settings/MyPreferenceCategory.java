@@ -30,7 +30,8 @@ public class MyPreferenceCategory extends PreferenceCategory {
     protected View onCreateView(ViewGroup parent) {
         // It's just a TextView!
         TextView categoryTitle =  (TextView)super.onCreateView(parent);
-        categoryTitle.setTextColor(parent.getResources().getColor(R.color.preftitle));
+        categoryTitle.setTextColor(parent.getResources().getColor(R.color.bluecolorPrimary));
+        categoryTitle.setTextSize(20);
         return categoryTitle;
     }
 

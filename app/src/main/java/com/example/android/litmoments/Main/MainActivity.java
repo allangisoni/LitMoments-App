@@ -31,6 +31,7 @@ import android.widget.Toast;
 import com.ajts.androidmads.fontutils.FontUtils;
 import com.example.android.litmoments.AddJournal.AddJournalEntry;
 import com.example.android.litmoments.AddJournal.JournalEntryModel;
+import com.example.android.litmoments.DashboardActivity;
 import com.example.android.litmoments.PrefMethods;
 import com.example.android.litmoments.R;
 import com.example.android.litmoments.Settings.SettingsActivity;
@@ -44,6 +45,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -59,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements JournalMainAdapte
     @BindView(R.id.progressBar) ProgressBar progressBar;
 
     private JournalMainAdapter journalAdapter;
-    private List<JournalEntryModel> journalList = new ArrayList<>();
+    private ArrayList<JournalEntryModel> journalList = new ArrayList<>();
     private DatabaseReference mDatabase;
 
     public static final String DATABASE_UPLOADS = "User's Journal Entries";
@@ -67,6 +69,8 @@ public class MainActivity extends AppCompatActivity implements JournalMainAdapte
     PrefMethods prefMethods = new PrefMethods();
 
     Boolean isWhite = false;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,7 +135,12 @@ public class MainActivity extends AppCompatActivity implements JournalMainAdapte
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         //firebaseDatabase.setPersistenceEnabled(true);
         mDatabase = firebaseDatabase.getReference(DATABASE_UPLOADS).child(currentUid);
-
+        if(savedInstanceState != null){
+            journalList = savedInstanceState.getParcelableArrayList("JournalEntires");
+        }
+         else {
+            journalList = journalList;
+        }
         journalAdapter = new JournalMainAdapter(journalList, getApplicationContext(), this);
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
@@ -281,7 +290,15 @@ public class MainActivity extends AppCompatActivity implements JournalMainAdapte
 
             return true;
 
-        } else {
+
+        } else  if(id == R.id.action_dashboard){
+            Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
+            intent.putExtra("JournalList", journalList);
+            startActivity(intent);
+            return true;
+        }
+
+        else {
 
         }
 
@@ -357,6 +374,30 @@ public class MainActivity extends AppCompatActivity implements JournalMainAdapte
         PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this);
 
     }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState. putParcelableArrayList("JournalEntires", (ArrayList)journalList);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        journalList = savedInstanceState.getParcelableArrayList("JournalEntires");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(journalList == null){
+
+        }
+    }
+
+
     /**
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

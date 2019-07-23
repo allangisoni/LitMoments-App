@@ -85,5 +85,26 @@
         <item name="colorControlNormal">@color/quantum_white_100</item>
     </style>
 
+    <style name="MyLoginTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorPrimaryDark">@color/quantum_black_text</item>
+        <item name="colorAccent">@color/quantum_white_100</item>
+        <item name="colorControlNormal">@color/quantum_white_100</item>
+    </style>
 
+    <style name="MyProgressTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+
+        <item name="android:textColor">@color/quantum_black_text</item>
+        <item name="android:background">@color/background</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="SettingsTitleStyle" parent="TextAppearance.AppCompat">
+    <item name="android:textColor">@color/quantum_white_100</item>
+        <item name="android:textSize">@dimen/settingsTitle</item>
+
+    </style>
+    <style name="SettingsTitleStyleAccent" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textSize">@dimen/settingsTitle</item>
+    </style>
 </resources>

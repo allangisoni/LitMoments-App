@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory android:layout="@layout/settings_toolbar"></PreferenceCategory>
+
+    <com.example.android.litmoments.Settings.MyPreferenceCategory
+        android:title="Customization">
 
     <ListPreference
         android:defaultValue="2"
@@ -7,7 +14,7 @@
         android:entries="@array/pref_upload_theme_entries"
         android:entryValues="@array/pref_upload_theme_values"
         android:key="@string/key_uiTheme"
-        android:summary="@string/summary_uiTheme"
+        android:summary="%s"
         android:title="@string/title_uiTheme" />
 
 
@@ -17,16 +24,37 @@
         android:entries="@array/pref_upload_font_entries"
         android:entryValues="@array/pref_upload_font_values"
         android:key="@string/key_uiThemeFont"
-        android:summary="@string/summary_uiThemeFont"
+        android:summary="%s"
         android:title="@string/title_uiThemeFont" />
+
+    </com.example.android.litmoments.Settings.MyPreferenceCategory>
+
+<com.example.android.litmoments.Settings.MyPreferenceCategory
+    android:title="Help &amp; support">
 
     <Preference
         android:selectable="false"
+        android:title="About"
         android:summary="@string/summary_about" />
 
     <Preference
+        android:title="@string/title_version"
         android:summary="@string/app_version"
-        android:title="@string/title_version" />
+        />
 
+</com.example.android.litmoments.Settings.MyPreferenceCategory >
+
+ <com.example.android.litmoments.Settings.MyPreferenceCategory
+     android:title="Account">
+
+     <Preference
+         android:title="@string/acc_logout"
+         android:selectable="true"
+         android:key="@string/key_userAccount"
+         >
+
+     </Preference>
+
+ </com.example.android.litmoments.Settings.MyPreferenceCategory>
 
 </PreferenceScreen>
