@@ -24,6 +24,12 @@
     <string name="summary_uiThemeFont">Lit Font</string>
     <string name="title_uiThemeFont">Font</string>
     <string name="key_userAccount">key_userAccount</string>
+    <string name="key_tellafriend">key_tellafriend</string>
+    <string name="key_feedback">key_feedback</string>
+    <string name="key_rateus">key_rateus</string>
+    <string name="key_termsofuse">key_termsofuse</string>
+    <string name="key_privacy">key_privacy</string>
+    <string name="key_about">key_about</string>
     <string name="pref_header_about">About</string>
     <string name="summary_about">Lit Momentos is your newest travel companion. Capture and share your travel experiences with family and friends!!!</string>
     <string name="app_version">1.0</string>
@@ -52,4 +58,16 @@
     <string name="piechartMood">Lit Mood Stats</string>
     <string name="barchartTitle">Lit Moments Stats</string>
     <string name="TreechartTitle">Favorite Places</string>
+    <string name="tellafriend">Tell a Friend</string>
+    <string name="feedback">Feedback</string>
+    <string name="rateus">Rate us on Playstore</string>
+    <string name="privacy">Privacy</string>
+    <string name="termsofuse">Terms of use</string>
+    <string name="about">About</string>
+    <string name="ic_journal">Journal Image</string>
+    <string name="about_version">Version 1.0</string>
+    <string name="about_lit">Travel Journal</string>
+    <string name="about_litdev">Designed and developed by Allan Gisoni</string>
+
+
 </resources>

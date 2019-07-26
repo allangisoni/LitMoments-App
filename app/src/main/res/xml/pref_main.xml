@@ -28,24 +28,56 @@
         android:title="@string/title_uiThemeFont" />
 
     </com.example.android.litmoments.Settings.MyPreferenceCategory>
+    <PreferenceCategory
+        android:layout="@layout/divider_preference"
+        />
 
 <com.example.android.litmoments.Settings.MyPreferenceCategory
     android:title="Help &amp; support">
 
+
     <Preference
-        android:selectable="false"
+        android:selectable="true"
         android:title="About"
-        android:summary="@string/summary_about" />
+        android:key="@string/key_about" />
 
     <Preference
         android:title="@string/title_version"
         android:summary="@string/app_version"
         />
 
-</com.example.android.litmoments.Settings.MyPreferenceCategory >
+    <Preference
+        android:title="@string/feedback"
+        android:key="@string/key_feedback"
+        android:selectable="true"/>
 
+    <Preference
+        android:title="@string/tellafriend"
+        android:key="@string/key_tellafriend"
+        android:selectable="true"/>
+
+    <Preference
+        android:title="@string/rateus"
+        android:key="@string/key_rateus"
+        android:selectable="true"/>
+
+
+</com.example.android.litmoments.Settings.MyPreferenceCategory >
+    <PreferenceCategory
+        android:layout="@layout/divider_preference"
+        />
  <com.example.android.litmoments.Settings.MyPreferenceCategory
      android:title="Account">
+
+     <Preference
+         android:title="@string/privacy"
+         android:key="@string/key_privacy"
+         android:selectable="true"/>
+
+     <Preference
+         android:title="@string/termsofuse"
+         android:key="@string/key_termsofuse"
+         android:selectable="true"/>
 
      <Preference
          android:title="@string/acc_logout"
@@ -56,5 +88,4 @@
      </Preference>
 
  </com.example.android.litmoments.Settings.MyPreferenceCategory>
-
 </PreferenceScreen>

@@ -19,6 +19,7 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.transition.Explode;
 import android.transition.Fade;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -29,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ajts.androidmads.fontutils.FontUtils;
+import com.codemybrainsout.ratingdialog.RatingDialog;
 import com.example.android.litmoments.AddJournal.AddJournalEntry;
 import com.example.android.litmoments.AddJournal.JournalEntryModel;
 import com.example.android.litmoments.DashboardActivity;
@@ -167,7 +169,10 @@ public class MainActivity extends AppCompatActivity implements JournalMainAdapte
 
         getJornals();
 
+
     }
+
+
 
     public void setUpThemeContent (){
         if(isWhite == true) {
@@ -296,6 +301,11 @@ public class MainActivity extends AppCompatActivity implements JournalMainAdapte
             intent.putExtra("JournalList", journalList);
             startActivity(intent);
             return true;
+        } else if(id == R.id.action_rateus) {
+
+
+            return  true;
+
         }
 
         else {

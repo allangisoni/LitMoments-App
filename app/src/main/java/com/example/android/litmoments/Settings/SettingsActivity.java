@@ -1,10 +1,13 @@
 package com.example.android.litmoments.Settings;
 
+import android.animation.Animator;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
@@ -12,14 +15,21 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
+import android.support.annotation.Nullable;
 import android.support.v4.app.NavUtils;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.preference.PreferenceCategory;
+import android.support.v7.preference.PreferenceGroup;
+import android.support.v7.preference.PreferenceGroupAdapter;
 import android.support.v7.preference.PreferenceManager;
+import android.support.v7.preference.PreferenceViewHolder;
 import android.support.v7.widget.AppCompatTextView;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.transition.Fade;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +38,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ajts.androidmads.fontutils.FontUtils;
+import com.codemybrainsout.ratingdialog.RatingDialog;
+import com.example.android.litmoments.AboutusActivity;
 import com.example.android.litmoments.Application.AppCompatPreferenceActivity;
 import com.example.android.litmoments.Login.LoginActivity;
 import com.example.android.litmoments.PrefMethods;
@@ -51,6 +63,7 @@ public class SettingsActivity  extends AppCompatPreferenceActivity implements Sh
    SharedPreferences sharedPreferences;
    // private FirebaseAuth mAuth;
     private SettingsFragment settingsFragment;
+
 
 
 
@@ -177,6 +190,92 @@ public class SettingsActivity  extends AppCompatPreferenceActivity implements Sh
               }
           });
 
+
+            Preference prefabout = findPreference(getResources().getString(R.string.key_about));
+
+            prefabout.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    Intent intent = new Intent(getActivity(), AboutusActivity.class);
+                    startActivity(intent);
+                    return true;
+                }
+            });
+
+
+            Preference preffeedback = findPreference(getResources().getString(R.string.key_feedback));
+            preffeedback.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    Intent intent = new Intent(Intent.ACTION_SENDTO);
+                    intent.setData(Uri.parse("mailto:")); // only email apps should handle this
+                    intent.putExtra(Intent.EXTRA_EMAIL, new String[] {"allangisoni@gmail.com"});
+                    intent.putExtra(Intent.EXTRA_SUBJECT, "Lit moments feedback");
+                    if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                        startActivity(intent);
+                    } else{
+                        //
+                        Toast.makeText(getActivity().getApplicationContext(), "No email client installed", Toast.LENGTH_SHORT).show();
+                    }
+                    return true;
+                }
+            });
+
+
+            Preference prefrateus = findPreference(getResources().getString(R.string.key_rateus));
+            prefrateus.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+
+                    return true;
+                }
+            });
+        }
+
+
+
+
+
+
+        @Override
+        public void onActivityCreated(Bundle savedInstanceState) {
+            super.onActivityCreated(savedInstanceState);
+
+            // remove dividers
+            View rootView = getView();
+            ListView list = (ListView) rootView.findViewById(android.R.id.list);
+            list.setDivider(null);
+
+
+
+        }
+
+
+
+
+        static class CustomPreferenceGroupAdapter extends PreferenceGroupAdapter {
+
+            @SuppressLint("RestrictedApi")
+            public CustomPreferenceGroupAdapter(PreferenceGroup preferenceGroup) {
+                super(preferenceGroup);
+            }
+
+            @SuppressLint("RestrictedApi")
+            @Override
+            public void onBindViewHolder(PreferenceViewHolder holder, int position) {
+                super.onBindViewHolder(holder, position);
+                android.support.v7.preference.Preference currentPreference = getItem(position);
+                //For a preference category we want the divider shown above.
+                if (position != 0 && currentPreference instanceof PreferenceCategory) {
+                    holder.setDividerAllowedAbove(true);
+                    holder.setDividerAllowedBelow(false);
+                } else {
+                    //For other dividers we do not want to show divider above
+                    //but allow dividers below for CategoryPreference dividers.
+                    holder.setDividerAllowedAbove(false);
+                    holder.setDividerAllowedBelow(true);
+                }
+            }
 
         }
     }

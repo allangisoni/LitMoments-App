@@ -79,6 +79,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.kd.dynamic.calendar.generator.ImageGenerator;
+import com.sdsmdg.tastytoast.TastyToast;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
 import com.zhihu.matisse.engine.impl.PicassoEngine;
@@ -110,6 +111,7 @@ import java.util.concurrent.ScheduledFuture;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import es.dmoral.toasty.Toasty;
 import icepick.Icepick;
 import icepick.State;
 import id.zelory.compressor.Compressor;
@@ -927,7 +929,7 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
 
                                           databaseReference.updateChildren(childUpdates);
                                           progressDialog.dismiss();
-                                          Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_SHORT).show();
+                                         Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_SHORT).show();
                                       }
                                   });
 
@@ -990,7 +992,8 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
                                           progressDialog.setMessage("Uploaded " + ((int) progress) + "%...");
                                       }
                                   }); **/
-
+                           //progressDialog.dismiss();
+                           //Toasty.success(getApplicationContext(), "Saved!", Toast.LENGTH_SHORT, true).show();
 
                       }
 
@@ -1017,7 +1020,9 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
 
            databaseReference.setValue(journalEntryModel);
            //displaying success toast
-           Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_LONG).show();
+           //Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_LONG).show();
+           //Toasty.success(getApplicationContext(), "Saved!", Toast.LENGTH_SHORT, true).show();
+           TastyToast.makeText(getApplicationContext(), "Saved successfully ", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
            }
 
        }

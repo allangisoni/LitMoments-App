@@ -17,6 +17,7 @@
         android:theme="@style/LitStyle">
         <activity
             android:name=".Main.MainActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
@@ -29,7 +30,7 @@
         </activity>
         <activity
             android:name=".Login.LoginActivity"
-            android:theme="@style/MyLoginTheme"></activity>
+            android:theme="@style/MyLoginTheme" />
         <activity android:name=".AddJournal.AddJournalEntry" />
         <activity
             android:name=".Settings.SettingsActivity"
@@ -53,7 +54,8 @@
 
         <activity android:name=".EditJournal.EditJournalEntry" />
         <activity android:name=".AddJournal.AddJournalImageSlider" />
-        <activity android:name=".DashboardActivity"></activity>
+        <activity android:name=".DashboardActivity" />
+        <activity android:name=".AboutusActivity"></activity>
     </application>
 
 </manifest>

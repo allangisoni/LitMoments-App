@@ -37,8 +37,8 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:$androidSupportVersion'
-    implementation 'com.android.support:support-v4:$androidSupportVersion'
+    implementation "com.android.support:appcompat-v7:$androidSupportVersion"
+    implementation "com.android.support:support-v4:$androidSupportVersion"
     implementation "com.android.support:design:$androidSupportVersion"
     //implementation 'com.google.android.material:material:1.0.0'
     implementation "com.android.support:recyclerview-v7:$androidSupportVersion"
@@ -77,6 +77,9 @@ dependencies {
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
     implementation 'com.daimajia.easing:library:2.0@aar'
     implementation 'com.daimajia.androidanimations:library:2.3@aar'
+    implementation 'com.codemybrainsout.rating:ratingdialog:1.0.8'
+    implementation 'com.github.GrenderG:Toasty:1.2.8'
+    implementation 'com.sdsmdg.tastytoast:tastytoast:0.1.1'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
