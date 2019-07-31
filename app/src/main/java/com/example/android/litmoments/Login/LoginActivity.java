@@ -4,6 +4,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
@@ -42,7 +44,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.hyogeun.gradationpager.GradationViewPager;
+import com.sdsmdg.tastytoast.TastyToast;
 
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -169,7 +175,12 @@ public class LoginActivity extends AppCompatActivity  implements
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                signIn();
+                if(isOnline()) {
+                    signIn();
+                }
+                else {
+                    TastyToast.makeText(getApplicationContext(), "You are not connected to internet", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                }
             }
         });
 
@@ -269,6 +280,37 @@ private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         hideProgressDialog();
     }
 
+    public boolean isOnline() {
+        ConnectivityManager connMgr = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        return (networkInfo != null && networkInfo.isConnected());
+    }
+
+    public static boolean isInternetAvailable() {
+        Boolean isConnection = false;
+        int connectTimeout = 5000; // in ms
+        int readTimeout = 5000; // in ms
+        String ip204 = "http://clients3.google.com/generate_204";
+
+        try {
+            URL url = new URL(ip204);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setConnectTimeout(connectTimeout);
+            conn.setReadTimeout(readTimeout);
+            conn.setRequestMethod("HEAD");
+            InputStream in = conn.getInputStream();
+            int status = conn.getResponseCode();
+            in.close();
+            conn.disconnect();
+            if (status == HttpURLConnection.HTTP_NO_CONTENT) {
+                isConnection = true;
+            }
+        } catch (Exception e) {
+            isConnection = false;
+        }
+        return isConnection;
+    }
 
     private void showProgressDialog () {
             if (mProgressDialog == null) {

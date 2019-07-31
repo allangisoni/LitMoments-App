@@ -16,6 +16,8 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -57,6 +59,7 @@ import com.example.android.litmoments.AddJournal.JournalEntryAdapater;
 import com.example.android.litmoments.AddJournal.JournalEntryModel;
 import com.example.android.litmoments.AddJournal.JournalEntryViewHolder;
 import com.example.android.litmoments.AddJournal.JournalPhotoModel;
+import com.example.android.litmoments.Main.MainActivity;
 import com.example.android.litmoments.R;
 import com.example.android.litmoments.Settings.SettingsActivity;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -72,6 +75,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.kd.dynamic.calendar.generator.ImageGenerator;
+import com.sdsmdg.tastytoast.TastyToast;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
 import com.zhihu.matisse.engine.impl.PicassoEngine;
@@ -82,6 +86,9 @@ import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -663,11 +670,13 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
         if (TextUtils.isEmpty(etJournalTitle.getText().toString()))
         {
             Toast.makeText(EditJournalEntry.this, "Journal title is empty", Toast.LENGTH_SHORT).show();
+            TastyToast.makeText(getApplicationContext(), "Journal title is empty", TastyToast.LENGTH_SHORT, TastyToast.INFO);
         }
 
         else if (TextUtils.isEmpty(etJournalMessage.getText().toString() ))
         {
-            Toast.makeText(EditJournalEntry.this, "Journal message is empty", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(EditJournalEntry.this, "Journal message is empty", Toast.LENGTH_SHORT).show();
+            TastyToast.makeText(getApplicationContext(), "Journal message is empty", TastyToast.LENGTH_SHORT, TastyToast.INFO);
         }
 
         else
@@ -675,50 +684,52 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
 
 
             if (fileImages.size() != 0) {
+
+                if (isOnline()) {
+
                 final ProgressDialog progressDialog = new ProgressDialog(this);
                 progressDialog.setTitle("Saving Data");
                 progressDialog.show();
                 //adding the file to reference
                 DatabaseReference databaseReference = mDatabase;
-               // String refKey = databaseReference.push().getKey();
+                // String refKey = databaseReference.push().getKey();
                 //databaseReference.child(refKey);
                 ObjectMapper oMapper = new ObjectMapper();
 
                 HashMap<String, Object> myFilePath = new HashMap<String, Object>();
 
 
-
-                for ( int count =0; count < fileImages.size(); count++ ) {
-                    int imagecount =count;
+                for (int count = 0; count < fileImages.size(); count++) {
+                    int imagecount = count;
 
 
                     File myFile = fileImages.get(count);
                     StorageReference imageRef = storageReference.child(STORAGE_PATH_UPLOADS);
 
-                   // Toast.makeText(getApplicationContext(), " "+ fileImages.get(0).getAbsolutePath() +" ", Toast.LENGTH_LONG).show();
+                    // Toast.makeText(getApplicationContext(), " "+ fileImages.get(0).getAbsolutePath() +" ", Toast.LENGTH_LONG).show();
                     Log.i("fileImage", fileImages.get(count).getAbsolutePath());
                     String[] subfilename = fileImages.get(count).getAbsolutePath().split("%");
                     String fsname = " ";
                     String imageName = " ";
-                    if(subfilename.length >1) {
+                    if (subfilename.length > 1) {
                         fsname = subfilename[1];
                         imageName = fsname;
-                        imageName = imageName.substring(2,20);
+                        imageName = imageName.substring(2, 20);
                         isNewImage = false;
-                    } else{
+                    } else {
                         fsname = subfilename[0];
                         imageName = fsname;
-                        isNewImage =true;
+                        isNewImage = true;
 
                     }
 
-                    Log.i("imageurl", imageName );
+                    Log.i("imageurl", imageName);
 
-                    if(imageUploads.size() >0 && isNewImage == false){
+                    if (imageUploads.size() > 0 && isNewImage == false) {
 
-                       // Toast.makeText(getApplicationContext(), " "+ imageUploads.get(0) +" ", Toast.LENGTH_LONG).show();
+                        // Toast.makeText(getApplicationContext(), " "+ imageUploads.get(0) +" ", Toast.LENGTH_LONG).show();
 
-                      //  String imageName = imageUploads.get(count);
+                        //  String imageName = imageUploads.get(count);
 
                         imageRef.child(imageName).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                             @Override
@@ -728,7 +739,7 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
                                 String downloadUrl = uri.toString();
                                 uploadedImages.add(downloadUrl);
                                 JournalEntryModel journalEntryModel = new JournalEntryModel(tvJournalDate.getText().toString(), etJournalLocation.getText().toString(), currentWeather,
-                                        currentMood, etJournalTitle.getText().toString(), etJournalMessage.getText().toString(), journalMonth, journalDay,uploadedImages,
+                                        currentMood, etJournalTitle.getText().toString(), etJournalMessage.getText().toString(), journalMonth, journalDay, uploadedImages,
                                         refKey);
 
                                 Map<String, Object> productValues = oMapper.convertValue(journalEntryModel, Map.class);
@@ -740,7 +751,8 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
                                 databaseReference.updateChildren(childUpdates);
 
                                 progressDialog.dismiss();
-                                Toast.makeText(getApplicationContext(), "Updated", Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(getApplicationContext(), "Updated", Toast.LENGTH_SHORT).show();
+                                TastyToast.makeText(getApplicationContext(), "Updated", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
 
 
                             }
@@ -748,7 +760,7 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
                             @Override
                             public void onFailure(@NonNull Exception exceptionn) {
 
-                                urlExists =false;
+                                urlExists = false;
                                 // File not found
 
                                 //progressDialog.dismiss();
@@ -757,92 +769,93 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
                         });
 
 
-                        if(urlExists == false ){
-                      StorageReference sRef = storageReference.child(STORAGE_PATH_UPLOADS + System.currentTimeMillis() + "." + getFileExtension(Uri.fromFile(fileImages.get(count))));
+                        if (urlExists == false) {
+                            StorageReference sRef = storageReference.child(STORAGE_PATH_UPLOADS + System.currentTimeMillis() + "." + getFileExtension(Uri.fromFile(fileImages.get(count))));
 
-                      mUploadTask = sRef.putFile(Uri.fromFile(fileImages.get(count)));
+                            mUploadTask = sRef.putFile(Uri.fromFile(fileImages.get(count)));
 
-                      mUploadTask.addOnFailureListener(exception -> Log.i("It didn't work", "double check"))
-                              .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                  @Override
-                                  public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                      sRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                          @Override
-                                          public void onSuccess(Uri uri) {
+                            mUploadTask.addOnFailureListener(exception -> Log.i("It didn't work", "double check"))
+                                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                        @Override
+                                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                            sRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                                @Override
+                                                public void onSuccess(Uri uri) {
 
-                                              Uri downloadUrl = uri;
-                                              uploadedImages.add(downloadUrl.toString());
+                                                    Uri downloadUrl = uri;
+                                                    uploadedImages.add(downloadUrl.toString());
 
-                                              JournalEntryModel journalEntryModel = new JournalEntryModel(tvJournalDate.getText().toString(), etJournalLocation.getText().toString(), currentWeather,
-                                                      currentMood, etJournalTitle.getText().toString(), etJournalMessage.getText().toString(), journalMonth, journalDay,
-                                                      uploadedImages, refKey);
+                                                    JournalEntryModel journalEntryModel = new JournalEntryModel(tvJournalDate.getText().toString(), etJournalLocation.getText().toString(), currentWeather,
+                                                            currentMood, etJournalTitle.getText().toString(), etJournalMessage.getText().toString(), journalMonth, journalDay,
+                                                            uploadedImages, refKey);
 
-                                              Map<String, Object> productValues = oMapper.convertValue(journalEntryModel, Map.class);
+                                                    Map<String, Object> productValues = oMapper.convertValue(journalEntryModel, Map.class);
 
-                                              Map<String, Object> childUpdates = new HashMap<>();
-                                              childUpdates.put(refKey, productValues);
-                                              //  childUpdates.put("/user-products/" + "userId" + "/" + refKey, productValues);
+                                                    Map<String, Object> childUpdates = new HashMap<>();
+                                                    childUpdates.put(refKey, productValues);
+                                                    //  childUpdates.put("/user-products/" + "userId" + "/" + refKey, productValues);
 
-                                              databaseReference.updateChildren(childUpdates);
+                                                    databaseReference.updateChildren(childUpdates);
 
-                                              progressDialog.dismiss();
-                                              Toast.makeText(getApplicationContext(), "Updated", Toast.LENGTH_SHORT).show();
-                                              urlExists = true;
-
-
-                                          }
-                                      });
-
-                                  }
-                              });
-
-                      if(isNewImage == true){
-
-                          StorageReference secRef = storageReference.child(STORAGE_PATH_UPLOADS + System.currentTimeMillis() + "." + getFileExtension(Uri.fromFile(fileImages.get(count))));
-                          mUploadTask = secRef.putFile(Uri.fromFile(fileImages.get(count)));
-
-                          mUploadTask.addOnFailureListener(exception -> Log.i("It didn't work", "double check"))
-                                  .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                      @Override
-                                      public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                          secRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                              @Override
-                                              public void onSuccess(Uri uri) {
-
-                                                  Uri downloadUrl = uri;
-                                                  uploadedImages.add(downloadUrl.toString());
-
-                                                  JournalEntryModel journalEntryModel = new JournalEntryModel(tvJournalDate.getText().toString(), etJournalLocation.getText().toString(), currentWeather,
-                                                          currentMood, etJournalTitle.getText().toString(), etJournalMessage.getText().toString(), journalMonth, journalDay,
-                                                          uploadedImages, refKey);
-
-                                                  Map<String, Object> productValues = oMapper.convertValue(journalEntryModel, Map.class);
-
-                                                  Map<String, Object> childUpdates = new HashMap<>();
-                                                  childUpdates.put(refKey, productValues);
-                                                  //  childUpdates.put("/user-products/" + "userId" + "/" + refKey, productValues);
-
-                                                  databaseReference.updateChildren(childUpdates);
-
-                                                  progressDialog.dismiss();
-                                                  Toast.makeText(getApplicationContext(), "Updated", Toast.LENGTH_SHORT).show();
-                                                  urlExists = true;
-                                                  isNewImage = false;
+                                                    progressDialog.dismiss();
+                                                  //  Toast.makeText(getApplicationContext(), "Updated", Toast.LENGTH_SHORT).show();
+                                                    TastyToast.makeText(getApplicationContext(), "Updated", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                                                    urlExists = true;
 
 
-                                              }
-                                          });
+                                                }
+                                            });
 
-                                      }
-                                  });
+                                        }
+                                    });
+
+                            if (isNewImage == true) {
+
+                                StorageReference secRef = storageReference.child(STORAGE_PATH_UPLOADS + System.currentTimeMillis() + "." + getFileExtension(Uri.fromFile(fileImages.get(count))));
+                                mUploadTask = secRef.putFile(Uri.fromFile(fileImages.get(count)));
+
+                                mUploadTask.addOnFailureListener(exception -> Log.i("It didn't work", "double check"))
+                                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                            @Override
+                                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                                secRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                                    @Override
+                                                    public void onSuccess(Uri uri) {
+
+                                                        Uri downloadUrl = uri;
+                                                        uploadedImages.add(downloadUrl.toString());
+
+                                                        JournalEntryModel journalEntryModel = new JournalEntryModel(tvJournalDate.getText().toString(), etJournalLocation.getText().toString(), currentWeather,
+                                                                currentMood, etJournalTitle.getText().toString(), etJournalMessage.getText().toString(), journalMonth, journalDay,
+                                                                uploadedImages, refKey);
+
+                                                        Map<String, Object> productValues = oMapper.convertValue(journalEntryModel, Map.class);
+
+                                                        Map<String, Object> childUpdates = new HashMap<>();
+                                                        childUpdates.put(refKey, productValues);
+                                                        //  childUpdates.put("/user-products/" + "userId" + "/" + refKey, productValues);
+
+                                                        databaseReference.updateChildren(childUpdates);
+
+                                                        progressDialog.dismiss();
+                                                       // Toast.makeText(getApplicationContext(), "Updated", Toast.LENGTH_SHORT).show();
+                                                        TastyToast.makeText(getApplicationContext(), "Updated", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                                                        urlExists = true;
+                                                        isNewImage = false;
 
 
-                      }
+                                                    }
+                                                });
+
+                                            }
+                                        });
 
 
-                }
-                    }
-                else{
+                            }
+
+
+                        }
+                    } else {
 
 
                         StorageReference sRef = storageReference.child(STORAGE_PATH_UPLOADS + System.currentTimeMillis() + "." + getFileExtension(Uri.fromFile(fileImages.get(count))));
@@ -872,7 +885,8 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
                                                 databaseReference.updateChildren(childUpdates);
 
                                                 progressDialog.dismiss();
-                                                Toast.makeText(getApplicationContext(), "Updated", Toast.LENGTH_SHORT).show();
+                                                //Toast.makeText(getApplicationContext(), "Updated", Toast.LENGTH_SHORT).show();
+                                                TastyToast.makeText(getApplicationContext(), "Updated", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
                                                 urlExists = true;
 
 
@@ -882,13 +896,18 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
                                     }
                                 });
 
-                }
+                    }
 
                 }
 
                 pathList.clear();
-            }
 
+            }
+            else {
+
+                    TastyToast.makeText(getApplicationContext(), " please check your internet connection", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                }
+            }
 
             else {
                 //HashMap<String, String> myFilePath = new HashMap<String, String>();
@@ -900,13 +919,50 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
                 DatabaseReference databaseReference = mDatabase;
                 databaseReference.child(refKey).setValue(journalEntryModel);
                 //displaying success toast
-                Toast.makeText(getApplicationContext(), "Updated", Toast.LENGTH_SHORT).show();
+               // Toast.makeText(getApplicationContext(), "Updated", Toast.LENGTH_SHORT).show();
+                TastyToast.makeText(getApplicationContext(), "Updated", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                startActivity(new Intent(EditJournalEntry.this, MainActivity.class));
+                finish();
             }
 
         }
     }
 
-     public void setJournal(){
+    public boolean isOnline() {
+        ConnectivityManager connMgr = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        return (networkInfo != null && networkInfo.isConnected());
+    }
+
+    public static boolean isInternetAvailable() {
+        Boolean isConnection = false;
+        int connectTimeout = 5000; // in ms
+        int readTimeout = 5000; // in ms
+        String ip204 = "http://clients3.google.com/generate_204";
+
+        try {
+            URL url = new URL(ip204);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setConnectTimeout(connectTimeout);
+            conn.setReadTimeout(readTimeout);
+            conn.setRequestMethod("HEAD");
+            InputStream in = conn.getInputStream();
+            int status = conn.getResponseCode();
+            in.close();
+            conn.disconnect();
+            if (status == HttpURLConnection.HTTP_NO_CONTENT) {
+                isConnection = true;
+            }
+        } catch (Exception e) {
+            isConnection = false;
+        }
+        return isConnection;
+    }
+
+
+
+    public void setJournal(){
 
         tvJournalDate.setText(journalEntry.getJournalDate());
         etJournalLocation.setText(journalEntry.getJournalLocation());
@@ -1332,7 +1388,41 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
             Typeface myCustomFont = ResourcesCompat.getFont(this, R.font.sofadi_one);
             FontUtils fontUtils = new FontUtils();
             fontUtils.applyFontToToolbar(entryToolbar, myCustomFont);
-        } else {
+        }else if(selectedFont.equals("3")){
+            FontUtils fontUtils = new FontUtils();
+            Typeface myCustomFont = Typeface.create("sans-serif-condensed", Typeface.NORMAL);
+            fontUtils.applyFontToToolbar(entryToolbar, myCustomFont);
+        }
+        else if( selectedFont.equals("4")) {
+            Typeface myCustomFont = ResourcesCompat.getFont(this, R.font.concert_one);
+            FontUtils fontUtils = new FontUtils();
+            fontUtils.applyFontToToolbar(entryToolbar, myCustomFont);
+
+        }
+        else if( selectedFont.equals("5")) {
+            Typeface myCustomFont = ResourcesCompat.getFont(this, R.font.oleo_script);
+            FontUtils fontUtils = new FontUtils();
+            fontUtils.applyFontToToolbar(entryToolbar, myCustomFont);
+        }
+        else if( selectedFont.equals("6")) {
+            Typeface myCustomFont = ResourcesCompat.getFont(this, R.font.pt_sans_narrow);
+            FontUtils fontUtils = new FontUtils();
+            fontUtils.applyFontToToolbar(entryToolbar, myCustomFont);
+
+        }  else if( selectedFont.equals("7")) {
+            Typeface myCustomFont = ResourcesCompat.getFont(this, R.font.roboto_condensed_light);
+            FontUtils fontUtils = new FontUtils();
+            fontUtils.applyFontToToolbar(entryToolbar, myCustomFont);
+        }  else if( selectedFont.equals("8")) {
+            Typeface myCustomFont = ResourcesCompat.getFont(this, R.font.shadows_into_light);
+            FontUtils fontUtils = new FontUtils();
+            fontUtils.applyFontToToolbar(entryToolbar, myCustomFont);
+        } else if( selectedFont.equals("9")) {
+            Typeface myCustomFont = ResourcesCompat.getFont(this, R.font.slabo_13px);
+            FontUtils fontUtils = new FontUtils();
+            fontUtils.applyFontToToolbar(entryToolbar, myCustomFont);
+        }
+        else {
 
         }
     }

@@ -43,7 +43,9 @@ import com.example.android.litmoments.AboutusActivity;
 import com.example.android.litmoments.Application.AppCompatPreferenceActivity;
 import com.example.android.litmoments.Login.LoginActivity;
 import com.example.android.litmoments.PrefMethods;
+import com.example.android.litmoments.PrivacyActivity;
 import com.example.android.litmoments.R;
+import com.example.android.litmoments.TermsActivity;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
@@ -221,12 +223,53 @@ public class SettingsActivity  extends AppCompatPreferenceActivity implements Sh
                 }
             });
 
+            Preference prefprivacy = findPreference(getResources().getString(R.string.key_privacy));
+
+            prefprivacy.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    Intent intent = new Intent(getActivity(), PrivacyActivity.class);
+                    startActivity(intent);
+                    return true;
+                }
+            });
+
+            Preference prefterms = findPreference(getResources().getString(R.string.key_termsofuse));
+
+            prefterms.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    Intent intent = new Intent(getActivity(), TermsActivity.class);
+                    startActivity(intent);
+                    return true;
+                }
+            });
+
+            Preference prefshare = findPreference(getResources().getString(R.string.key_tellafriend));
+
+            prefshare.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    Intent share = new Intent(android.content.Intent.ACTION_SEND);
+                    share.setType("text/plain");
+                    share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+
+                    // Add data to the intent, the receiving app will decide
+                    // what to do with it.
+                    share.putExtra(Intent.EXTRA_SUBJECT, "Lit Moments App");
+                    share.putExtra(Intent.EXTRA_TEXT, "http://www.litmoments.com");
+
+                    startActivity(Intent.createChooser(share, "Share App!"));
+                    return true;
+                }
+            });
+
 
             Preference prefrateus = findPreference(getResources().getString(R.string.key_rateus));
             prefrateus.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + "Lit Moments")));
                     return true;
                 }
             });
@@ -385,6 +428,38 @@ public class SettingsActivity  extends AppCompatPreferenceActivity implements Sh
             Typeface myCustomFont = ResourcesCompat.getFont(this, R.font.sofadi_one);
             FontUtils fontUtils = new FontUtils();
             fontUtils.applyFontToToolbar(toolbar, myCustomFont);
+        }  else if(selectedFont.equals("3")){
+            FontUtils fontUtils = new FontUtils();
+            Typeface myCustomFont = Typeface.create("sans-serif-condensed", Typeface.NORMAL);
+            fontUtils.applyFontToToolbar(toolbar, myCustomFont);
+        } else if( selectedFont.equals("4")) {
+            Typeface myCustomFont = ResourcesCompat.getFont(this, R.font.concert_one);
+            FontUtils fontUtils = new FontUtils();
+            fontUtils.applyFontToToolbar(toolbar, myCustomFont);
+
+        }
+        else if( selectedFont.equals("5")) {
+            Typeface myCustomFont = ResourcesCompat.getFont(this, R.font.oleo_script);
+            FontUtils fontUtils = new FontUtils();
+            fontUtils.applyFontToToolbar(toolbar, myCustomFont);
+        }
+        else if( selectedFont.equals("6")) {
+            Typeface myCustomFont = ResourcesCompat.getFont(this, R.font.pt_sans_narrow);
+            FontUtils fontUtils = new FontUtils();
+            fontUtils.applyFontToToolbar(toolbar, myCustomFont);
+
+        }  else if( selectedFont.equals("7")) {
+            Typeface myCustomFont = ResourcesCompat.getFont(this, R.font.roboto_condensed_light);
+            FontUtils fontUtils = new FontUtils();
+            fontUtils.applyFontToToolbar(toolbar, myCustomFont);
+        }  else if( selectedFont.equals("8")) {
+            Typeface myCustomFont = ResourcesCompat.getFont(this, R.font.shadows_into_light);
+            FontUtils fontUtils = new FontUtils();
+            fontUtils.applyFontToToolbar(toolbar, myCustomFont);
+        } else if( selectedFont.equals("9")) {
+            Typeface myCustomFont = ResourcesCompat.getFont(this, R.font.slabo_13px);
+            FontUtils fontUtils = new FontUtils();
+            fontUtils.applyFontToToolbar(toolbar, myCustomFont);
         } else {
 
         }
@@ -419,6 +494,7 @@ public class SettingsActivity  extends AppCompatPreferenceActivity implements Sh
         super.onDestroy();
         PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this);
 
+
     }
 
 
@@ -427,4 +503,6 @@ public class SettingsActivity  extends AppCompatPreferenceActivity implements Sh
     protected boolean isValidFragment(String fragmentName) {
         return SettingsActivity.class.getName().equals(fragmentName);
     }
+
+
 }

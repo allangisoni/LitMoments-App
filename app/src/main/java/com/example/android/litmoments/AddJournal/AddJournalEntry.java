@@ -20,6 +20,8 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -55,6 +57,7 @@ import android.widget.Toast;
 
 
 import com.ajts.androidmads.fontutils.FontUtils;
+import com.example.android.litmoments.Main.MainActivity;
 import com.example.android.litmoments.R;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.flexbox.FlexDirection;
@@ -62,6 +65,7 @@ import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.flexbox.JustifyContent;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
@@ -90,7 +94,10 @@ import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URI;
+import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -205,6 +212,8 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
     private static final int MY_WRITESTORAGE_REQUEST_CODE = 100;
     private static final int MY_CAMERA_REQUEST_CODE = 102;
     private static final int MY_LOCATION_REQUEST_CODE = 104;
+
+    int photocount = 0,  jumpsize =0 ;
 
 
     private final ScheduledExecutorService scheduler =
@@ -798,7 +807,6 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
             if (addresses != null && addresses.size() > 0) {
 
 
-
                 String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
                 String city = addresses.get(0).getLocality();
                 String state = addresses.get(0).getAdminArea();
@@ -842,14 +850,18 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
 
    public void uploadJournal() {
 
+
+
        if (TextUtils.isEmpty(etJournalTitle.getText().toString()))
        {
-           Toast.makeText(AddJournalEntry.this, "Journal title is empty", Toast.LENGTH_SHORT).show();
+           //Toast.makeText(AddJournalEntry.this, "Journal title is empty", Toast.LENGTH_SHORT).show();
+           TastyToast.makeText(getApplicationContext(), "Journal title is empty", TastyToast.LENGTH_SHORT, TastyToast.INFO);
        }
 
        else if (TextUtils.isEmpty(etJournalMessage.getText().toString() ))
        {
-           Toast.makeText(AddJournalEntry.this, "Journal message is empty", Toast.LENGTH_SHORT).show();
+          // Toast.makeText(AddJournalEntry.this, "Journal message is empty", Toast.LENGTH_SHORT).show();
+           TastyToast.makeText(getApplicationContext(), "Journal message is empty", TastyToast.LENGTH_SHORT, TastyToast.INFO);
        }
 
        else
@@ -858,25 +870,40 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
 
                if (photoList.size() != 0) {
 
+                   if(isOnline()){
                    //Toast.makeText(AddJournalEntry.this, " " +  photoList.size() + " ", Toast.LENGTH_SHORT).show();
 
-               //getting the storage reference
+                  //getting the storage reference
                  // StorageReference sRef = storageReference.child(STORAGE_PATH_UPLOADS + System.currentTimeMillis() + "." + getFileExtension(Uri.fromFile(fileImages.get(0))));
 
                    final ProgressDialog progressDialog = new ProgressDialog(this);
-                   progressDialog.setTitle("Saving Data");
+                   //  progressDialog.setTitle("Saving Data");
+                  // progressDialog.show();
+
+                   progressDialog.setMessage("Uploading Data");
+                   progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                   progressDialog.setIndeterminate(true);
+                   progressDialog.setProgress(0);
                    progressDialog.show();
+
                   //adding the file to reference
                    DatabaseReference databaseReference = mDatabase;
                    refKey = databaseReference.push().getKey();
                    //databaseReference.child(refKey);
                    ObjectMapper oMapper = new ObjectMapper();
 
+                   int  progresssize= 0;
+                   progresssize = photoList.size();
+
+                    jumpsize = 100 / progresssize;
+
 
                  //  databaseReference.setValue(journalEntryModel);
                    HashMap<String, Object> myFilePath = new HashMap<String, Object>();
                        for ( int count =0; count < photoList.size(); count++ ) {
 
+
+                           photocount = 0;
                        // File myFile = fileImages.get(count);
                            String path =imagesUri.get(count).toString();
                            File myFile = new File(path);
@@ -928,14 +955,37 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
                                           //  childUpdates.put("/user-products/" + "userId" + "/" + refKey, productValues);
 
                                           databaseReference.updateChildren(childUpdates);
-                                          progressDialog.dismiss();
-                                         Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_SHORT).show();
+                                          if(jumpsize < 100){
+
+                                              progressDialog.setProgress(jumpsize);
+                                              jumpsize = jumpsize + jumpsize;
+
+                                          } else {
+
+                                              progressDialog.dismiss();
+                                              TastyToast.makeText(getApplicationContext(), "Saved successfully", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                                              startActivity(new Intent(AddJournalEntry.this, MainActivity.class));
+                                              finish();
+                                          }
+                                         //Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_SHORT).show();
+                                      }
+
+
+
+                                  }) .addOnFailureListener(new OnFailureListener() {
+                                      @Override
+                                      public void onFailure(@NonNull Exception e) {
+                                          TastyToast.makeText(getApplicationContext(), "Image upload failed", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                                       }
                                   });
 
 
 
                               }
+
+
+
+
                           });
 
                          /** mUploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -996,15 +1046,23 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
                            //Toasty.success(getApplicationContext(), "Saved!", Toast.LENGTH_SHORT, true).show();
 
                       }
-
-
-
+                     // progressDialog.dismiss();
+                      //TastyToast.makeText(getApplicationContext(), "Saved successfully ", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
 
                       //dismissing the progress dialog
 
                    pathList.clear();
                   // fileImages.clear();
+
+                   //TastyToast.makeText(getApplicationContext(), "Saved successfully ", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
                   }
+
+                   else{
+                    TastyToast.makeText(getApplicationContext(), "Please check your internet connection", TastyToast.LENGTH_SHORT, TastyToast.INFO);
+                   }
+
+           }
+
 
 
              else {
@@ -1023,10 +1081,44 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
            //Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_LONG).show();
            //Toasty.success(getApplicationContext(), "Saved!", Toast.LENGTH_SHORT, true).show();
            TastyToast.makeText(getApplicationContext(), "Saved successfully ", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+           startActivity(new Intent(AddJournalEntry.this, MainActivity.class));
+           finish();
            }
 
        }
    }
+
+    public boolean isOnline() {
+        ConnectivityManager connMgr = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        return (networkInfo != null && networkInfo.isConnected());
+    }
+
+    public static boolean isInternetAvailable() {
+        Boolean isConnection = false;
+        int connectTimeout = 5000; // in ms
+        int readTimeout = 5000; // in ms
+        String ip204 = "http://clients3.google.com/generate_204";
+
+        try {
+            URL url = new URL(ip204);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setConnectTimeout(connectTimeout);
+            conn.setReadTimeout(readTimeout);
+            conn.setRequestMethod("HEAD");
+            InputStream in = conn.getInputStream();
+            int status = conn.getResponseCode();
+            in.close();
+            conn.disconnect();
+            if (status == HttpURLConnection.HTTP_NO_CONTENT) {
+                isConnection = true;
+            }
+        } catch (Exception e) {
+            isConnection = false;
+        }
+        return isConnection;
+    }
 
     public String getFileExtension(Uri uri) {
         ContentResolver cR = getContentResolver();
@@ -1280,7 +1372,41 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
             Typeface myCustomFont = ResourcesCompat.getFont(this, R.font.sofadi_one);
             FontUtils fontUtils = new FontUtils();
             fontUtils.applyFontToToolbar(entryToolbar, myCustomFont);
-        } else {
+        } else if(selectedFont.equals("3")){
+            FontUtils fontUtils = new FontUtils();
+            Typeface myCustomFont = Typeface.create("sans-serif-condensed", Typeface.NORMAL);
+            fontUtils.applyFontToToolbar(entryToolbar, myCustomFont);
+        }
+        else if( selectedFont.equals("4")) {
+            Typeface myCustomFont = ResourcesCompat.getFont(this, R.font.concert_one);
+            FontUtils fontUtils = new FontUtils();
+            fontUtils.applyFontToToolbar(entryToolbar, myCustomFont);
+
+        }
+        else if( selectedFont.equals("5")) {
+            Typeface myCustomFont = ResourcesCompat.getFont(this, R.font.oleo_script);
+            FontUtils fontUtils = new FontUtils();
+            fontUtils.applyFontToToolbar(entryToolbar, myCustomFont);
+        }
+        else if( selectedFont.equals("6")) {
+            Typeface myCustomFont = ResourcesCompat.getFont(this, R.font.pt_sans_narrow);
+            FontUtils fontUtils = new FontUtils();
+            fontUtils.applyFontToToolbar(entryToolbar, myCustomFont);
+
+        }  else if( selectedFont.equals("7")) {
+            Typeface myCustomFont = ResourcesCompat.getFont(this, R.font.roboto_condensed_light);
+            FontUtils fontUtils = new FontUtils();
+            fontUtils.applyFontToToolbar(entryToolbar, myCustomFont);
+        }  else if( selectedFont.equals("8")) {
+            Typeface myCustomFont = ResourcesCompat.getFont(this, R.font.shadows_into_light);
+            FontUtils fontUtils = new FontUtils();
+            fontUtils.applyFontToToolbar(entryToolbar, myCustomFont);
+        } else if( selectedFont.equals("9")) {
+            Typeface myCustomFont = ResourcesCompat.getFont(this, R.font.slabo_13px);
+            FontUtils fontUtils = new FontUtils();
+            fontUtils.applyFontToToolbar(entryToolbar, myCustomFont);
+        } 
+        else {
 
         }
     }

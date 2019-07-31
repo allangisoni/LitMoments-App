@@ -165,8 +165,63 @@ public class JournalViewHolder  extends RecyclerView.ViewHolder{
             fontUtils.applyFontToView(tvJournalDay,Typeface.SANS_SERIF);
             fontUtils.applyFontToView(tvJournalYear,Typeface.SANS_SERIF);
             fontUtils.applyFontToView(tvJournalLocation,Typeface.SANS_SERIF);
+        }  else if( selectedFont.equals("4")) {
+            Typeface myCustomFont = ResourcesCompat.getFont(itemView.getContext(), R.font.concert_one);
+            FontUtils fontUtils = new FontUtils();
+            fontUtils.applyFontToView(tvJournalTitle, myCustomFont);
+            fontUtils.applyFontToView(tvJournalMonth, myCustomFont);
+            fontUtils.applyFontToView(tvJournalMessage, myCustomFont);
+            fontUtils.applyFontToView(tvJournalDay, myCustomFont);
+            fontUtils.applyFontToView(tvJournalYear, myCustomFont);
+            fontUtils.applyFontToView(tvJournalLocation, myCustomFont);
         }
-
+        else if( selectedFont.equals("5")) {
+            Typeface myCustomFont = ResourcesCompat.getFont(itemView.getContext(), R.font.oleo_script);
+            FontUtils fontUtils = new FontUtils();
+            fontUtils.applyFontToView(tvJournalTitle, myCustomFont);
+            fontUtils.applyFontToView(tvJournalMonth, myCustomFont);
+            fontUtils.applyFontToView(tvJournalMessage, myCustomFont);
+            fontUtils.applyFontToView(tvJournalDay, myCustomFont);
+            fontUtils.applyFontToView(tvJournalYear, myCustomFont);
+            fontUtils.applyFontToView(tvJournalLocation, myCustomFont);
+        }
+        else if( selectedFont.equals("6")) {
+            Typeface myCustomFont = ResourcesCompat.getFont(itemView.getContext(), R.font.pt_sans_narrow);
+            FontUtils fontUtils = new FontUtils();
+            fontUtils.applyFontToView(tvJournalTitle, myCustomFont);
+            fontUtils.applyFontToView(tvJournalMonth, myCustomFont);
+            fontUtils.applyFontToView(tvJournalMessage, myCustomFont);
+            fontUtils.applyFontToView(tvJournalDay, myCustomFont);
+            fontUtils.applyFontToView(tvJournalYear, myCustomFont);
+            fontUtils.applyFontToView(tvJournalLocation, myCustomFont);
+        }  else if( selectedFont.equals("7")) {
+            Typeface myCustomFont = ResourcesCompat.getFont(itemView.getContext(), R.font.roboto_condensed_light);
+            FontUtils fontUtils = new FontUtils();
+            fontUtils.applyFontToView(tvJournalTitle, myCustomFont);
+            fontUtils.applyFontToView(tvJournalMonth, myCustomFont);
+            fontUtils.applyFontToView(tvJournalMessage, myCustomFont);
+            fontUtils.applyFontToView(tvJournalDay, myCustomFont);
+            fontUtils.applyFontToView(tvJournalYear, myCustomFont);
+            fontUtils.applyFontToView(tvJournalLocation, myCustomFont);
+        }  else if( selectedFont.equals("8")) {
+            Typeface myCustomFont = ResourcesCompat.getFont(itemView.getContext(), R.font.shadows_into_light);
+            FontUtils fontUtils = new FontUtils();
+            fontUtils.applyFontToView(tvJournalTitle, myCustomFont);
+            fontUtils.applyFontToView(tvJournalMonth, myCustomFont);
+            fontUtils.applyFontToView(tvJournalMessage, myCustomFont);
+            fontUtils.applyFontToView(tvJournalDay, myCustomFont);
+            fontUtils.applyFontToView(tvJournalYear, myCustomFont);
+            fontUtils.applyFontToView(tvJournalLocation, myCustomFont);
+        } else if( selectedFont.equals("9")) {
+            Typeface myCustomFont = ResourcesCompat.getFont(itemView.getContext(), R.font.slabo_13px);
+            FontUtils fontUtils = new FontUtils();
+            fontUtils.applyFontToView(tvJournalTitle, myCustomFont);
+            fontUtils.applyFontToView(tvJournalMonth, myCustomFont);
+            fontUtils.applyFontToView(tvJournalMessage, myCustomFont);
+            fontUtils.applyFontToView(tvJournalDay, myCustomFont);
+            fontUtils.applyFontToView(tvJournalYear, myCustomFont);
+            fontUtils.applyFontToView(tvJournalLocation, myCustomFont);
+        }
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
                 listener.onItemClick(journalItem);

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="oval">
+            <stroke android:color="@color/displayicons" android:width="1dp" />
+            <solid android:color="@color/displayicons"/>
+            <size android:width="22dp" android:height="22dp"/>
+        </shape>
+    </item>
+    <item>
+        <bitmap android:src="@drawable/ic_edit_white"/>
+    </item>
+</selector>

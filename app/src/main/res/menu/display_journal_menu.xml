@@ -12,7 +12,8 @@
         android:orderInCategory="80"
         android:title="@string/edit_journal"
         app:showAsAction="ifRoom"
-        android:icon="@drawable/ic_edit_white" />
+        android:icon="@drawable/ic_edit_white"
+        />
     <item
         android:id="@+id/action_delete"
         android:orderInCategory="90"

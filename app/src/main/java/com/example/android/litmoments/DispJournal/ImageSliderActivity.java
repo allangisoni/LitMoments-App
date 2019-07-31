@@ -1,9 +1,17 @@
 package com.example.android.litmoments.DispJournal;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,17 +23,30 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
+
 
 import com.eftimoff.viewpagertransformers.AccordionTransformer;
+import com.example.android.litmoments.BuildConfig;
 import com.example.android.litmoments.R;
 import com.example.android.litmoments.ViewPagerAdapter;
 import com.example.android.litmoments.ViewPagerImages;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.internal.Util;
 
 
 public class ImageSliderActivity extends AppCompatActivity {
@@ -38,6 +59,7 @@ public class ImageSliderActivity extends AppCompatActivity {
 
     private List<ViewPagerImages> journalImages = new ArrayList<>();
      List<ViewPagerImages> imagesList = new ArrayList<>();
+     String currentImage = " ";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,7 +103,10 @@ public class ImageSliderActivity extends AppCompatActivity {
              viewPagerImages.setJournalImagePath(image);
              //imagesList.add(image);
             journalImages.add(viewPagerImages);
+
         }
+
+        currentImage = journalImages.get(0).getJournalImagePath();
 
 
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(this, journalImages);
@@ -113,7 +138,9 @@ public class ImageSliderActivity extends AppCompatActivity {
 
                 @Override
                 public void onPageSelected(int position) {
-
+                    ViewPagerImages viewPagerImage = journalImages.get(position);
+                    currentImage = viewPagerImage.getJournalImagePath();
+                   // Toast.makeText(getApplicationContext(), currentImage, Toast.LENGTH_LONG).show();
                     for(int i = 0; i< dotscount; i++){
                         dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.non_active_dot));
                     }
@@ -151,6 +178,7 @@ public class ImageSliderActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_share) {
+            shareImagePicasso(currentImage, getApplicationContext());
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -167,4 +195,50 @@ public class ImageSliderActivity extends AppCompatActivity {
         }
         win.setAttributes(winParams);
     }
+
+    public void shareImagePicasso(String url, final Context context) {
+        Picasso.with(context).load(url).into(new Target() {
+            @Override public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                Intent i = new Intent(Intent.ACTION_SEND);
+                i.setType("image/*");
+                i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                i.putExtra(Intent.EXTRA_STREAM, getlocalBitmapUri(bitmap));
+                context.startActivity(Intent.createChooser(i, "Share image using"));
+            }
+            @Override public void onBitmapFailed(Drawable errorDrawable) { }
+            @Override public void onPrepareLoad(Drawable placeHolderDrawable) { }
+        });
+    }
+
+      public Uri getlocalBitmapUri(Bitmap bitmap) {
+        Uri bmuri = null;
+
+         try {
+             File cachePath = new File(getCacheDir(), "images");
+             cachePath.mkdirs(); // don't forget to make the directory
+             FileOutputStream stream = new FileOutputStream(cachePath + "/image.png"); // overwrites this image every time
+             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+             stream.close();
+
+         } catch (IOException e) {
+             e.printStackTrace();
+         }
+         File imagePath = new File(this.getCacheDir(), "images");
+         File newFile = new File(imagePath, "image.png");
+         Uri contentUri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".fileprovider", newFile);
+
+         try {
+            File file = new File(Environment.getExternalStorageDirectory() + File.separator + "image.jpg");
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fileOutputStream);
+            fileOutputStream.close();
+            bmuri = Uri.fromFile(file);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e2) {
+            e2.printStackTrace();
+        }
+        return contentUri;
+    }
+
 }

@@ -2,6 +2,7 @@ package com.example.android.litmoments.Settings;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.preference.PreferenceCategory;
 import android.util.AttributeSet;
 import android.view.View;
@@ -32,6 +33,7 @@ public class MyPreferenceCategory extends PreferenceCategory {
         TextView categoryTitle =  (TextView)super.onCreateView(parent);
         categoryTitle.setTextColor(parent.getResources().getColor(R.color.bluecolorPrimary));
         categoryTitle.setTextSize(20);
+        categoryTitle.setTypeface( Typeface.DEFAULT, Typeface.BOLD);
         return categoryTitle;
     }
 

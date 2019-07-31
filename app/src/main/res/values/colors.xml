@@ -24,4 +24,5 @@
     <color name="dashbackground">#13253D</color>
     <color name="piechartBackground">#213550</color>
 
+    <color name="displayicons">#ffffe6</color>
 </resources>

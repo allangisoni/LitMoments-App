@@ -359,7 +359,40 @@ public class MainActivity extends AppCompatActivity implements JournalMainAdapte
             Typeface myCustomFont = ResourcesCompat.getFont(this, R.font.sofadi_one);
             FontUtils fontUtils = new FontUtils();
             fontUtils.applyFontToToolbar(toolbar, myCustomFont);
-        } else {
+        } else if(selectedFont.equals("3")){
+            FontUtils fontUtils = new FontUtils();
+            Typeface myCustomFont = Typeface.create("sans-serif-condensed", Typeface.NORMAL);
+            fontUtils.applyFontToToolbar(toolbar, myCustomFont);
+        }
+        else if( selectedFont.equals("4")) {
+        Typeface myCustomFont = ResourcesCompat.getFont(this, R.font.concert_one);
+        FontUtils fontUtils = new FontUtils();
+        fontUtils.applyFontToToolbar(toolbar, myCustomFont);
+        
+        }
+        else if( selectedFont.equals("5")) {
+        Typeface myCustomFont = ResourcesCompat.getFont(this, R.font.oleo_script);
+        FontUtils fontUtils = new FontUtils();
+        fontUtils.applyFontToToolbar(toolbar, myCustomFont);
+    }
+        else if( selectedFont.equals("6")) {
+        Typeface myCustomFont = ResourcesCompat.getFont(this, R.font.pt_sans_narrow);
+        FontUtils fontUtils = new FontUtils();
+        fontUtils.applyFontToToolbar(toolbar, myCustomFont);
+  
+    }  else if( selectedFont.equals("7")) {
+        Typeface myCustomFont = ResourcesCompat.getFont(this, R.font.roboto_condensed_light);
+        FontUtils fontUtils = new FontUtils();
+        fontUtils.applyFontToToolbar(toolbar, myCustomFont);
+    }  else if( selectedFont.equals("8")) {
+        Typeface myCustomFont = ResourcesCompat.getFont(this, R.font.shadows_into_light);
+        FontUtils fontUtils = new FontUtils();
+            fontUtils.applyFontToToolbar(toolbar, myCustomFont);
+    } else if( selectedFont.equals("9")) {
+        Typeface myCustomFont = ResourcesCompat.getFont(this, R.font.slabo_13px);
+        FontUtils fontUtils = new FontUtils();
+            fontUtils.applyFontToToolbar(toolbar, myCustomFont);
+    }else {
 
         }
     }

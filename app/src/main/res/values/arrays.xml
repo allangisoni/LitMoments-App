@@ -17,12 +17,25 @@
         <item>Patrick Hand</item>
         <item>Calligraffitti</item>
         <item>Sans Serif</item>
+        <item>Concert One</item>
+        <item>Oleo Script</item>
+        <item>Pt Sans</item>
+        <item>Roboto</item>
+        <item>Shadows into Light</item>
+        <item>Slabo</item>
+
     </string-array>
     <string-array name="pref_upload_font_values">
         <item>0</item>
         <item>1</item>
         <item>2</item>
         <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
     </string-array>
 
    <array name="dot_on_page_active">
