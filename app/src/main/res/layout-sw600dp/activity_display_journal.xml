@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.lit.litmoments.DispJournal.DisplayJournal"
+    android:theme="@style/DisplayStyle">
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:scrollbars="none">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <ImageView
+                android:id="@+id/ivdpJournalPhoto"
+                android:layout_width="match_parent"
+                android:layout_height="910dp"
+                android:contentDescription="@string/journalPhoto"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_letstravel"
+                android:transitionName="journaltrans"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="910dp"
+                android:layout_gravity="bottom"
+                android:background="@drawable/scrim"
+                tools:layout_editor_absoluteX="0dp"
+                tools:layout_editor_absoluteY="0dp" />
+
+            <View
+                android:id="@+id/view2"
+                android:layout_width="match_parent"
+                android:layout_height="130dp"
+                android:layout_gravity="bottom"
+                android:background="@drawable/titlescrim"
+                app:layout_constraintBottom_toBottomOf="@+id/ivdpJournalPhoto" />
+
+            <TextView
+                android:gravity="center_horizontal"
+                android:id="@+id/tvdpJournalTitle"
+                style="@style/Base.TextAppearance.AppCompat.Medium"
+                android:layout_width="350dp"
+                android:layout_height="wrap_content"
+                android:maxHeight="80dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="776dp"
+                android:textSize="26sp"
+                android:fontFamily="sans-serif"
+                android:hint="@string/journalTitle"
+                android:textColor="@color/quantum_white_100"
+                android:textColorHint="@color/colorAccent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/ivdpJournalPhoto" />
+
+
+            <TextView
+                android:id="@+id/textView3"
+                style="@style/Base.TextAppearance.AppCompat.Medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="556dp"
+                android:fontFamily="sans-serif"
+                android:hint="Dumy"
+                android:visibility="invisible"
+                android:textColor="@color/quantum_white_100"
+                android:textColorHint="@color/colorAccent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/ivdpJournalPhoto" />
+
+
+            <TextView
+                android:id="@+id/tvdpJournalLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="15dp"
+                android:layout_below="@id/ivdpJournalPhoto"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="24dp"
+                android:hint="@string/journalLocation"
+                android:textColor="@color/colorAccent"
+                android:textColorHint="@color/colorAccent"
+                android:textSize="12sp"
+                app:layout_constraintStart_toEndOf="@+id/ivLocation"
+                app:layout_constraintTop_toBottomOf="@+id/ivdpJournalPhoto" />
+
+            <TextView
+                android:id="@+id/tvdpJournalWeather"
+                android:layout_width="wrap_content"
+                android:layout_height="19dp"
+                android:layout_below="@id/ivdpJournalPhoto"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="24dp"
+                android:layout_toRightOf="@id/tvdpJournalLocation"
+                android:hint="@string/journalWeather"
+                android:textColor="@color/colorAccent"
+                android:textColorHint="@color/colorAccent"
+                android:textSize="14sp"
+                app:layout_constraintStart_toEndOf="@+id/ivWeather"
+                app:layout_constraintTop_toBottomOf="@+id/ivdpJournalPhoto" />
+
+            <TextView
+                android:id="@+id/tvdpJournalDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvdpJournalWeather"
+                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="12dp"
+                android:layout_toRightOf="@+id/tvdpJournalMood"
+                android:hint="@string/journalDate"
+                android:textColor="@color/colorAccent"
+                android:textColorHint="@color/colorAccent"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/ivCalender"
+                app:layout_constraintTop_toBottomOf="@+id/tvdpJournalWeather" />
+
+            <TextView
+                android:id="@+id/tvdpJournalMood"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvdpJournalWeather"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:hint="@string/journalMood"
+                android:textColor="@color/colorAccent"
+                android:textColorHint="@color/colorAccent"
+                android:textSize="14sp"
+                app:layout_constraintStart_toEndOf="@+id/ivMood"
+                app:layout_constraintTop_toTopOf="@+id/ivMood" />
+
+            <ImageView
+                android:id="@+id/ivLocation"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="24dp"
+                android:contentDescription="@string/journalLocation"
+                android:src="@drawable/ic_location"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ivdpJournalPhoto" />
+
+            <ImageView
+                android:id="@+id/ivMood"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:contentDescription="@string/journalMood"
+                android:src="@drawable/ic_happy"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ivLocation" />
+
+            <ImageView
+                android:id="@+id/ivWeather"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_marginLeft="90dp"
+                android:layout_marginStart="90dp"
+                android:layout_marginTop="24dp"
+                android:contentDescription="@string/journalWeather"
+                android:src="@drawable/ic_weather"
+                app:layout_constraintStart_toStartOf="@+id/textView3"
+                app:layout_constraintTop_toBottomOf="@+id/ivdpJournalPhoto" />
+
+            <ImageView
+                android:id="@+id/ivCalender"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_marginTop="8dp"
+                android:contentDescription="@string/journalMood"
+                android:src="@drawable/ic_calender"
+                app:layout_constraintStart_toStartOf="@+id/ivWeather"
+                app:layout_constraintTop_toBottomOf="@+id/ivWeather" />
+
+            <View
+                android:id="@+id/view"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/viewbackground"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvdpJournalDate" />
+
+            <TextView
+                android:id="@+id/tvdpJournalMessage"
+                style="@style/Base.TextAppearance.AppCompat.Medium"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvdpJournalMood"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:hint="@string/journalMessage"
+                android:textColor="@color/colorAccent"
+                android:textColorHint="@color/colorAccent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/view" />
+
+            <ImageView
+                android:id="@+id/ivSlideUp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="28dp"
+                android:contentDescription="@string/journalMood"
+                android:src="@drawable/ic_up"
+                android:tint="@color/background"
+                app:layout_constraintBottom_toBottomOf="@+id/view2"
+                app:layout_constraintEnd_toEndOf="@+id/view2"
+                app:layout_constraintHorizontal_bias="0.50"
+                app:layout_constraintStart_toStartOf="@+id/view2" />
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/entrytoolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@android:color/transparent"
+        app:elevation="0dp"
+        />
+
+</RelativeLayout>

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cvJournal"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:layout_marginTop="8dp"
+        android:foreground="?android:attr/selectableItemBackground">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="0dp">
+        <LinearLayout
+            android:layout_width="120dp"
+            android:layout_height="180dp"
+            android:id="@+id/llDate"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_marginTop="33dp"
+                android:id="@+id/tvMonth"
+                android:layout_width="90dp"
+                android:layout_height="40dp"
+                android:textSize="13sp"
+                android:gravity="center"
+                android:text="@string/journalDate"/>
+
+            <TextView
+                android:id="@+id/tvDay"
+                android:gravity="center"
+                android:layout_width="90dp"
+                android:layout_height="40dp"
+                android:textStyle="bold"
+                android:textSize="22sp"
+                android:layout_marginTop="8dp"
+                android:textColor="@color/colorAccent"
+                android:text="@string/journalDate"/>
+
+            <TextView
+                android:id="@+id/tvYear"
+                android:gravity="center"
+                android:layout_width="90dp"
+                android:layout_height="42dp"
+                android:layout_marginTop="16dp"
+                android:textSize="14sp"
+                android:text="@string/journalDate"/>
+
+        </LinearLayout>
+
+
+            <RelativeLayout
+                android:layout_width="230dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/rlContent"
+                android:layout_toRightOf="@id/llDate">
+
+                <TextView
+                    android:textColor="@color/colorAccent"
+                    android:textSize="16sp"
+                    android:id="@+id/tvTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:text="@string/journalTitle"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="8dp"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    />
+
+                <TextView
+                    android:textSize="12sp"
+                    android:layout_below="@id/tvTitle"
+                    android:text="@string/journalMessage"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="4dp"
+                    android:id="@+id/tvMessage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="95dp"
+                    android:ellipsize="end"
+                    android:maxLines="6" />
+
+                <TextView
+                    android:textSize="11sp"
+                    android:layout_toRightOf="@id/ivLocation"
+                    android:layout_below="@id/tvMessage"
+                    android:text="@string/journalLocation"
+                    android:id="@+id/tvLocation"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="2dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <ImageView
+                    android:id="@+id/ivLocation"
+                    android:layout_below="@id/tvMessage"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_width="22dp"
+                    android:layout_height="28dp"
+                    android:contentDescription="@string/journalLocation"
+                    android:src="@drawable/ic_location" />
+
+
+            </RelativeLayout>
+
+            <ImageView
+                android:layout_toRightOf="@id/rlContent"
+                android:scaleType="centerCrop"
+                android:id="@+id/ivJournalImage"
+                android:layout_width="wrap_content"
+                android:layout_height="180dp"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/ic_journalfinal3"
+                android:transitionName="journaltrans"
+                />
+
+        </RelativeLayout>
+
+
+    </android.support.v7.widget.CardView>
+
+</RelativeLayout>

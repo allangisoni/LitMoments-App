@@ -6,10 +6,13 @@
         <item>@font/concert_one</item>
         <item>@font/oleo_script</item>
         <item>@font/parisienne</item>
+        <item>@font/parisienneregular</item>
+        <item>@font/patrick_hand_sc</item>
         <item>@font/pt_sans_narrow</item>
         <item>@font/roboto_condensed_light</item>
         <item>@font/sarala</item>
         <item>@font/shadows_into_light</item>
         <item>@font/slabo_13px</item>
+        <item>@font/sofadi_one</item>
     </array>
 </resources>

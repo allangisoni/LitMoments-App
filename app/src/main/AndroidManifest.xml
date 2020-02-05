@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.android.litmoments">
+    package="com.lit.litmoments">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -10,15 +10,17 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-        android:name=".Application.Global"
+        android:name="com.lit.litmoments.Application.Global"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/LitStyle">
+        <activity android:name="com.lit.litmoments.RemoveAdsActivity"
+            android:theme="@style/RemoveAdsStyle"></activity>
         <activity
-            android:name=".Main.MainActivity"
+            android:name="com.lit.litmoments.Main.MainActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoActionBar">
@@ -31,17 +33,17 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Login.LoginActivity"
+            android:name="com.lit.litmoments.Login.LoginActivity"
             android:theme="@style/MyLoginTheme" />
-        <activity android:name=".AddJournal.AddJournalEntry" />
+        <activity android:name="com.lit.litmoments.AddJournal.AddJournalEntry" />
         <activity
-            android:name=".Settings.SettingsActivity"
-            android:parentActivityName=".Main.MainActivity"
+            android:name="com.lit.litmoments.Settings.SettingsActivity"
+            android:parentActivityName="com.lit.litmoments.Main.MainActivity"
             android:theme="@style/SettingsStyle" />
-        <activity android:name=".DispJournal.DisplayJournal" />
-        <activity android:name=".DispJournal.ImageSliderActivity" />
+        <activity android:name="com.lit.litmoments.DispJournal.DisplayJournal" />
+        <activity android:name="com.lit.litmoments.DispJournal.ImageSliderActivity" />
         <activity
-            android:name=".Login.SplashActivity"
+            android:name="com.lit.litmoments.Login.SplashActivity"
             android:theme="@style/MySplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -54,14 +56,16 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <activity android:name=".EditJournal.EditJournalEntry" />
-        <activity android:name=".AddJournal.AddJournalImageSlider" />
-        <activity android:name=".DashboardActivity" />
-        <activity android:name=".AboutusActivity" />
+        <activity android:name="com.lit.litmoments.EditJournal.EditJournalEntry" />
+        <activity android:name="com.lit.litmoments.AddJournal.AddJournalImageSlider" />
+        <activity android:name="com.lit.litmoments.DashboardActivity"
+            android:parentActivityName="com.lit.litmoments.Main.MainActivity"/>
+        <activity android:name="com.lit.litmoments.AboutusActivity"
+            android:parentActivityName="com.lit.litmoments.Settings.SettingsActivity"/>
 
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.example.android.litmoments.fileprovider"
+            android:authorities="com.lit.litmoments.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
@@ -69,8 +73,37 @@
                 android:resource="@xml/filepaths" />
         </provider>
 
-        <activity android:name=".PrivacyActivity" />
-        <activity android:name=".TermsActivity"></activity>
+        <activity android:name="com.lit.litmoments.PrivacyActivity"
+            android:parentActivityName="com.lit.litmoments.Settings.SettingsActivity"/>
+
+        <activity android:name="com.lit.litmoments.TermsActivity"
+            android:parentActivityName="com.lit.litmoments.Settings.SettingsActivity"/>
+
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-3164465598717629~1419354308"
+           />
+
+        <service
+            android:name="com.lit.litmoments.UpdateSubscriptionDetailsService"
+            android:exported="false"/>
+
+        <receiver android:name=".Widget.CollectionWidget">
+        <intent-filter>
+            <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+        </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/collection_widget_info" />
+        </receiver>
+        <service android:name=".Widget.WidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
     </application>
 
 </manifest>
+
+    <!--android:value="ca-app-pub-3164465598717629~1419354308"-->
+    <!--android:value= "ca-app-pub-3940256099942544~3347511713"-->

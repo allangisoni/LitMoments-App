@@ -14,8 +14,8 @@
         style="@style/Base.TextAppearance.AppCompat.Headline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="25sp"
+        android:fontFamily="@font/pt_sans_narrow"
         android:text="@string/about"
-        />
+        android:textSize="25sp" />
 
 </android.support.v7.widget.Toolbar>

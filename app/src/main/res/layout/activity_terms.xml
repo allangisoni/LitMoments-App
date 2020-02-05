@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".TermsActivity">
+    tools:context="com.lit.litmoments.TermsActivity">
 
 
     <android.support.design.widget.AppBarLayout
@@ -31,6 +31,7 @@
         android:orientation="vertical">
 
     <TextView
+        android:id="@+id/tv_terms"
         android:textStyle="bold"
         android:textColor="@color/colorAccent"
         android:textSize="18sp"
@@ -39,18 +40,21 @@
         android:text="@string/termsofuse"/>
 
     <TextView
+        android:id="@+id/tv_terms1"
         android:layout_marginTop="8dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/termscontent"/>
 
         <TextView
+            android:id="@+id/tv_terms2"
             android:layout_marginTop="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/termsconditions_liability"/>
 
         <TextView
+            android:id="@+id/tv_terms3"
             android:layout_marginTop="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -58,6 +62,7 @@
 
 
         <TextView
+            android:id="@+id/tv_terms4"
             android:layout_marginTop="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -65,6 +70,7 @@
 
 
         <TextView
+            android:id="@+id/tv_terms5"
             android:layout_marginTop="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -72,6 +78,7 @@
 
 
         <TextView
+            android:id="@+id/tv_terms6"
             android:layout_marginTop="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -79,6 +86,7 @@
 
 
         <TextView
+            android:id="@+id/tv_terms7"
             android:layout_marginTop="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -86,18 +94,21 @@
 
 
         <TextView
+            android:id="@+id/tv_terms8"
             android:layout_marginTop="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/termsconditions_change"/>
 
         <TextView
+            android:id="@+id/tv_terms9"
             android:layout_marginTop="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/termsconditions_support"/>
 
         <TextView
+            android:id="@+id/tv_terms10"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="preloaded_fonts" translatable="false">
+        <item>@font/aladin</item>
+        <item>@font/calligraffitti</item>
+        <item>@font/concert_one</item>
+        <item>@font/oleo_script</item>
+        <item>@font/parisienne</item>
+        <item>@font/pt_sans_narrow</item>
+        <item>@font/roboto_condensed_light</item>
+        <item>@font/sarala</item>
+        <item>@font/shadows_into_light</item>
+        <item>@font/slabo_13px</item>
+    </array>
+</resources>

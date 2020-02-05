@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Login.LoginActivity"
+    tools:context="com.lit.litmoments.Login.LoginActivity"
    >
 
  <!--<ImageView
@@ -30,10 +30,10 @@
  <LinearLayout
      android:id="@+id/layoutBars"
      android:layout_width="match_parent"
-     android:layout_height="60dp"
+     android:layout_height="@dimen/layout_height"
      android:layout_alignParentBottom="true"
-     android:layout_marginBottom="8dp"
-     android:layout_marginTop="8dp"
+     android:layout_marginBottom="@dimen/margin_8"
+     android:layout_marginTop="@dimen/margin_8"
      android:gravity="center"
      android:orientation="horizontal"
      app:layout_constraintBottom_toTopOf="@+id/btnSignIn"
@@ -59,14 +59,13 @@
      app:layout_constraintHorizontal_bias="0.498"
      app:layout_constraintStart_toStartOf="parent"
      app:layout_constraintTop_toTopOf="parent" /> -->
-
  <Button
      android:id="@+id/btnSignIn"
      style="@style/Base.TextAppearance.AppCompat.Subhead"
-     android:layout_width="285dp"
-     android:paddingLeft="4dp"
-     android:layout_height="40dp"
-     android:layout_marginBottom="24dp"
+     android:layout_width="@dimen/button_width"
+     android:paddingLeft="@dimen/recyclerviewPadding_Left"
+     android:layout_height="@dimen/button_height"
+     android:layout_marginBottom="@dimen/margin_24"
      android:background="@drawable/login_rounded"
      android:drawableLeft="@drawable/ic_google"
      android:text="@string/Sign_in"
@@ -74,5 +73,6 @@
      app:layout_constraintBottom_toBottomOf="@+id/view_pager"
      app:layout_constraintEnd_toEndOf="parent"
      app:layout_constraintStart_toStartOf="parent" />
+
 
 </android.support.constraint.ConstraintLayout>

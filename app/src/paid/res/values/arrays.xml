@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="pref_upload_theme_entries">
+        <item>Magical Purple</item>
+        <item>Strawberry Red</item>
+        <item>Innocent Pink</item>
+        <item>Sunny Yellow</item>
+        <item>Brook Blue</item>
+        <item>Pickle Green</item>
+        <item>Resene Tacao</item>
+        <item>Tyrian Purple</item>
+    </string-array>
+    <string-array name="pref_upload_theme_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>8</item>
+    </string-array>
+
+    <string-array name="pref_upload_font_entries">
+        <item>Parisienne</item>
+        <item>Patrick Hand</item>
+        <item>Calligraffitti</item>
+        <item>Sans Serif</item>
+        <item>Concert One</item>
+        <item>Oleo Script</item>
+        <item>Pt Sans</item>
+        <item>Roboto</item>
+        <item>Shadows into Light</item>
+        <item>Slabo</item>
+
+    </string-array>
+    <string-array name="pref_upload_font_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+    </string-array>
+
+   <array name="dot_on_page_active">
+       <item>@color/colorAccent</item>
+       <item>@color/colorAccent</item>
+       <item>@color/colorAccent</item>
+   </array>
+    <array name="dot_on_page_not_active">
+        <item>@color/background</item>
+        <item>@color/background</item>
+        <item>@color/background</item>
+    </array>
+
+    <integer-array name="viewpagercolors">
+        <item>@color/photofab</item>
+        <item>@color/slider2bg</item>
+        <item>@color/photofab</item>
+    </integer-array>
+
+</resources>

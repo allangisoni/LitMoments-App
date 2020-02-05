@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/intro1scrim">
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:layout_below="@+id/intromess"
+        android:id="@+id/journalanimation"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/_310sdp"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:layout_centerHorizontal="true"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_fileName="5134-notepad-loading.json"/>
+
+
+    <TextView
+        android:id="@+id/introtitle"
+        android:layout_marginTop="@dimen/_50sdp"
+        android:textColor="@color/bluecolorAccent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="@string/intro_slidertitle"
+        android:textSize="@dimen/_20sdp"
+        android:textStyle="bold"
+        />
+
+    <TextView
+        android:id="@+id/intromess"
+        android:layout_marginTop="15dp"
+        android:layout_below="@id/introtitle"
+        android:textColor="@color/colorAccent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="@string/intro_slider"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:textSize="@dimen/_11sdp"
+        />
+
+
+</RelativeLayout>

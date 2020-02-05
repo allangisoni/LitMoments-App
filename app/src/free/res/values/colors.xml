@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+   <!-- #ffcccc -->
+    <color name="colorPrimary">#ffb3b3</color>
+    <color name="colorPrimaryDark">#ff9999</color>
+    <color name="colorAccent">#330022</color>
+    <color name="background">#fbf1ea</color>
+    <color name="photofab">#49ADF2</color>
+    <color name="preftitle">#cc99ff</color>
+    <color name="viewbackground">#d9d9d9</color>
+
+    <color name="bluecolorPrimary">	#91489D</color>
+    <color name="bluecolorPrimaryDark">#8C449C</color>
+    <color name="bluecolorAccent">#DEE059</color>
+
+
+    <color name="reddishcolorPrimary">#ea2e51</color>
+    <color name="reddishcolorPrimaryDark">#da1539</color>
+    <color name="reddishcolorAccent">#74D389</color>
+
+
+    <color name="yellowcolorPrimary">#ffc91a</color>
+    <color name="yellowcolorPrimaryDark">#FCC200</color>
+    <color name="yellowcolorAccent">#2564A9</color>
+
+    <color name="bluishcolorPrimary">#536EFD</color>
+    <color name="bluishcolorPrimaryDark">#4C65F3</color>
+    <color name="bluishcolorAccent">#fb9da3</color>
+
+    <color name="greenishcolorPrimary">	#5cd6a9</color>
+    <color name="greenishcolorPrimaryDark">#40CF9A</color>
+    <color name="greenishcolorAccent">#FAB6A3</color>
+
+    <color name="tacaocolorPrimary">#f4ab88</color>
+    <color name="tacaocolorPrimaryDark"> #f08b5c</color>
+    <color name="tacaocolorAccent">#4E436D</color>
+
+
+
+    <color name="slider2bg">#f64c73</color>
+    <color name="slider2bgtextcolor">#262626</color>
+    <color name="displaytoolbrColor">#e6e6e6</color>
+
+    <color name="dashbackground">#13253D</color>
+    <color name="piechartBackground">#213550</color>
+
+    <color name="displayicons">#ffffe6</color>
+
+    <color name="filter">#4d4d4d</color>
+
+    <color name="subscriptionplan">#130a43</color>
+    <color name="removescrim">#e67300</color>
+    <color name="subscriptionpink">#F41E64</color>
+
+    <color name="blacktheme">#000000</color>
+     <color name="blackthemeAccent">#8F8F8F</color>
+     <color name="blackthemeAccent2">#5A202F</color>
+     <color name="cardviewtitle">#cccccc</color>
+
+ <color name="tyriancolorPrimary">#660033</color>
+ <color name="tyriancolorPrimaryDark">#55002B</color>
+ <color name="tyriancolorAccent">#63C9B2</color>
+
+
+</resources>

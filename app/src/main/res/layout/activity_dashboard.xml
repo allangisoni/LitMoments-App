@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DashboardActivity">
+    tools:context="com.lit.litmoments.DashboardActivity">
 
 
 
@@ -55,9 +55,9 @@
             android:text="@string/piechartMood"
             android:layout_gravity="center_horizontal"/>
 
-    <com.github.mikephil.charting.charts.PieChart
+    <com.github.mikephil.charting.charts.BarChart
 
-        android:id="@+id/pieChart"
+        android:id="@+id/barMoodChart"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
@@ -88,8 +88,8 @@
                 android:text="@string/barchartTitle"
                 android:layout_gravity="center_horizontal"/>
 
-            <com.github.mikephil.charting.charts.BarChart
-                android:id="@+id/barChart"
+            <com.github.mikephil.charting.charts.PieChart
+                android:id="@+id/pieChart"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
@@ -98,6 +98,7 @@
 
 
     <android.support.v7.widget.CardView
+        android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"

@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.lit.litmoments.RemoveAdsActivity"
+    android:background="@drawable/removeadsscrim">
+
+
+    <ImageView
+        android:id="@+id/ivCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="16dp"
+        android:contentDescription="Cancel"
+        android:src="@drawable/ic_cancel"
+        android:tint="@color/background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="82dp"
+        android:layout_marginEnd="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp">
+
+                <LinearLayout
+                    android:layout_centerHorizontal="true"
+                    android:id="@+id/linearimageview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="120dp"
+                    android:layout_marginRight="30dp"
+                    android:orientation="horizontal">
+
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:src="@drawable/ic_journal"
+                        android:tint="@color/background" />
+
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_centerVertical="true"
+                    android:gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/linearimageview"
+                    android:layout_marginLeft="45dp"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/subscription_title"
+                    android:textColor="@color/background"
+                    android:textSize="16sp" />
+
+            </RelativeLayout>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="650dp"
+        android:layout_marginTop="22dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/cvssubscriptionplan"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:backgroundTint="@color/subscriptionplan"
+            android:elevation="8dp"
+            app:cardCornerRadius="44dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_marginTop="34dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="2"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:gravity="center_horizontal"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/btnMonthlySub"
+                android:background="@drawable/prembutton"
+                android:text="@string/monthly"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/background"
+                />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:gravity="center_horizontal"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content">
+
+                <Button
+                    android:textColor="@color/colorAccent"
+                    android:id="@+id/btnYearlySub"
+                    android:background="@drawable/login_rounded"
+                    android:text="@string/yearly"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+
+
+            </LinearLayout>
+
+
+
+                <TextView
+                    android:textSize="20sp"
+                    android:layout_marginTop="16dp"
+                    android:layout_gravity="center"
+                    android:textColor="@color/background"
+                    android:gravity="center_horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/subscriberbenefits"/>
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="26dp"
+                    android:layout_marginTop="15dp"
+                    >
+
+                    <ImageView
+                        android:id="@+id/ivad"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_prem" />
+
+                    <TextView
+                        android:textSize="20sp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_toRightOf="@id/ivad"
+                        android:textColor="@color/background"
+                        android:text="@string/noAds"
+                        android:id="@+id/tvRemoveAds"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <ImageView
+                        android:layout_marginTop="16dp"
+                        android:layout_below="@id/ivad"
+                        android:id="@+id/ivallThemes"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_prem"/>
+
+                    <TextView
+                        android:textSize="20sp"
+                        android:layout_marginTop="18dp"
+                        android:layout_below="@id/tvRemoveAds"
+                        android:layout_marginLeft="16dp"
+                        android:layout_toRightOf="@id/ivallThemes"
+                        android:textColor="@color/background"
+                        android:text="@string/allThemes"
+                        android:id="@+id/tvAllThemes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <ImageView
+                        android:layout_marginTop="16dp"
+                        android:layout_below="@id/ivallThemes"
+                        android:id="@+id/ivtimelyReminders"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_prem"/>
+
+                    <TextView
+                        android:textSize="20sp"
+                        android:layout_marginTop="18dp"
+                        android:layout_below="@id/tvAllThemes"
+                        android:layout_marginLeft="16dp"
+                        android:layout_toRightOf="@id/ivtimelyReminders"
+                        android:textColor="@color/background"
+                        android:text="@string/reminders"
+                        android:id="@+id/tvtimely"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+
+                    <ImageView
+                        android:layout_marginTop="16dp"
+                        android:layout_below="@id/ivtimelyReminders"
+                        android:id="@+id/ivMoods"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_prem"/>
+
+                    <TextView
+                        android:textSize="20sp"
+                        android:layout_marginTop="18dp"
+                        android:layout_below="@id/tvtimely"
+                        android:layout_marginLeft="16dp"
+                        android:layout_toRightOf="@id/ivMoods"
+                        android:textColor="@color/background"
+                        android:text="@string/moods"
+                        android:id="@+id/tvMoods"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <ImageView
+                        android:layout_marginTop="16dp"
+                        android:layout_below="@id/ivMoods"
+                        android:id="@+id/ivLitboard"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_prem"/>
+
+                    <TextView
+                        android:textSize="20sp"
+                        android:layout_marginTop="18dp"
+                        android:layout_below="@id/tvMoods"
+                        android:layout_marginLeft="16dp"
+                        android:layout_toRightOf="@id/ivLitboard"
+                        android:textColor="@color/background"
+                        android:text="@string/litboard"
+                        android:id="@+id/tvLitboard"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+
+
+
+                </RelativeLayout>
+
+
+
+
+
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+    </LinearLayout>
+
+
+    <Button
+        android:id="@+id/btnBuyPremium"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/prembutton"
+        android:textColor="@color/background"
+        android:hint="@string/buyPremium"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+</android.support.constraint.ConstraintLayout>

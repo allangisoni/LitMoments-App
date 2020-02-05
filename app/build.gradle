@@ -1,14 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
+
     compileSdkVersion 27
-    buildToolsVersion '27.0.3'
+    buildToolsVersion '28.0.3'
     defaultConfig {
-        applicationId "com.example.android.litmoments"
+        applicationId "com.lit.litmoments"
         minSdkVersion 19
-        targetSdkVersion 27
-        versionCode 1
-        versionName "1.0"
+        targetSdkVersion 28
+        versionCode 3
+        versionName "2.1"
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -19,20 +20,40 @@ android {
 
 
         }
-        customDebugType {
+      customDebugType {
             debuggable true
         }
+
     }
     compileOptions {
         targetCompatibility 1.8
         sourceCompatibility 1.8
     }
 
+   flavorDimensions "default"
+    productFlavors {
+        free {
+            applicationId "com.lit.litmoments.free"
+            versionName "2.1-free"
+
+            // this boolean can be accessed in java classes by using BuildConfig class
+            // and now you can identify if your app is the paid version or not
+            buildConfigField "boolean", "PAID_VERSION", "false"
+            //buildConfigField "String", "TESTADKEY", "\"AIzaSyCZIBeTApR20-ChOZNsKTYN57IlcYsftEk\""
+            buildConfigField "String", "TESTADKEY", "\"ca-app-pub-3164465598717629~1419354308\""
+            buildConfigField "String", "TESTADINTERSTITIALKEY", "\"ca-app-pub-3164465598717629/3470802578\""
+
+        }
+
+        paid {
+            applicationId "com.lit.litmoments.paid"
+            versionName "2.1-paid"
+            buildConfigField "boolean", "PAID_VERSION", "true"
+        }
+    }
+
 
 }
-
-
-
 
 
 dependencies {
@@ -44,11 +65,13 @@ dependencies {
     implementation "com.android.support:recyclerview-v7:$androidSupportVersion"
     implementation "com.android.support:cardview-v7:$androidSupportVersion"
     implementation "com.android.support:preference-v7:$androidSupportVersion"
+    implementation "com.android.support:palette-v7:$androidSupportVersion"
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     implementation "com.google.firebase:firebase-core:16.0.8"
     implementation "com.google.firebase:firebase-auth:16.2.1"
     implementation 'com.google.firebase:firebase-database:16.1.0'
     implementation 'com.google.firebase:firebase-storage:16.1.0'
+    implementation 'com.google.firebase:firebase-ads:16.0.1'
     implementation 'com.squareup.picasso:picasso:2.5.2'
     implementation 'com.google.android.gms:play-services-auth:16.0.1'
     implementation 'com.google.android.gms:play-services-location:16.0.0'
@@ -69,7 +92,7 @@ dependencies {
     implementation 'com.makeramen:roundedimageview:2.3.0'
     implementation 'com.google.android:flexbox:1.0.0'
     implementation 'io.supercharge:shimmerlayout:2.1.0'
-    implementation 'com.airbnb.android:lottie:2.1.0'
+    implementation 'com.airbnb.android:lottie:2.7.0'
     implementation 'com.hyopark:gradationpager:1.0.0'
     implementation 'frankiesardo:icepick:3.2.0'
     compileOnly 'frankiesardo:icepick-processor:3.2.0'
@@ -78,8 +101,13 @@ dependencies {
     implementation 'com.daimajia.easing:library:2.0@aar'
     implementation 'com.daimajia.androidanimations:library:2.3@aar'
     implementation 'com.codemybrainsout.rating:ratingdialog:1.0.8'
-    implementation 'com.github.GrenderG:Toasty:1.2.8'
     implementation 'com.sdsmdg.tastytoast:tastytoast:0.1.1'
+    implementation 'com.github.Angtrim:Android-Five-Stars-Library:v3.1'
+    implementation  'com.morsebyte.shailesh.twostagerating:TwoStageRate:2.0'
+    implementation 'com.android.billingclient:billing:2.0.3'
+    implementation 'com.jsibbold:zoomage:1.2.0'
+    implementation 'com.intuit.sdp:sdp-android:1.0.6'
+   // implementation 'com.google.cloud:google-cloud-pubsub:1.96.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'

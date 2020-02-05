@@ -17,6 +17,7 @@
         <item name="android:windowContentTransitions">true</item>
         <item name="android:actionModeBackground">@color/colorPrimaryDark</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+        <item name="android:windowAnimationStyle">@style/FadeWindowAnimationTransition</item>
     </style>
 
     <style name="BlueLitStyle" parent="Theme.AppCompat.Light.NoActionBar">
@@ -28,7 +29,9 @@
         <item name="android:windowContentTransitions">true</item>
         <item name="android:actionModeBackground">@color/bluecolorPrimaryDark</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
-     <!--   <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item> -->
+        <item name="android:windowAnimationStyle">@style/FadeWindowAnimationTransition</item>
+        <item name="android:editTextColor">@color/cardviewtitle</item>
+        <!--   <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item> -->
     </style>
 
     <style name="ReddishLitStyle" parent="Theme.AppCompat.Light.NoActionBar">
@@ -39,14 +42,100 @@
         <item name="windowActionModeOverlay">true</item>
         <item name="android:windowContentTransitions">true</item>
         <item name="android:actionModeBackground">@color/reddishcolorPrimaryDark</item>
+        <item name="android:windowAnimationStyle">@style/FadeWindowAnimationTransition</item>
+        <item name="android:editTextColor">@color/cardviewtitle</item>
+    </style>
+
+    <style name="YellowLitStyle" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/yellowcolorPrimary</item>
+        <item name="colorPrimaryDark">@color/yellowcolorPrimaryDark</item>
+        <item name="colorAccent">@color/yellowcolorAccent</item>
+        <item name="colorControlNormal">@color/colorAccent</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:actionModeBackground">@color/yellowcolorPrimaryDark</item>
+        <item name="android:windowAnimationStyle">@style/FadeWindowAnimationTransition</item>
+    </style>
+
+    <style name="BluishLitStyle" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/bluishcolorPrimary</item>
+        <item name="colorPrimaryDark">@color/bluishcolorPrimaryDark</item>
+        <item name="colorAccent">@color/bluishcolorAccent</item>
+        <item name="colorControlNormal">@color/background</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:actionModeBackground">@color/bluishcolorPrimaryDark</item>
+        <item name="android:windowAnimationStyle">@style/FadeWindowAnimationTransition</item>
+        <item name="android:editTextColor">@color/cardviewtitle</item>
     </style>
 
 
+    <style name="GreenishLitStyle" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/greenishcolorPrimary</item>
+        <item name="colorPrimaryDark">@color/greenishcolorPrimaryDark</item>
+        <item name="colorAccent">@color/greenishcolorAccent</item>
+        <item name="colorControlNormal">@color/colorAccent</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:actionModeBackground">@color/greenishcolorPrimaryDark</item>
+        <item name="android:windowAnimationStyle">@style/FadeWindowAnimationTransition</item>
+    </style>
+
+
+    <style name="TacaoLitStyle" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/tacaocolorPrimary</item>
+        <item name="colorPrimaryDark">@color/tacaocolorPrimaryDark</item>
+        <item name="colorAccent">@color/tacaocolorAccent</item>
+        <item name="colorControlNormal">@color/colorAccent</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:actionModeBackground">@color/tacaocolorPrimaryDark</item>
+        <item name="android:windowAnimationStyle">@style/FadeWindowAnimationTransition</item>
+    </style>
+
+    <style name="TyrianLitStyle" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/tyriancolorPrimary</item>
+        <item name="colorPrimaryDark">@color/tyriancolorPrimaryDark</item>
+        <item name="colorAccent">@color/tyriancolorAccent</item>
+        <item name="colorControlNormal">@color/background</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:actionModeBackground">@color/tyriancolorPrimaryDark</item>
+        <item name="android:windowAnimationStyle">@style/FadeWindowAnimationTransition</item>
+        <item name="android:editTextColor">@color/cardviewtitle</item>
+    </style>
+
+
+    <style name="DarkLitStyle" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/blacktheme</item>
+        <item name="colorPrimaryDark">@color/blacktheme</item>
+        <item name="colorAccent">@color/blackthemeAccent2</item>
+        <item name="colorControlNormal">@color/blackthemeAccent</item>
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowAnimationStyle">@style/FadeWindowAnimationTransition</item>
+        <item name="android:actionModeStyle">@style/CustomActionModeStyle</item>
+        <item name="actionMenuTextColor">@color/cardviewtitle</item>
+        <item name="android:editTextColor">@color/cardviewtitle</item>
+        <item name="windowActionModeOverlay">true</item>
+    </style>
+
+    <style name="CustomActionModeStyle" parent="@style/Widget.AppCompat.ActionMode">
+        <item name="background">@color/blacktheme</item>
+        <item name="titleTextStyle">@style/ActionModeTitleTextStyle</item>
+    </style>
+    <style name="ActionModeTitleTextStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionMode.Title">
+        <item name="android:textColor">@color/cardviewtitle</item>
+    </style>
+
+    <style name="FadeWindowAnimationTransition">
+        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
+    </style>
     <!-- This will set the fade in animation on all your activities by default -->
-<style name="WindowAnimationTransition">
-<item name="android:windowEnterAnimation">@android:anim/slide_in_left</item>
-<item name="android:windowExitAnimation">@android:anim/slide_out_right</item>
-</style>
+    <style name="WindowAnimationTransition">
+        <item name="android:windowEnterAnimation">@android:anim/slide_in_left</item>
+        <item name="android:windowExitAnimation">@android:anim/slide_out_right</item>
+    </style>
 
     <style name="SettingsStyle" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -60,6 +149,15 @@
 
     </style>
 
+    <style name="RemoveAdsStyle" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/removescrim</item>
+        <item name="colorPrimaryDark">@color/removescrim</item>
+        <item name="colorAccent">@color/background</item>
+        <item name="colorControlNormal">@color/background</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="android:listDivider">@null</item>
+
+    </style>
 
     <style name="MyActionBarTheme" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="android:textColorPrimary">@color/colorAccent</item>
@@ -80,7 +178,7 @@
     <style name="DisplayStyle" parent="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="windowActionBarOverlay">true</item>
+        <item name="android:windowContentOverlay">@null</item>
         <item name="colorPrimary">@android:color/transparent</item>
         <item name="colorPrimaryDark">@color/colorAccent</item>
         <item name="colorAccent">@color/quantum_white_100</item>
@@ -102,7 +200,7 @@
     </style>
 
     <style name="SettingsTitleStyle" parent="TextAppearance.AppCompat">
-    <item name="android:textColor">@color/quantum_white_100</item>
+        <item name="android:textColor">@color/quantum_white_100</item>
         <item name="android:textSize">@dimen/settingsTitle</item>
 
     </style>
