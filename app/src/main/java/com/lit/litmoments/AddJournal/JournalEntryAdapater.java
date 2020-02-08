@@ -179,7 +179,9 @@ public void onBindViewHolder(final JournalEntryViewHolder holder, int position) 
 
 @Override
 public int getItemCount() {
-        return photolist.size();
+
+        //return photolist.size();
+        return photolist==null?0:photolist.size();
 }
 
 

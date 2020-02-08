@@ -6,6 +6,13 @@
     <string name="edit_entry">Edit Entry</string>
     <string name="save_journal_entry">Save Journal Entry</string>
     <string name="loading">Loading...</string>
+    <string name="dumy">Dumy</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
+    <string name="settings">Settings</string>
+    <string name="adsview">Adsview</string>
+    <string name="splash">Splash Image</string>
+    <string name="listimage"> Journal Image</string>
     <!-- <string name="default_web_client_id">1076030565733-aibaiu84sv5vsv54qpj6cjpo9svqtbdl.apps.googleusercontent.com</string>-->
 
     <string name="journalDate">Date</string>

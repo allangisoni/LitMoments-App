@@ -31,7 +31,10 @@ public class CustomAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return images.length;
+
+        //return images.length;
+        return images==null?0:images.length;
+
     }
 
     @Override

@@ -2,6 +2,14 @@ apply plugin: 'com.android.application'
 
 android {
 
+    signingConfigs {
+        release {
+            storeFile file('litkey.jks')
+            storePassword 'hesus2608'
+            keyPassword 'hesus2608'
+            keyAlias = 'litkey'
+        }
+    }
     compileSdkVersion 27
     buildToolsVersion '28.0.3'
     defaultConfig {
@@ -17,7 +25,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-
+            signingConfig signingConfigs.release
 
         }
       customDebugType {

@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
         android:layout_marginEnd="16dp"
-        android:contentDescription="Cancel"
+        android:contentDescription="@string/cancel"
         android:src="@drawable/ic_cancel"
         android:tint="@color/background"
         app:layout_constraintEnd_toEndOf="parent"
@@ -52,6 +52,7 @@
 
 
                     <ImageView
+                        android:contentDescription="@string/adsview"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
@@ -165,6 +166,7 @@
                     >
 
                     <ImageView
+                        android:contentDescription="@string/adsview"
                         android:id="@+id/ivad"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
@@ -186,7 +188,8 @@
                         android:id="@+id/ivallThemes"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:src="@drawable/ic_prem"/>
+                        android:src="@drawable/ic_prem"
+                        android:contentDescription="@string/adsview"/>
 
                     <TextView
                         android:textSize="20sp"
@@ -206,7 +209,8 @@
                         android:id="@+id/ivtimelyReminders"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:src="@drawable/ic_prem"/>
+                        android:src="@drawable/ic_prem"
+                        android:contentDescription="@string/adsview"/>
 
                     <TextView
                         android:textSize="20sp"
@@ -227,7 +231,8 @@
                         android:id="@+id/ivMoods"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:src="@drawable/ic_prem"/>
+                        android:src="@drawable/ic_prem"
+                        android:contentDescription="@string/adsview"/>
 
                     <TextView
                         android:textSize="20sp"
@@ -247,7 +252,8 @@
                         android:id="@+id/ivLitboard"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:src="@drawable/ic_prem"/>
+                        android:src="@drawable/ic_prem"
+                        android:contentDescription="@string/adsview"/>
 
                     <TextView
                         android:textSize="20sp"

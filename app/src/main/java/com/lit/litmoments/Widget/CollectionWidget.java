@@ -40,6 +40,7 @@ public class CollectionWidget extends AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         for (int appWidgetId : appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId);
+
         }
         super.onUpdate(context, appWidgetManager, appWidgetIds);
     }

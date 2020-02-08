@@ -75,7 +75,7 @@
                 android:layout_marginRight="8dp"
                 android:layout_marginTop="556dp"
                 android:fontFamily="sans-serif"
-                android:hint="Dumy"
+                android:hint="@string/dumy"
                 android:visibility="invisible"
                 android:textColor="@color/quantum_white_100"
                 android:textColorHint="@color/colorAccent"

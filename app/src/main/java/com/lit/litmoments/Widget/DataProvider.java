@@ -54,7 +54,6 @@ public class DataProvider implements RemoteViewsService.RemoteViewsFactory{
     public void onDataSetChanged() {
          initData();
 
-
     }
 
     @Override
@@ -135,7 +134,7 @@ public class DataProvider implements RemoteViewsService.RemoteViewsFactory{
                          model.setJournalDate(npsnapshot.child("journalDate").getValue().toString());
                          model.setJournalTitle(npsnapshot.child("journalTitle").getValue().toString());
                          myListView.add(journalEntryModel);
-                        Log.d("jornalSize", ""+ myListView.size());
+                        //Log.d("jornalSize", ""+ myListView.size());
 
 
 
@@ -164,6 +163,8 @@ public class DataProvider implements RemoteViewsService.RemoteViewsFactory{
                             //  journalList.sort(Comparator.comparing(o -> o.getTimestampCreatedLong()));
                         }
                     }
+
+
 
                     //journalAdapter.notifyDataSetChanged();
 
@@ -199,6 +200,8 @@ public class DataProvider implements RemoteViewsService.RemoteViewsFactory{
 
 
         });
+
+
 
     }
 }

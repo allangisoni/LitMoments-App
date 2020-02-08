@@ -203,6 +203,8 @@ public class DisplayImagesAdapter extends RecyclerView.Adapter<DisplayImagesView
 
     @Override
     public int getItemCount() {
-        return photolist.size();
+
+        //return photolist.size();
+        return photolist==null?0:photolist.size();
     }
 }

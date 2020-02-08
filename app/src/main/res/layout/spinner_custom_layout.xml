@@ -11,7 +11,8 @@
         android:layout_height="24dp"
         android:layout_gravity="center_vertical"
         android:paddingLeft="4dp"
-        android:src="@drawable/ic_simpson2" />
+        android:src="@drawable/ic_simpson2"
+        android:contentDescription="@string/listimage"/>
 
     <TextView
         android:id="@+id/textView"
@@ -22,7 +23,7 @@
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
         android:layout_gravity="center"
-        android:text="Custom Text"
+        android:text="@string/dumy"
         android:textSize="18sp"
         android:textColor="@color/colorAccent" />
 
