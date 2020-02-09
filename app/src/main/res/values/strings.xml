@@ -14,6 +14,7 @@
     <string name="splash">Splash Image</string>
     <string name="listimage"> Journal Image</string>
     <!-- <string name="default_web_client_id">1076030565733-aibaiu84sv5vsv54qpj6cjpo9svqtbdl.apps.googleusercontent.com</string>-->
+   <string name="web_client_id">1081776894517-jp3a52h43pukeubn389gej0l8o3pnfid.apps.googleusercontent.com</string>
 
     <string name="journalDate">Date</string>
     <string name="journalLocation">Location</string>

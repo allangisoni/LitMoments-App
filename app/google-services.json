@@ -60,6 +60,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1081776894517-oq04hgn3oc52b0e3hc72hssqidarqa6a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lit.litmoments.free",
+            "certificate_hash": "d2812ab0e75b66892222c1e948380a5ed60bee3e"
+          }
+        },
+        {
           "client_id": "1081776894517-17ft8criqn8tpain3ht045gmcg2nsj49.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

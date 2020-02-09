@@ -131,7 +131,8 @@ public class LoginActivity extends AppCompatActivity  implements
         };
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
+               .requestIdToken(getString(R.string.web_client_id))
+               // .requestIdToken("1081776894517-qa3820npebi1me3ub1513plogo96lke5.apps.googleusercontent.com")
                 .requestEmail()
                 .build();
 
