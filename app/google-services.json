@@ -55,7 +55,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:1081776894517:android:5551936e83e23b57baf77c",
         "android_client_info": {
-          "package_name": "com.lit.litmoments"
+          "package_name": "com.lit.litmoments.free"
         }
       },
       "oauth_client": [
@@ -63,7 +63,7 @@
           "client_id": "1081776894517-17ft8criqn8tpain3ht045gmcg2nsj49.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.lit.litmoments",
+            "package_name": "com.lit.litmoments.free",
             "certificate_hash": "71162a1fc32b1780b6c99afba72329fa74aed00c"
           }
         },
@@ -71,7 +71,7 @@
           "client_id": "1081776894517-trd47jccej0v7saj65tmao40hq85djks.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.lit.litmoments",
+            "package_name": "com.lit.litmoments.free",
             "certificate_hash": "83bf4e14261799d22a527e564b6dd721c88550a2"
           }
         },
@@ -79,7 +79,7 @@
           "client_id": "1081776894517-2eecau5lmo63it7j6hc61dnsgjg5n3sj.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.lit.litmoments",
+            "package_name": "com.lit.litmoments.free",
             "certificate_hash": "b5a58fdbbccbd70e5d3cd58415b3b592c7b9b27b"
           }
         },
@@ -112,6 +112,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "1081776894517-048njoctaqfh9ijevpoo6hnfpu6bud1p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lit.litmoments.paid",
+            "certificate_hash": "d2812ab0e75b66892222c1e948380a5ed60bee3e"
+          }
+        },
         {
           "client_id": "1081776894517-r3b4foa1pa1m6jvpth207o35i3bdhqmn.apps.googleusercontent.com",
           "client_type": 1,
