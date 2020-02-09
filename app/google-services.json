@@ -8,12 +8,20 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1081776894517:android:2041f2410cb51df7baf77c",
+        "mobilesdk_app_id": "1:1081776894517:android:f3e0e9204cf45488baf77c",
         "android_client_info": {
           "package_name": "com.lit.litmoments"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "1081776894517-73u1esss3nk5emvcn894ouqoo44cgcqo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lit.litmoments",
+            "certificate_hash": "71162a1fc32b1780b6c99afba72329fa74aed00c"
+          }
+        },
         {
           "client_id": "1081776894517-qa3820npebi1me3ub1513plogo96lke5.apps.googleusercontent.com",
           "client_type": 1,
@@ -45,54 +53,25 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1081776894517:android:5551936e83e23b57baf77c",
+        "mobilesdk_app_id": "1:1081776894517:android:1eba7700d6e43979baf77c",
         "android_client_info": {
           "package_name": "com.lit.litmoments.free"
         }
       },
       "oauth_client": [
         {
+          "client_id": "1081776894517-ovg1pcg9tq6hkpro5suro1sde6tope2h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lit.litmoments.free",
+            "certificate_hash": "71162a1fc32b1780b6c99afba72329fa74aed00c"
+          }
+        },
+        {
           "client_id": "1081776894517-oq04hgn3oc52b0e3hc72hssqidarqa6a.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.lit.litmoments.free",
-            "certificate_hash": "d2812ab0e75b66892222c1e948380a5ed60bee3e"
-          }
-        },
-        {
-          "client_id": "1081776894517-jp3a52h43pukeubn389gej0l8o3pnfid.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCZIBeTApR20-ChOZNsKTYN57IlcYsftEk"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "1081776894517-jp3a52h43pukeubn389gej0l8o3pnfid.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:1081776894517:android:4d405cbbfdd6ed74baf77c",
-        "android_client_info": {
-          "package_name": "com.lit.litmoments.paid"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "1081776894517-048njoctaqfh9ijevpoo6hnfpu6bud1p.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.lit.litmoments.paid",
             "certificate_hash": "d2812ab0e75b66892222c1e948380a5ed60bee3e"
           }
         },
