@@ -37,14 +37,17 @@ import android.widget.TextView;
 
 import com.ajts.androidmads.fontutils.FontUtils;
 import com.codemybrainsout.ratingdialog.RatingDialog;
-import com.example.android.litmoments.AddJournal.JournalEntryModel;
+
 import com.example.android.litmoments.EditJournal.EditJournalEntry;
 import com.example.android.litmoments.Main.MainActivity;
-import com.example.android.litmoments.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.lit.litmoments.AddJournal.JournalEntryModel;
+import com.lit.litmoments.DispJournal.CountDrawable;
+import com.lit.litmoments.DispJournal.ImageSliderActivity;
+import com.lit.litmoments.R;
 import com.sdsmdg.tastytoast.TastyToast;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;

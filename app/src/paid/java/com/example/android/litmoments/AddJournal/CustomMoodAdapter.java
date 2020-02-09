@@ -13,7 +13,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ajts.androidmads.fontutils.FontUtils;
-import com.example.android.litmoments.R;
+import com.lit.litmoments.R;
+
 
 public class CustomMoodAdapter extends BaseAdapter {
 

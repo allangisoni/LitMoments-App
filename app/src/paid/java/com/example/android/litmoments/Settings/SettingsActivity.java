@@ -29,14 +29,14 @@ import android.widget.Toast;
 
 import com.ajts.androidmads.fontutils.FontUtils;
 import com.example.android.litmoments.AboutusActivity;
-import com.example.android.litmoments.Application.AppCompatPreferenceActivity;
-import com.example.android.litmoments.BuildConfig;
-import com.example.android.litmoments.Login.LoginActivity;
+
 import com.example.android.litmoments.PrivacyActivity;
-import com.example.android.litmoments.R;
-import com.example.android.litmoments.RemoveAdsActivity;
 import com.example.android.litmoments.TermsActivity;
 import com.google.firebase.auth.FirebaseAuth;
+import com.lit.litmoments.BuildConfig;
+import com.lit.litmoments.Login.LoginActivity;
+import com.lit.litmoments.R;
+import com.lit.litmoments.RemoveAdsActivity;
 
 
 public class SettingsActivity  extends AppCompatPreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {

@@ -31,11 +31,9 @@ import android.widget.Toast;
 
 import com.ajts.androidmads.fontutils.FontUtils;
 import com.example.android.litmoments.AddJournal.AddJournalEntry;
-import com.example.android.litmoments.AddJournal.JournalEntryModel;
+
 import com.example.android.litmoments.DashboardActivity;
-import com.example.android.litmoments.PrefMethods;
-import com.example.android.litmoments.R;
-import com.example.android.litmoments.RemoveAdsActivity;
+
 import com.example.android.litmoments.Settings.SettingsActivity;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -44,6 +42,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.lit.litmoments.AddJournal.JournalEntryModel;
+import com.lit.litmoments.PrefMethods;
+import com.lit.litmoments.R;
+import com.lit.litmoments.RemoveAdsActivity;
 import com.morsebyte.shailesh.twostagerating.TwoStageRate;
 import com.sdsmdg.tastytoast.TastyToast;
 

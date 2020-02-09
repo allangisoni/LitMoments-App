@@ -19,9 +19,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ajts.androidmads.fontutils.FontUtils;
-import com.example.android.litmoments.AddJournal.JournalEntryModel;
+
 import com.example.android.litmoments.DispJournal.DisplayJournal;
-import com.example.android.litmoments.R;
+
+import com.lit.litmoments.AddJournal.JournalEntryModel;
+import com.lit.litmoments.R;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;

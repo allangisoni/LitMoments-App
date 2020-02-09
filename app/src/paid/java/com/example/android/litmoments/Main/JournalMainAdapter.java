@@ -10,8 +10,9 @@ import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
 
-import com.example.android.litmoments.AddJournal.JournalEntryModel;
-import com.example.android.litmoments.R;
+
+import com.lit.litmoments.AddJournal.JournalEntryModel;
+import com.lit.litmoments.R;
 
 import java.util.ArrayList;
 import java.util.List;

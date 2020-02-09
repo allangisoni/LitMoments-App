@@ -14,7 +14,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ListView;
 
-import com.example.android.litmoments.R;
+import com.lit.litmoments.R;
+
 
 public class SettingsFragment extends PreferenceFragmentCompat {
 

@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ajts.androidmads.fontutils.FontUtils;
+import com.lit.litmoments.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

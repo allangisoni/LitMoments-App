@@ -57,11 +57,9 @@ import android.widget.Toast;
 import com.ajts.androidmads.fontutils.FontUtils;
 import com.example.android.litmoments.AddJournal.CustomAdapter;
 import com.example.android.litmoments.AddJournal.CustomMoodAdapter;
-import com.example.android.litmoments.AddJournal.JournalEntryAdapater;
-import com.example.android.litmoments.AddJournal.JournalEntryModel;
-import com.example.android.litmoments.AddJournal.JournalPhotoModel;
+
 import com.example.android.litmoments.Main.MainActivity;
-import com.example.android.litmoments.R;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -75,6 +73,13 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.kd.dynamic.calendar.generator.ImageGenerator;
+import com.lit.litmoments.AddJournal.JournalEntryAdapater;
+import com.lit.litmoments.AddJournal.JournalEntryModel;
+import com.lit.litmoments.AddJournal.JournalPhotoModel;
+import com.lit.litmoments.EditJournal.DisplayImagesAdapter;
+import com.lit.litmoments.EditJournal.DisplayImagesModel;
+import com.lit.litmoments.EditJournal.DisplayImagesViewHolder;
+import com.lit.litmoments.R;
 import com.sdsmdg.tastytoast.TastyToast;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;

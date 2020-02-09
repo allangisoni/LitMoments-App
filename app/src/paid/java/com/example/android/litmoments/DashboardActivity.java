@@ -15,7 +15,6 @@ import android.widget.TextView;
 import com.ajts.androidmads.fontutils.FontUtils;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
-import com.example.android.litmoments.AddJournal.JournalEntryModel;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
@@ -31,6 +30,8 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.renderer.YAxisRenderer;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.lit.litmoments.AddJournal.JournalEntryModel;
+import com.lit.litmoments.R;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,7 +46,7 @@ public class DashboardActivity extends AppCompatActivity implements SharedPrefer
     @BindView(R.id.pieChart) PieChart pieChart;
     @BindView(R.id.tvpieChartTitle) TextView tvPieChartTitle;
     @BindView(R.id.cvPieChart) CardView cvPieChart;
-    @BindView(R.id.barChart) BarChart barChart;
+    @BindView(R.id.barMoodChart) BarChart barChart;
     @BindView(R.id.tvBarTitle) TextView tvBarChartTitle;
     @BindView(R.id.cvBarChart) CardView cvBarChart;
     @BindView(R.id.cvTreeChart) CardView cvTreeChart;
