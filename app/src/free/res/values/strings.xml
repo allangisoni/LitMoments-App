@@ -6,8 +6,7 @@
     <string name="edit_entry">Edit Entry</string>
     <string name="save_journal_entry">Save Journal Entry</string>
     <string name="loading">Loading...</string>
-    <!-- <string name="default_web_client_id">1076030565733-aibaiu84sv5vsv54qpj6cjpo9svqtbdl.apps.googleusercontent.com</string>-->
-    <!--<string name="default_web_client_id">1081776894517-1db7nkdll4knb7ep3ucg6v1gkd0h99ou.apps.googleusercontent.com</string>-->
+    <string name="web_client_id">1081776894517-jp3a52h43pukeubn389gej0l8o3pnfid.apps.googleusercontent.com</string>
     <string name="journalDate">Date</string>
     <string name="journalLocation">Location</string>
     <string name="journalWeather">Weather</string>

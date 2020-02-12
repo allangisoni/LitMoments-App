@@ -95,6 +95,7 @@
     <string name="about_version">Version 1.0</string>
     <string name="about_lit">Travel Journal</string>
     <string name="about_litdev">Designed and developed by Allan Gisoni</string>
+    <string name="no_items">No Journals Added</string>
 
     <string name="privacy_policy"> Privacy Policy</string>
     <string name="pripolicy_content"> Integrity and transparency is at the center of everything we do. Your privacy is important to us and we want to make it easy for you to comprehend your data settings.

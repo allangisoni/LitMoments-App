@@ -93,13 +93,11 @@ public class DisplayJournal extends AppCompatActivity implements SharedPreferenc
 
     private static  final String SUBSCRIBER_UPLOADS = "Subscription Details";
 
-  //  String AdMobId = "ca-app-pub-3164465598717629~1419354308";
-   // String AdMobId = "ca-app-pub-3940256099942544~3347511713";
+
 
     String AdMobId = " ";
 
-    // String AdMobInterstitialId = "ca-app-pub-3164465598717629/3470802578";
-   // String AdMobInterstitialId = "ca-app-pub-3940256099942544/1033173712";
+
     String AdMobInterstitialId = " ";
     private InterstitialAd mInterstitialAd;
 
