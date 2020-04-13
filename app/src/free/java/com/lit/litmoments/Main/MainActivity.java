@@ -45,6 +45,7 @@ import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.codemybrainsout.ratingdialog.RatingDialog;
 import com.google.firebase.storage.StorageReference;
 import com.lit.litmoments.AddJournal.JournalEntryModel;
+import com.lit.litmoments.Photos.PhotosActivity;
 import com.lit.litmoments.PrefMethods;
 import com.lit.litmoments.R;
 import com.google.firebase.FirebaseApp;
@@ -145,6 +146,7 @@ public class MainActivity extends AppCompatActivity implements JournalMainAdapte
 
                  **/
             Fade fade= new Fade();
+            fade.setDuration(1000);
             View view = getWindow().getDecorView();
             fade.excludeTarget(view.findViewById(R.id.action_bar_container), true);
             fade.excludeTarget(android.R.id.statusBarBackground, true);
@@ -523,7 +525,7 @@ public class MainActivity extends AppCompatActivity implements JournalMainAdapte
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
+      /**  if (id == R.id.action_settings) {
             // launch settings activity
             Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
             intent.putExtra("isPremium", isPremiumUser);
@@ -549,11 +551,15 @@ public class MainActivity extends AppCompatActivity implements JournalMainAdapte
             startActivity(intent);
             return  true;
 
+        } else if(id == R.id.action_photos){
+            Intent intent = new Intent(MainActivity.this, PhotosActivity.class);
+            startActivity(intent);
+            return  true;
         }
 
         else {
 
-        }
+        }  **/
 
         return super.onOptionsItemSelected(item);
     }

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application>
+        <activity android:name="com.lit.litmoments.Dashboard.DashYearFragment"></activity>
+        <activity android:name="com.lit.litmoments.Dashboard.DashMonthFragment" />
+        <activity android:name="com.lit.litmoments.Dashboard.DashWeekFragment" />
+        <activity android:name="com.lit.litmoments.Favorites.FavoritesFragment" />
+        <activity android:name="com.lit.litmoments.Main.TabbedMainActivity" />
+        <activity android:name="com.lit.litmoments.Photos.PhotosActivity" />
+    </application>
+
+</manifest>

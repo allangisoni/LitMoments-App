@@ -11,6 +11,7 @@
         android:layout_height="match_parent"
         app:srcCompat="@drawable/ic_simpson2"
         android:id="@+id/imageView"
+        android:adjustViewBounds="true"
         app:zoomage_restrictBounds="false"
         app:zoomage_animateOnReset="true"
         app:zoomage_autoResetMode="UNDER"

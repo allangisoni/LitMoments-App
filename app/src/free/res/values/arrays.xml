@@ -65,4 +65,10 @@
         <item>@color/photofab</item>
     </integer-array>
 
+    <array name="uithemes">
+        <item>@color/photofab</item>
+        <item>@color/slider2bg</item>
+        <item>@color/photofab</item>
+    </array>
+
 </resources>

@@ -18,6 +18,8 @@
         <item name="android:actionModeBackground">@color/colorPrimaryDark</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
         <item name="android:windowAnimationStyle">@style/FadeWindowAnimationTransition</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+        <item name="android:textColorSecondary">@color/black</item>
     </style>
 
     <style name="BlueLitStyle" parent="Theme.AppCompat.Light.NoActionBar">
@@ -55,6 +57,7 @@
         <item name="android:windowContentTransitions">true</item>
         <item name="android:actionModeBackground">@color/yellowcolorPrimaryDark</item>
         <item name="android:windowAnimationStyle">@style/FadeWindowAnimationTransition</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
     </style>
 
     <style name="BluishLitStyle" parent="Theme.AppCompat.Light.NoActionBar">
@@ -79,6 +82,7 @@
         <item name="android:windowContentTransitions">true</item>
         <item name="android:actionModeBackground">@color/greenishcolorPrimaryDark</item>
         <item name="android:windowAnimationStyle">@style/FadeWindowAnimationTransition</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
     </style>
 
 
@@ -91,6 +95,7 @@
         <item name="android:windowContentTransitions">true</item>
         <item name="android:actionModeBackground">@color/tacaocolorPrimaryDark</item>
         <item name="android:windowAnimationStyle">@style/FadeWindowAnimationTransition</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
     </style>
 
     <style name="TyrianLitStyle" parent="Theme.AppCompat.Light.NoActionBar">
@@ -207,5 +212,28 @@
     <style name="SettingsTitleStyleAccent" parent="TextAppearance.AppCompat">
         <item name="android:textColor">@color/colorAccent</item>
         <item name="android:textSize">@dimen/settingsTitle</item>
+    </style>
+
+    <style name="NavigationViewStyle">
+        <item name="android:textSize">16sp</item> <!-- menu item text size-->
+        <item name="android:listPreferredItemHeightSmall">50dp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="customFontDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="DrawerArrowStyle" parent="@style/Widget.AppCompat.DrawerArrowToggle">
+        <item name="spinBars">true</item>
+        <item name="color">@android:color/black</item>
+    </style>
+
+    <style name="myActionButtonStyle" parent="Widget.AppCompat.ActionButton">
+        <item name="android:minWidth">24dp</item>
+        <item name="android:maxWidth">32dp</item>
+        <item name="android:width">24dp</item>
+        <item name="android:height">16dp</item>
+        <item name="android:maxHeight">32dp</item>
+        <item name="android:minHeight">16dp</item>
+        <item name="android:layout_margin">8dp</item>
     </style>
 </resources>

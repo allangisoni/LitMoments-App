@@ -1,20 +1,36 @@
 package com.lit.litmoments;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ajts.androidmads.fontutils.FontUtils;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.lit.litmoments.AddJournal.JournalEntryModel;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
@@ -31,31 +47,43 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.renderer.YAxisRenderer;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.lit.litmoments.Dashboard.DashMonthFragment;
+import com.lit.litmoments.Dashboard.DashWeekFragment;
+import com.lit.litmoments.Dashboard.DashYearFragment;
+import com.lit.litmoments.Favorites.FavoritesFragment;
+import com.lit.litmoments.Main.HomeFragment;
+import com.lit.litmoments.Main.TabbedMainActivity;
+import com.lit.litmoments.Photos.PhotosActivity;
 
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.lit.litmoments.Data.RetrieveData.DATABASE_UPLOADS;
 
 public class DashboardActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final String TAG = DashboardActivity.class.getName();
     @BindView(R.id.entrytoolbar) Toolbar entryToolbar;
-    @BindView(R.id.barMoodChart) BarChart barMoodChart;
-    @BindView(R.id.tvpieChartTitle) TextView tvPieChartTitle;
-    @BindView(R.id.cvPieChart) CardView cvPieChart;
-        @BindView(R.id.pieChart) PieChart pieChart;
-    @BindView(R.id.tvBarTitle) TextView tvBarChartTitle;
-    @BindView(R.id.cvBarChart) CardView cvBarChart;
-    @BindView(R.id.cvTreeChart) CardView cvTreeChart;
-    @BindView(R.id.tvfavoriteplaces) TextView favoritePlaces;
-    @BindView(R.id.tvTreeTitle) TextView favoriteplacesTitle;
-   // @BindView(R.id.treeChart)  AnyChartView anyChartView ;
+
+
     private ArrayList<JournalEntryModel> journalList = new ArrayList<>();
 
     Boolean isWhite = false, isLit = false,isDark = false;
+    private DatabaseReference mDatabase;
+    private FirebaseAuth mAuth;
+    private Context mContext;
+    public static final String DATABASE_UPLOADS = "User's Journal Entries";
 
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         SharedPreferences sharedPreferences;
@@ -72,16 +100,38 @@ public class DashboardActivity extends AppCompatActivity implements SharedPrefer
             getSupportActionBar().setElevation(0);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
-            setUpThemeContent();
+            //setUpThemeContent();
             loadWidgetColors(sharedPreferences);
 
         }
-       if(getIntent().getSerializableExtra("JournalList") != null){
-           journalList =(ArrayList<JournalEntryModel>) getIntent().getSerializableExtra("JournalList");
+
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        setupViewPager(viewPager);
+
+        tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(viewPager);
+
+
+     /**   FirebaseApp.initializeApp(getApplicationContext());
+        mAuth = FirebaseAuth.getInstance();
+        if (mAuth.getCurrentUser() != null) {
+            //  Toast.makeText(MainActivity.this, "Welcome back "+" "+ mAuth.getCurrentUser().getDisplayName()+" ", Toast.LENGTH_SHORT).show();
+        }
+
+        String currentUid = mAuth.getCurrentUser().getUid();
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        //firebaseDatabase.setPersistenceEnabled(true);
+        mDatabase = firebaseDatabase.getReference(DATABASE_UPLOADS).child(currentUid);
+        mContext = DashboardActivity.this;
+
+
+        if(getIntent().getSerializableExtra("JournalList") != null){
+          // journalList =(ArrayList<JournalEntryModel>) getIntent().getSerializableExtra("JournalList");
        } else{
            Log.d("JournalItems", Integer.toString(journalList.size()));
-       }
-        tvPieChartTitle.setTextColor(getResources().getColor(R.color.bluecolorPrimary));
+       } **/
+
+     /**   tvPieChartTitle.setTextColor(getResources().getColor(R.color.bluecolorPrimary));
         tvPieChartTitle.setTextSize(16f);
         cvPieChart.setCardBackgroundColor(getResources().getColor(R.color.piechartBackground));
         tvBarChartTitle.setTextColor(getResources().getColor(R.color.bluecolorPrimary));
@@ -107,284 +157,27 @@ public class DashboardActivity extends AppCompatActivity implements SharedPrefer
             favoritePlaces.setTextColor(getResources().getColor(R.color.background));
             favoriteplacesTitle.setTextColor(getResources().getColor(R.color.bluecolorPrimary));
         }
-
+**/
         //setPieChartData();
        // setBarChartData();
 
-        if(journalList != null) {
-            setMoodBarChart();
-            setTripCount();
-            getFavoritePlaces();
+
+
+        if(journalList.size() > 0) {
+         //   setMoodBarChart();
+           // setTripCount();
+           // getFavoritePlaces();
+            //getData( journalList, mDatabase);
+
+        } else{
+            //RetrieveData retrieveData = new RetrieveData(this);
+           // getData( journalList, mDatabase);
+           // Toast.makeText(mContext, " "+ journalList.size(), Toast.LENGTH_SHORT).show();
         }
+
 
     }
 
-  /**  public void setPieChartData() {
-        ArrayList<PieEntry> numofmood = new ArrayList();
-
-        int numofHappyMoods = 0;
-        int numofSadMoods = 0;
-
-        for(JournalEntryModel journalEntryModel : journalList){
-            String moodType = journalEntryModel.getJournalMood();
-            if(moodType.toLowerCase().equalsIgnoreCase("happy")){
-                numofHappyMoods = numofHappyMoods + 1;
-            } else if(moodType.toLowerCase().equalsIgnoreCase("sad")){
-                numofSadMoods = numofSadMoods + 1;
-            }
-
-            else{
-
-            }
-        }
-
-
-        numofmood.add(new PieEntry(numofHappyMoods, "Happy",0));
-        numofmood.add(new PieEntry(numofSadMoods, "Sad",1));
-
-        PieDataSet pieDataSet = new PieDataSet(numofmood, "Mood Type");
-
-
-        PieData data = new PieData(pieDataSet);
-        data.setValueFormatter(new PercentFormatter());
-        pieChart.setData(data);
-        Description description = new Description();
-        //description.setText(getString(R.string.piechartMood));
-      // description.setPosition(290f, 40f);
-        description.setText(" ");
-        description.setTextSize(15f);
-        pieChart.setDescription(description);
-        data.setValueTextSize(13f);
-        data.setValueTextColor(Color.DKGRAY);
-        pieDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
-        Legend legend = pieChart.getLegend();
-        legend.setTextColor(getResources().getColor(R.color.background));
-        pieChart.animateXY(1200, 1200);
-
-    } **/
-
-   public void setTripCount(){
-
-
-       ArrayList<PieEntry> numoftrips = new ArrayList();
-       int numoftrips2018 =0 ;
-       Integer numoftrips2019;
-
-      numoftrips2019 = journalList.size();
-
-
-       numoftrips.add(new PieEntry(numoftrips2018, "2018",0));
-       numoftrips.add(new PieEntry(numoftrips2019, "2019",1));
-
-       PieDataSet pieDataSet = new PieDataSet(numoftrips, "Year");
-
-
-       PieData data = new PieData(pieDataSet);
-       data.setValueFormatter(new PercentFormatter());
-       pieChart.setData(data);
-       Description description = new Description();
-       //description.setText(getString(R.string.piechartMood));
-       // description.setPosition(290f, 40f);
-       description.setText(" ");
-       description.setTextSize(15f);
-       pieChart.setDescription(description);
-       data.setValueTextSize(13f);
-       data.setValueTextColor(Color.DKGRAY);
-       pieDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
-       Legend legend = pieChart.getLegend();
-       legend.setTextColor(getResources().getColor(R.color.background));
-       pieChart.animateXY(1200, 1200);
-
-
-   }
-
-
-
-    public void setMoodBarChart(){
-        ArrayList<BarEntry> numofMoods = new ArrayList();
-        ArrayList<String> happyListcount = new ArrayList<>();
-        ArrayList<String> sadListcount = new ArrayList<>();
-        ArrayList<String> amusedListcount = new ArrayList<>();
-
-        for(JournalEntryModel journalEntryModel : journalList){
-            String moodType = journalEntryModel.getJournalMood();
-            if(moodType.toLowerCase().equalsIgnoreCase("happy")) {
-                happyListcount.add(journalEntryModel.getJournalMood());
-            }else if(moodType.toLowerCase().equalsIgnoreCase("sad")) {
-                sadListcount.add(journalEntryModel.getJournalMood());
-            } else if(moodType.toLowerCase().equalsIgnoreCase("amused")) {
-                amusedListcount.add(journalEntryModel.getJournalMood());
-            }
-        }
-
-        numofMoods.add(new BarEntry(0, happyListcount.size()));
-        numofMoods.add(new BarEntry(1, sadListcount.size()));
-        numofMoods.add(new BarEntry(2, amusedListcount.size()));
-
-        BarDataSet barDataSet = new BarDataSet(numofMoods, "Mood Type");
-
-        BarData data = new BarData(barDataSet);
-        //data.setValueFormatter(new PercentFormatter());
-        barMoodChart.setData(data);
-        barMoodChart.invalidate();
-        Description description = new Description();
-        //description.setText(getString(R.string.piechartMood));
-        // description.setPosition(290f, 40f);
-        description.setText(" ");
-        description.setTextSize(15f);
-        barMoodChart.setDescription(description);
-        data.setValueTextSize(13f);
-        data.setValueTextColor(getResources().getColor(R.color.background));
-        barDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
-        Legend legend = barMoodChart.getLegend();
-        legend.setTextColor(getResources().getColor(R.color.background));
-        barMoodChart.animateY(800);
-
-        ArrayList<String> xLabels = new ArrayList<>();
-        xLabels.add("Happy");
-        xLabels.add("Sad");
-        xLabels.add("Amused");
-        XAxis xAxis = barMoodChart.getXAxis();
-        xAxis.setTextColor(getResources().getColor(R.color.background));
-        xAxis.setValueFormatter(new IndexAxisValueFormatter(xLabels));
-
-        YAxisRenderer yAxis = barMoodChart.getRendererLeftYAxis();
-        barMoodChart.getAxisLeft().setTextColor(getResources().getColor(R.color.background));
-        barMoodChart.getAxisRight().setTextColor(getResources().getColor(R.color.background));
-
-    }
-
-  /**  public void setBarChartData() {
-        ArrayList<BarEntry> numofVisits = new ArrayList();
-        ArrayList<String> places = new ArrayList();
-         ArrayList<String> placesVisited = new ArrayList<>();
-
-        for(JournalEntryModel journalEntryModel : journalList){
-            String location = journalEntryModel.getJournalLocation();
-         if(location != null){
-             if(!placesVisited.contains(location.toLowerCase().trim())){
-                 placesVisited.add(location.toLowerCase().trim());
-             }
-         }
-        }
-
-        int count =0;
-
-      /** for (String place : placesVisited){
-
-          numofVisits.add(new BarEntry(count++,count));
-          places.add(place);
-          count ++;
-       } //
-          numofVisits.add(new BarEntry(0, 0));
-          numofVisits.add(new BarEntry(1, 0));
-          numofVisits.add(new BarEntry(2,journalList.size()));
-      //  numofmood.add(new PieEntry(numofHappyMoods, "Happy",0));
-        //numofmood.add(new PieEntry(numofSadMoods, "Sad",1));
-
-        BarDataSet barDataSet = new BarDataSet(numofVisits, "Years");
-
-
-
-        BarData data = new BarData(barDataSet);
-        //data.setValueFormatter(new PercentFormatter());
-        barChart.setData(data);
-        barChart.invalidate();
-        Description description = new Description();
-        //description.setText(getString(R.string.piechartMood));
-        // description.setPosition(290f, 40f);
-        description.setText(" ");
-        description.setTextSize(15f);
-        barChart.setDescription(description);
-        data.setValueTextSize(13f);
-        data.setValueTextColor(getResources().getColor(R.color.background));
-        barDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
-        Legend legend = barChart.getLegend();
-        legend.setTextColor(getResources().getColor(R.color.background));
-        barChart.animateY(800);
-
-        ArrayList<String> xLabels = new ArrayList<>();
-        xLabels.add("2017");
-        xLabels.add("2018");
-        xLabels.add("2019");
-        XAxis xAxis = barChart.getXAxis();
-        xAxis.setTextColor(getResources().getColor(R.color.background));
-        xAxis.setValueFormatter(new IndexAxisValueFormatter(xLabels));
-
-        YAxisRenderer yAxis = barChart.getRendererLeftYAxis();
-        barChart.getAxisLeft().setTextColor(getResources().getColor(R.color.background));
-        barChart.getAxisRight().setTextColor(getResources().getColor(R.color.background));
-
-
-    }
-   **/
-
-   public void getFavoritePlaces(){
-
-        ArrayList<String> locations= new ArrayList<>();
-
-       for(JournalEntryModel journalEntryModel : journalList){
-           String location = journalEntryModel.getJournalLocation();
-           locations.add(location);
-
-       }
-    ArrayList<String> placesfre = new ArrayList<>();
-
-       int count =0;
-      // locations = removeDuplicates(locations);
-
-     for(String place : locations){
-             if(!place.equals(" ") && !place.isEmpty() && place.trim() != "" ) {
-                 placesfre.add(place + " " +" (" +Collections.frequency(locations, place) + ")");
-             }
-             //Log.d("placesfreq", placesfre.get(count));
-             //count++;
-     }
-
-       placesfre = removeDuplicates(placesfre);
-       Log.d("placesfreq", placesfre.toString());
-      if(placesfre.size() >5){
-       for (int i=0; i<6;i++){
-
-           favoritePlaces.append(placesfre.get(i));
-           favoritePlaces.append("\n");
-           favoritePlaces.append("\n");
-       }
-      } else {
-          for (int i=0; i<placesfre.size();i++){
-              favoritePlaces.append(placesfre.get(i));
-              favoritePlaces.append("\n");
-              favoritePlaces.append("\n");
-          }
-      }
-
-       YoYo.with(Techniques.SlideInUp)
-               .duration(2000)
-               .repeat(0)
-               .playOn(favoritePlaces);
-
-   }
-
-    public static <T> ArrayList<T> removeDuplicates(ArrayList<T> list)
-    {
-
-        // Create a new ArrayList
-        ArrayList<T> newList = new ArrayList<T>();
-
-        // Traverse through the first list
-        for (T element : list) {
-
-            // If this element is not present in newList
-            // then add it
-            if (!newList.contains(element)) {
-
-                newList.add(element);
-            }
-        }
-
-        // return the new list
-        return newList;
-    }
 
     public void setUpThemeContent() {
         if (isWhite == true) {
@@ -411,79 +204,79 @@ public class DashboardActivity extends AppCompatActivity implements SharedPrefer
             Typeface myCustomFont = ResourcesCompat.getFont(this, R.font.parisienneregular);
             FontUtils fontUtils = new FontUtils();
             fontUtils.applyFontToToolbar(entryToolbar, myCustomFont);
-            fontUtils.applyFontToView(tvPieChartTitle, myCustomFont);
-            fontUtils.applyFontToView(tvBarChartTitle, myCustomFont);
-            fontUtils.applyFontToView(favoritePlaces, myCustomFont);
-            fontUtils.applyFontToView(favoriteplacesTitle, myCustomFont);
+            //fontUtils.applyFontToView(tvPieChartTitle, myCustomFont);
+           // fontUtils.applyFontToView(tvBarChartTitle, myCustomFont);
+           // fontUtils.applyFontToView(favoritePlaces, myCustomFont);
+            //fontUtils.applyFontToView(favoriteplacesTitle, myCustomFont);
 
         } else if(selectedFont.equals("1")){
             Typeface myCustomFont = ResourcesCompat.getFont(this, R.font.patrick_hand_sc);
             FontUtils fontUtils = new FontUtils();
             fontUtils.applyFontToToolbar(entryToolbar, myCustomFont);
-            fontUtils.applyFontToView(tvPieChartTitle, myCustomFont);
-            fontUtils.applyFontToView(tvBarChartTitle, myCustomFont);
-            fontUtils.applyFontToView(favoritePlaces, myCustomFont);
-            fontUtils.applyFontToView(favoriteplacesTitle, myCustomFont);
+          //  fontUtils.applyFontToView(tvPieChartTitle, myCustomFont);
+           // fontUtils.applyFontToView(tvBarChartTitle, myCustomFont);
+           // fontUtils.applyFontToView(favoritePlaces, myCustomFont);
+           // fontUtils.applyFontToView(favoriteplacesTitle, myCustomFont);
         } else if( selectedFont.equals("2")) {
             Typeface myCustomFont = ResourcesCompat.getFont(this, R.font.sofadi_one);
             FontUtils fontUtils = new FontUtils();
             fontUtils.applyFontToToolbar(entryToolbar, myCustomFont);
-            fontUtils.applyFontToView(tvPieChartTitle, myCustomFont);
-            fontUtils.applyFontToView(tvBarChartTitle, myCustomFont);
-            fontUtils.applyFontToView(favoritePlaces, myCustomFont);
-            fontUtils.applyFontToView(favoriteplacesTitle, myCustomFont);
+          //  fontUtils.applyFontToView(tvPieChartTitle, myCustomFont);
+           // fontUtils.applyFontToView(tvBarChartTitle, myCustomFont);
+           // fontUtils.applyFontToView(favoritePlaces, myCustomFont);
+           // fontUtils.applyFontToView(favoriteplacesTitle, myCustomFont);
         } else if( selectedFont.equals("4")) {
             Typeface myCustomFont = ResourcesCompat.getFont(this, R.font.concert_one);
             FontUtils fontUtils = new FontUtils();
             fontUtils.applyFontToToolbar(entryToolbar, myCustomFont);
-            fontUtils.applyFontToView(tvPieChartTitle, myCustomFont);
-            fontUtils.applyFontToView(tvBarChartTitle, myCustomFont);
-            fontUtils.applyFontToView(favoritePlaces, myCustomFont);
-            fontUtils.applyFontToView(favoriteplacesTitle, myCustomFont);
+          //  fontUtils.applyFontToView(tvPieChartTitle, myCustomFont);
+           // fontUtils.applyFontToView(tvBarChartTitle, myCustomFont);
+           // fontUtils.applyFontToView(favoritePlaces, myCustomFont);
+            //fontUtils.applyFontToView(favoriteplacesTitle, myCustomFont);
 
         }
         else if( selectedFont.equals("5")) {
             Typeface myCustomFont = ResourcesCompat.getFont(this, R.font.oleo_script);
             FontUtils fontUtils = new FontUtils();
             fontUtils.applyFontToToolbar(entryToolbar, myCustomFont);
-            fontUtils.applyFontToView(tvPieChartTitle, myCustomFont);
-            fontUtils.applyFontToView(tvBarChartTitle, myCustomFont);
-            fontUtils.applyFontToView(favoritePlaces, myCustomFont);
-            fontUtils.applyFontToView(favoriteplacesTitle, myCustomFont);
+           // fontUtils.applyFontToView(tvPieChartTitle, myCustomFont);
+           // fontUtils.applyFontToView(tvBarChartTitle, myCustomFont);
+           // fontUtils.applyFontToView(favoritePlaces, myCustomFont);
+           // fontUtils.applyFontToView(favoriteplacesTitle, myCustomFont);
         }
         else if( selectedFont.equals("6")) {
             Typeface myCustomFont = ResourcesCompat.getFont(this, R.font.pt_sans_narrow);
             FontUtils fontUtils = new FontUtils();
             fontUtils.applyFontToToolbar(entryToolbar, myCustomFont);
-            fontUtils.applyFontToView(tvPieChartTitle, myCustomFont);
-            fontUtils.applyFontToView(tvBarChartTitle, myCustomFont);
-            fontUtils.applyFontToView(favoritePlaces, myCustomFont);
-            fontUtils.applyFontToView(favoriteplacesTitle, myCustomFont);
+            //fontUtils.applyFontToView(tvPieChartTitle, myCustomFont);
+          //  fontUtils.applyFontToView(tvBarChartTitle, myCustomFont);
+          //  fontUtils.applyFontToView(favoritePlaces, myCustomFont);
+          //  fontUtils.applyFontToView(favoriteplacesTitle, myCustomFont);
 
         }  else if( selectedFont.equals("7")) {
             Typeface myCustomFont = ResourcesCompat.getFont(this, R.font.roboto_condensed_light);
             FontUtils fontUtils = new FontUtils();
             fontUtils.applyFontToToolbar(entryToolbar, myCustomFont);
-            fontUtils.applyFontToView(tvPieChartTitle, myCustomFont);
-            fontUtils.applyFontToView(tvBarChartTitle, myCustomFont);
-            fontUtils.applyFontToView(favoritePlaces, myCustomFont);
-            fontUtils.applyFontToView(favoriteplacesTitle, myCustomFont);
+           // fontUtils.applyFontToView(tvPieChartTitle, myCustomFont);
+          //  fontUtils.applyFontToView(tvBarChartTitle, myCustomFont);
+           // fontUtils.applyFontToView(favoritePlaces, myCustomFont);
+           // fontUtils.applyFontToView(favoriteplacesTitle, myCustomFont);
         }  else if( selectedFont.equals("8")) {
             Typeface myCustomFont = ResourcesCompat.getFont(this, R.font.shadows_into_light);
             FontUtils fontUtils = new FontUtils();
             fontUtils.applyFontToToolbar(entryToolbar, myCustomFont);
-            fontUtils.applyFontToView(tvPieChartTitle, myCustomFont);
-            fontUtils.applyFontToView(tvBarChartTitle, myCustomFont);
-            fontUtils.applyFontToView(favoritePlaces, myCustomFont);
-            fontUtils.applyFontToView(favoriteplacesTitle, myCustomFont);
+            //fontUtils.applyFontToView(tvPieChartTitle, myCustomFont);
+           // fontUtils.applyFontToView(tvBarChartTitle, myCustomFont);
+           // fontUtils.applyFontToView(favoritePlaces, myCustomFont);
+           // fontUtils.applyFontToView(favoriteplacesTitle, myCustomFont);
         } else if( selectedFont.equals("9")) {
             Typeface myCustomFont = ResourcesCompat.getFont(this, R.font.slabo_13px);
             FontUtils fontUtils = new FontUtils();
             fontUtils.applyFontToToolbar(entryToolbar, myCustomFont);
-            fontUtils.applyFontToView(tvPieChartTitle, myCustomFont);
-            fontUtils.applyFontToView(tvBarChartTitle, myCustomFont);
-            fontUtils.applyFontToView(favoritePlaces, myCustomFont);
-            fontUtils.applyFontToView(favoriteplacesTitle, myCustomFont);
+         //   fontUtils.applyFontToView(tvPieChartTitle, myCustomFont);
+           // fontUtils.applyFontToView(tvBarChartTitle, myCustomFont);
+          //  fontUtils.applyFontToView(favoritePlaces, myCustomFont);
+          //  fontUtils.applyFontToView(favoriteplacesTitle, myCustomFont);
         }else {
 
         }
@@ -547,6 +340,45 @@ public class DashboardActivity extends AppCompatActivity implements SharedPrefer
 
 
 
+
+
+    private void setupViewPager(ViewPager viewPager) {
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        adapter.addFragment(new DashWeekFragment(), "Week");
+        adapter.addFragment(new DashMonthFragment(), "Month");
+        adapter.addFragment(new DashYearFragment(), "Year");
+        viewPager.setAdapter(adapter);
+    }
+
+    class ViewPagerAdapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
+
+        public ViewPagerAdapter(FragmentManager manager) {
+            super(manager);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+
+        public void addFragment(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
+            //return null;
+        }
+    }
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();

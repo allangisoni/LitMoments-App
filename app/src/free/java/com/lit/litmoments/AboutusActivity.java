@@ -2,16 +2,20 @@ package com.lit.litmoments;
 
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
+import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ajts.androidmads.fontutils.FontUtils;
+import com.daimajia.androidanimations.library.fading_entrances.FadeInAnimator;
+import com.daimajia.androidanimations.library.sliders.SlideInUpAnimator;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -53,8 +57,14 @@ public class AboutusActivity extends AppCompatActivity implements SharedPreferen
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             setUpThemeContent();
             loadWidgetColors(sharedPreferences);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                getWindow().setEnterTransition(null);
+            }
 
         }
+
+
+
 
         if(isWhite == true){
 
@@ -103,6 +113,10 @@ public class AboutusActivity extends AppCompatActivity implements SharedPreferen
             imageView.setColorFilter(getResources().getColor(android.R.color.white));
         }
 
+        FadeInAnimator animator = new FadeInAnimator();
+        animator.prepare(linearLayout);
+        animator.setDuration(1200);
+        animator.animate();
 
     }
 

@@ -31,17 +31,24 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
+import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 
 import io.supercharge.shimmerlayout.ShimmerLayout;
+import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
 public class JournalViewHolder  extends RecyclerView.ViewHolder{
 
-    public TextView tvJournalMonth,tvJournalDay, tvJournalYear,  tvJournalTitle, tvJournalMessage, tvJournalLocation;
+    public TextView tvJournalMonth,tvJournalDay, tvJournalYear,  tvJournalTitle, tvJournalMessage, tvJournalLocation, tvJournalDate;
 
-    public ImageView ivJournalPhoto;
+    public ImageView ivJournalPhoto, ivFav;
+
     ShimmerLayout shimmerText;
 
     private  List<JournalEntryModel> filteredJournallist;
@@ -52,13 +59,15 @@ public class JournalViewHolder  extends RecyclerView.ViewHolder{
     public JournalViewHolder(View itemView) {
         super(itemView);
      // tvJournalDate= itemView.findViewById(R.id.tvDate);
-      tvJournalMonth= itemView.findViewById(R.id.tvMonth);
-      tvJournalDay= itemView.findViewById(R.id.tvDay);
-      tvJournalYear= itemView.findViewById(R.id.tvYear);
+      //tvJournalMonth= itemView.findViewById(R.id.tvMonth);
+      //tvJournalDay= itemView.findViewById(R.id.tvDay);
+      //tvJournalYear= itemView.findViewById(R.id.tvYear);
       tvJournalTitle= itemView.findViewById(R.id.tvTitle);
       tvJournalMessage = itemView.findViewById(R.id.tvMessage);
       tvJournalLocation = itemView.findViewById(R.id.tvLocation);
       ivJournalPhoto = itemView.findViewById(R.id.ivJournalImage);
+      tvJournalDate = itemView.findViewById(R.id.tvDate);
+      ivFav = itemView.findViewById(R.id.ivFav);
 
 
     }
@@ -75,7 +84,7 @@ public class JournalViewHolder  extends RecyclerView.ViewHolder{
 
              //Picasso.with(itemView.getContext()).setIndicatorsEnabled(false);
              picasso.load(journalItem.getJournalImagePath().get(0)).fit().centerCrop().networkPolicy(NetworkPolicy.OFFLINE)
-                     .placeholder(R.drawable.ic_vectorjournal).error(R.drawable.ic_offline).into(ivJournalPhoto, new Callback() {
+                     .placeholder(R.drawable.ic_vectorjournal).error(R.drawable.ic_offline).transform(new RoundedCornersTransformation(15,8)).into(ivJournalPhoto, new Callback() {
                  @Override
                  public void onSuccess() {
 
@@ -84,7 +93,7 @@ public class JournalViewHolder  extends RecyclerView.ViewHolder{
                  @Override
                  public void onError() {
                      picasso.with(itemView.getContext()).load(journalItem.getJournalImagePath().get(0)).fit().centerCrop()
-                             .placeholder(R.drawable.ic_vectorjournal).error(R.drawable.ic_offline).into(ivJournalPhoto, new Callback() {
+                             .placeholder(R.drawable.ic_vectorjournal).error(R.drawable.ic_offline).transform(new RoundedCornersTransformation(15,8)).into(ivJournalPhoto, new Callback() {
                          @Override
                          public void onSuccess() {
                          }
@@ -100,11 +109,13 @@ public class JournalViewHolder  extends RecyclerView.ViewHolder{
              });
          }
          else {
-             picasso.load(R.drawable.ic_vectorjournal).fit().centerCrop().networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.ic_letstravel).error(R.drawable.ic_offline).into(ivJournalPhoto);
+             picasso.load(R.drawable.ic_vectorjournal).fit().centerCrop().networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.ic_letstravel).error(R.drawable.ic_offline)
+                     .transform(new RoundedCornersTransformation(15,8)).into(ivJournalPhoto);
          } }
 
          catch (Exception e){
-             picasso.load(R.drawable.ic_vectorjournal).fit().centerCrop().networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.ic_letstravel).error(R.drawable.ic_offline).into(ivJournalPhoto);
+             picasso.load(R.drawable.ic_vectorjournal).fit().centerCrop().networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.ic_letstravel).error(R.drawable.ic_offline)
+                     .transform(new RoundedCornersTransformation(15,8)).into(ivJournalPhoto);
         }
 
         // tvJournalDate.setText(journalItem.getJournalDate());
@@ -124,17 +135,33 @@ public class JournalViewHolder  extends RecyclerView.ViewHolder{
             year = myDate.substring(0, 4);
 
             //day = day.replace("-", "");
-            tvJournalMonth.setText(monthName);
-            tvJournalDay.setText(day);
-            tvJournalYear.setText(year);
+            //tvJournalMonth.setText(monthName);
+            //tvJournalDay.setText(day);
+            //tvJournalYear.setText(year);
         } else {
 
-            tvJournalMonth.setText("December");
-            tvJournalDay.setText("28");
-            tvJournalYear.setText("2019");
+           // tvJournalMonth.setText("December");
+            //tvJournalDay.setText("28");
+            //tvJournalYear.setText("2019");
         }
 
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat dateFormat2 = new SimpleDateFormat("dd-MMMM-yyyy");
+        Date formatDate = new Date();
+        try {
+          formatDate = dateFormat.parse(journalItem.getJournalDate());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        String newDate = dateFormat2.format(formatDate);
+        DateFormatSymbols dfs = new DateFormatSymbols(Locale.getDefault());
+        String weekdays[] = dfs.getWeekdays();
 
+         tvJournalDate.setText(newDate);
+         ivFav.setColorFilter(ContextCompat.getColor(itemView.getContext(),R.color.yellowcolorPrimaryDark));
+         if(journalItem.getIsFavorite().equals("False")){
+             ivFav.setVisibility(View.INVISIBLE);
+         }
          tvJournalTitle.setText(journalItem.getJournalTitle());
          tvJournalMessage.setText(journalItem.getJournalMessage());
          tvJournalLocation.setText(journalItem.getJournalLocation());
@@ -151,8 +178,9 @@ public class JournalViewHolder  extends RecyclerView.ViewHolder{
             fontUtils.applyFontToView(tvJournalDay,myCustomFont);
             fontUtils.applyFontToView(tvJournalYear,myCustomFont);
             fontUtils.applyFontToView(tvJournalLocation,myCustomFont);
-            tvJournalDay.setTextSize(16f);
-            tvJournalYear.setTextSize(12f);
+            fontUtils.applyFontToView(tvJournalDate, myCustomFont);
+            //tvJournalDay.setTextSize(16f);
+            //tvJournalYear.setTextSize(12f);
 
         } else if(selectedFont.equals("1")){
             Typeface myCustomFont = ResourcesCompat.getFont(itemView.getContext(), R.font.patrick_hand_sc);
@@ -163,6 +191,7 @@ public class JournalViewHolder  extends RecyclerView.ViewHolder{
             fontUtils.applyFontToView(tvJournalDay,myCustomFont);
             fontUtils.applyFontToView(tvJournalYear,myCustomFont);
             fontUtils.applyFontToView(tvJournalLocation,myCustomFont);
+            fontUtils.applyFontToView(tvJournalDate, myCustomFont);
 
         } else if( selectedFont.equals("2")) {
             Typeface myCustomFont = ResourcesCompat.getFont(itemView.getContext(), R.font.sofadi_one);
@@ -173,6 +202,7 @@ public class JournalViewHolder  extends RecyclerView.ViewHolder{
             fontUtils.applyFontToView(tvJournalDay,myCustomFont);
             fontUtils.applyFontToView(tvJournalYear,myCustomFont);
             fontUtils.applyFontToView(tvJournalLocation,myCustomFont);
+            fontUtils.applyFontToView(tvJournalDate, myCustomFont);
         } else if(selectedFont.equals("3")){
             FontUtils fontUtils = new FontUtils();
             Typeface myCustomFont = Typeface.create("sans-serif-condensed", Typeface.NORMAL);
@@ -182,6 +212,7 @@ public class JournalViewHolder  extends RecyclerView.ViewHolder{
             fontUtils.applyFontToView(tvJournalDay,Typeface.SANS_SERIF);
             fontUtils.applyFontToView(tvJournalYear,Typeface.SANS_SERIF);
             fontUtils.applyFontToView(tvJournalLocation,Typeface.SANS_SERIF);
+            fontUtils.applyFontToView(tvJournalDate, Typeface.SANS_SERIF);
         }  else if( selectedFont.equals("4")) {
             Typeface myCustomFont = ResourcesCompat.getFont(itemView.getContext(), R.font.concert_one);
             FontUtils fontUtils = new FontUtils();
@@ -191,6 +222,7 @@ public class JournalViewHolder  extends RecyclerView.ViewHolder{
             fontUtils.applyFontToView(tvJournalDay, myCustomFont);
             fontUtils.applyFontToView(tvJournalYear, myCustomFont);
             fontUtils.applyFontToView(tvJournalLocation, myCustomFont);
+            fontUtils.applyFontToView(tvJournalDate, myCustomFont);
         }
         else if( selectedFont.equals("5")) {
             Typeface myCustomFont = ResourcesCompat.getFont(itemView.getContext(), R.font.oleo_script);
@@ -201,6 +233,7 @@ public class JournalViewHolder  extends RecyclerView.ViewHolder{
             fontUtils.applyFontToView(tvJournalDay, myCustomFont);
             fontUtils.applyFontToView(tvJournalYear, myCustomFont);
             fontUtils.applyFontToView(tvJournalLocation, myCustomFont);
+            fontUtils.applyFontToView(tvJournalDate, myCustomFont);
         }
         else if( selectedFont.equals("6")) {
             Typeface myCustomFont = ResourcesCompat.getFont(itemView.getContext(), R.font.pt_sans_narrow);
@@ -211,6 +244,7 @@ public class JournalViewHolder  extends RecyclerView.ViewHolder{
             fontUtils.applyFontToView(tvJournalDay, myCustomFont);
             fontUtils.applyFontToView(tvJournalYear, myCustomFont);
             fontUtils.applyFontToView(tvJournalLocation, myCustomFont);
+            fontUtils.applyFontToView(tvJournalDate, myCustomFont);
         }  else if( selectedFont.equals("7")) {
             Typeface myCustomFont = ResourcesCompat.getFont(itemView.getContext(), R.font.roboto_condensed_light);
             FontUtils fontUtils = new FontUtils();
@@ -220,6 +254,7 @@ public class JournalViewHolder  extends RecyclerView.ViewHolder{
             fontUtils.applyFontToView(tvJournalDay, myCustomFont);
             fontUtils.applyFontToView(tvJournalYear, myCustomFont);
             fontUtils.applyFontToView(tvJournalLocation, myCustomFont);
+            fontUtils.applyFontToView(tvJournalDate, myCustomFont);
         }  else if( selectedFont.equals("8")) {
             Typeface myCustomFont = ResourcesCompat.getFont(itemView.getContext(), R.font.shadows_into_light);
             FontUtils fontUtils = new FontUtils();
@@ -229,6 +264,7 @@ public class JournalViewHolder  extends RecyclerView.ViewHolder{
             fontUtils.applyFontToView(tvJournalDay, myCustomFont);
             fontUtils.applyFontToView(tvJournalYear, myCustomFont);
             fontUtils.applyFontToView(tvJournalLocation, myCustomFont);
+            fontUtils.applyFontToView(tvJournalDate, myCustomFont);
         } else if( selectedFont.equals("9")) {
             Typeface myCustomFont = ResourcesCompat.getFont(itemView.getContext(), R.font.slabo_13px);
             FontUtils fontUtils = new FontUtils();
@@ -238,6 +274,7 @@ public class JournalViewHolder  extends RecyclerView.ViewHolder{
             fontUtils.applyFontToView(tvJournalDay, myCustomFont);
             fontUtils.applyFontToView(tvJournalYear, myCustomFont);
             fontUtils.applyFontToView(tvJournalLocation, myCustomFont);
+            fontUtils.applyFontToView(tvJournalDate, myCustomFont);
         }
 
         Bitmap bitmap = ((BitmapDrawable)ivJournalPhoto.getDrawable()).getBitmap();

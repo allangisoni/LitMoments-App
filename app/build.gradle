@@ -2,22 +2,15 @@ apply plugin: 'com.android.application'
 
 android {
 
-    signingConfigs {
-        release {
-            storeFile file('litkey.jks')
-            storePassword 'hesus2608'
-            keyPassword 'hesus2608'
-            keyAlias = 'litkey'
-        }
-    }
+
     compileSdkVersion 27
     buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId "com.lit.litmoments"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 3
-        versionName "2.1"
+        versionCode 4
+        versionName "2.2"
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -25,12 +18,10 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
+            //signingConfig signingConfigs.release
 
         }
-     /** customDebugType {
-            debuggable true
-        } **/
+        /** customDebugType {debuggable true} **/
 
     }
     compileOptions {
@@ -38,11 +29,11 @@ android {
         sourceCompatibility 1.8
     }
 
-   flavorDimensions "default"
+    flavorDimensions "default"
     productFlavors {
         free {
             applicationId "com.lit.litmoments.free"
-            versionName "2.1-free"
+            versionName "2.2-free"
 
             // this boolean can be accessed in java classes by using BuildConfig class
             // and now you can identify if your app is the paid version or not
@@ -85,6 +76,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:16.0.0'
     implementation 'com.google.android.libraries.places:places:1.1.0'
     implementation 'com.jakewharton:butterknife:8.5.1'
+    implementation 'com.android.support:appcompat-v7:27.1.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
     implementation 'com.github.tajchert:nammu:1.2.0'
     implementation 'com.github.jkwiecien:EasyImage:2.1.0'
@@ -95,6 +87,7 @@ dependencies {
     implementation 'com.ajts.androidmads.fontutils:fontutils:1.0.2'
     implementation 'com.squareup.okhttp3:okhttp:3.10.0'
     implementation 'com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0'
+    implementation 'jp.wasabeef:picasso-transformations:2.1.0'
     implementation 'com.zhihu.android:matisse:0.5.2-beta4'
     implementation 'id.zelory:compressor:2.1.0'
     implementation 'com.makeramen:roundedimageview:2.3.0'
@@ -111,11 +104,12 @@ dependencies {
     implementation 'com.codemybrainsout.rating:ratingdialog:1.0.8'
     implementation 'com.sdsmdg.tastytoast:tastytoast:0.1.1'
     implementation 'com.github.Angtrim:Android-Five-Stars-Library:v3.1'
-    implementation  'com.morsebyte.shailesh.twostagerating:TwoStageRate:2.0'
+    implementation 'com.morsebyte.shailesh.twostagerating:TwoStageRate:2.0'
     implementation 'com.android.billingclient:billing:2.0.3'
     implementation 'com.jsibbold:zoomage:1.2.0'
     implementation 'com.intuit.sdp:sdp-android:1.0.6'
-   // implementation 'com.google.cloud:google-cloud-pubsub:1.96.0'
+    implementation 'com.thebluealliance:spectrum:0.7.1'
+    // implementation 'com.google.cloud:google-cloud-pubsub:1.96.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'

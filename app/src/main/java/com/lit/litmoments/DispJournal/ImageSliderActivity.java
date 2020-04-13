@@ -85,7 +85,6 @@ public class ImageSliderActivity extends AppCompatActivity {
         //make fully Android Transparent Status bar
         if (Build.VERSION.SDK_INT >= 21) {
             setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
-
             getWindow().setStatusBarColor(Color.BLACK);
         }
 
@@ -177,7 +176,7 @@ public class ImageSliderActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_share) {
-            shareImagePicasso(currentImage, getApplicationContext());
+            shareImagePicasso(currentImage, ImageSliderActivity.this);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -200,8 +199,10 @@ public class ImageSliderActivity extends AppCompatActivity {
             @Override public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                 Intent i = new Intent(Intent.ACTION_SEND);
                 i.setType("image/*");
+                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 i.putExtra(Intent.EXTRA_STREAM, getlocalBitmapUri(bitmap));
+
                 context.startActivity(Intent.createChooser(i, "Share image using"));
             }
             @Override public void onBitmapFailed(Drawable errorDrawable) { }
@@ -224,7 +225,7 @@ public class ImageSliderActivity extends AppCompatActivity {
          }
          File imagePath = new File(this.getCacheDir(), "images");
          File newFile = new File(imagePath, "image.png");
-         Uri contentUri = FileProvider.getUriForFile(this, "com.example.android.litmoments"+ ".fileprovider", newFile);
+         Uri contentUri = FileProvider.getUriForFile(this, "com.lit.litmoments.free.fileprovider", newFile);
 
          try {
             File file = new File(Environment.getExternalStorageDirectory() + File.separator + "image.jpg");

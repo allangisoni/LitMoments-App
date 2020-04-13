@@ -44,11 +44,11 @@ public class JournalMainAdapter extends RecyclerView.Adapter<JournalViewHolder> 
         int orientation = context.getResources().getConfiguration().orientation;
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             // In landscape
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.journal_list_item, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.newjournalentry, parent, false);
             return new JournalViewHolder(view);
         } else {
             // In portrait
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.journal_list_item, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.newjournalentry, parent, false);
             return new JournalViewHolder(view);
         }
 

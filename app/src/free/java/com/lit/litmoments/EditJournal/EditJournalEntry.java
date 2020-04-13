@@ -75,6 +75,7 @@ import com.lit.litmoments.AddJournal.JournalEntryModel;
 import com.lit.litmoments.AddJournal.JournalPhotoModel;
 import com.lit.litmoments.BuildConfig;
 import com.lit.litmoments.Main.MainActivity;
+import com.lit.litmoments.Main.TabbedMainActivity;
 import com.lit.litmoments.R;
 import com.sdsmdg.tastytoast.TastyToast;
 import com.zhihu.matisse.Matisse;
@@ -201,7 +202,7 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
     Boolean exitact = false;
     Boolean isPremiumUser = false;
     Boolean isDarkTheme = false;
-
+    String currentUid="";
 
 
     ActionMode actionMode;
@@ -265,10 +266,10 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
         FirebaseApp.initializeApp(getApplicationContext());
 
         mAuth = FirebaseAuth.getInstance();
-        storageReference = FirebaseStorage.getInstance().getReference();
-        String currentUid = mAuth.getCurrentUser().getUid();
-        mDatabase = FirebaseDatabase.getInstance().getReference(DATABASE_UPLOADS).child(currentUid);
 
+         currentUid = mAuth.getCurrentUser().getUid();
+        mDatabase = FirebaseDatabase.getInstance().getReference(DATABASE_UPLOADS).child(currentUid);
+        storageReference = FirebaseStorage.getInstance().getReference().child(currentUid).child(STORAGE_PATH_UPLOADS);
 
 
 
@@ -803,14 +804,14 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
 
         if (TextUtils.isEmpty(etJournalTitle.getText().toString()))
         {
-            Toast.makeText(EditJournalEntry.this, "Journal title is empty", Toast.LENGTH_SHORT).show();
-            TastyToast.makeText(getApplicationContext(), "Journal title is empty", TastyToast.LENGTH_SHORT, TastyToast.INFO);
+            //Toast.makeText(EditJournalEntry.this, "Journal title is empty", Toast.LENGTH_SHORT).show();
+            //TastyToast.makeText(getApplicationContext(), "Journal title is empty", TastyToast.LENGTH_SHORT, TastyToast.INFO).show();
         }
 
         else if (TextUtils.isEmpty(etJournalMessage.getText().toString() ))
         {
             //Toast.makeText(EditJournalEntry.this, "Journal message is empty", Toast.LENGTH_SHORT).show();
-            TastyToast.makeText(getApplicationContext(), "Journal message is empty", TastyToast.LENGTH_SHORT, TastyToast.INFO);
+           // TastyToast.makeText(getApplicationContext(), "Journal message is empty", TastyToast.LENGTH_SHORT, TastyToast.INFO);
         }
 
         else
@@ -843,19 +844,24 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
                    }
 
                     File myFile = fileImages.get(count);
-                    StorageReference imageRef = storageReference.child(STORAGE_PATH_UPLOADS);
+                    StorageReference imageRef = storageReference;
 
                     // Toast.makeText(getApplicationContext(), " "+ fileImages.get(0).getAbsolutePath() +" ", Toast.LENGTH_LONG).show();
                     Log.i("fileImage", fileImages.get(count).getAbsolutePath());
                    // Log.i("fileImageuri", imagesUri.get(count).toString());
+                    Log.d("StorageImageName"," my string" + fileImages.get(count).getAbsolutePath());
                     String[] subfilename = fileImages.get(count).getAbsolutePath().split("%");
-
+                    for (String string : subfilename) {
+                        //Log.d("StorageImageName"," my string" + string);
+                    }
                     String fsname = " ";
                     String imageName = " ";
                     if (subfilename.length > 1) {
-                        fsname = subfilename[1];
+                        fsname = subfilename[2];
                         imageName = fsname;
+                       // Log.d("StorageImageName", imageName);
                         imageName = imageName.substring(2, 20);
+                        Log.d("StorageImageName", "image"+imageName);
                         isNewImage = false;
                     } else {
                         fsname = subfilename[0];
@@ -878,10 +884,11 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
                                 // Got the download URL for 'users/me/profile.png'
                                 //Toast.makeText(getApplicationContext(), " " + imageUploads.size()+ " ", Toast.LENGTH_SHORT).show();
                                 String downloadUrl = uri.toString();
+                                Log.d ("StorageImageUrl" , downloadUrl);
                                 uploadedImages.add(downloadUrl);
                                 JournalEntryModel journalEntryModel = new JournalEntryModel(tvJournalDate.getText().toString(), etJournalLocation.getText().toString(), currentWeather,
                                         currentMood, etJournalTitle.getText().toString(), etJournalMessage.getText().toString(), journalMonth, journalDay, uploadedImages,
-                                        refKey);
+                                        refKey, "False");
 
                                 Map<String, Object> productValues = oMapper.convertValue(journalEntryModel, Map.class);
 
@@ -897,7 +904,7 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
                                 if(exitact == true){
                                     TastyToast.makeText(getApplicationContext(), "Updated", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
                                     pathList.clear();
-                                    startActivity(new Intent(EditJournalEntry.this, MainActivity.class));
+                                    startActivity(new Intent(EditJournalEntry.this, TabbedMainActivity.class));
                                     finish();
                                 }
 
@@ -932,7 +939,7 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
                             } finally {
 
                             }
-                            StorageReference sRef = storageReference.child(STORAGE_PATH_UPLOADS + System.currentTimeMillis() + "." + getFileExtension(Uri.fromFile(fileImages.get(count))));
+                            StorageReference sRef = storageReference.child(System.currentTimeMillis() + "." + getFileExtension(Uri.fromFile(fileImages.get(count))));
 
                             //mUploadTask = sRef.putFile(Uri.fromFile(fileImages.get(count)));
                             mUploadTask = sRef.putFile(Uri.fromFile(destFile));
@@ -950,7 +957,7 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
 
                                                     JournalEntryModel journalEntryModel = new JournalEntryModel(tvJournalDate.getText().toString(), etJournalLocation.getText().toString(), currentWeather,
                                                             currentMood, etJournalTitle.getText().toString(), etJournalMessage.getText().toString(), journalMonth, journalDay,
-                                                            uploadedImages, refKey);
+                                                            uploadedImages, refKey, "False");
 
                                                     Map<String, Object> productValues = oMapper.convertValue(journalEntryModel, Map.class);
 
@@ -968,7 +975,7 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
                                                     if(exitact == true){
                                                         TastyToast.makeText(getApplicationContext(), "Updated", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
                                                         pathList.clear();
-                                                        startActivity(new Intent(EditJournalEntry.this, MainActivity.class));
+                                                        startActivity(new Intent(EditJournalEntry.this, TabbedMainActivity.class));
                                                         finish();
                                                     }
 
@@ -996,7 +1003,7 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
 
                                 }
 
-                                StorageReference secRef = storageReference.child(STORAGE_PATH_UPLOADS + System.currentTimeMillis() + "." + getFileExtension(Uri.fromFile(fileImages.get(count))));
+                                StorageReference secRef = storageReference.child(System.currentTimeMillis() + "." + getFileExtension(Uri.fromFile(fileImages.get(count))));
                                // mUploadTask = secRef.putFile(Uri.fromFile(fileImages.get(count)));
                                 mUploadTask = sRef.putFile(Uri.fromFile(newdestFile));
 
@@ -1013,7 +1020,7 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
 
                                                         JournalEntryModel journalEntryModel = new JournalEntryModel(tvJournalDate.getText().toString(), etJournalLocation.getText().toString(), currentWeather,
                                                                 currentMood, etJournalTitle.getText().toString(), etJournalMessage.getText().toString(), journalMonth, journalDay,
-                                                                uploadedImages, refKey);
+                                                                uploadedImages, refKey, "False");
 
                                                         Map<String, Object> productValues = oMapper.convertValue(journalEntryModel, Map.class);
 
@@ -1032,7 +1039,7 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
                                                         if(exitact == true){
                                                             TastyToast.makeText(getApplicationContext(), "Updated", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
                                                             pathList.clear();
-                                                            startActivity(new Intent(EditJournalEntry.this, MainActivity.class));
+                                                            startActivity(new Intent(EditJournalEntry.this, TabbedMainActivity.class));
                                                             finish();
                                                         }
 
@@ -1065,7 +1072,7 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
 
                             }
 
-                            StorageReference sRef = storageReference.child(STORAGE_PATH_UPLOADS + System.currentTimeMillis() + "." + getFileExtension(Uri.fromFile(fileImages.get(count))));
+                            StorageReference sRef = storageReference.child( System.currentTimeMillis() + "." + getFileExtension(Uri.fromFile(fileImages.get(count))));
                             //  mUploadTask = sRef.putFile(Uri.fromFile(fileImages.get(count)));
                             mUploadTask = sRef.putFile(Uri.fromFile(destFile));
 
@@ -1082,7 +1089,7 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
 
                                                     JournalEntryModel journalEntryModel = new JournalEntryModel(tvJournalDate.getText().toString(), etJournalLocation.getText().toString(), currentWeather,
                                                             currentMood, etJournalTitle.getText().toString(), etJournalMessage.getText().toString(), journalMonth, journalDay,
-                                                            uploadedImages, refKey);
+                                                            uploadedImages, refKey, "False");
 
                                                     Map<String, Object> productValues = oMapper.convertValue(journalEntryModel, Map.class);
 
@@ -1101,7 +1108,7 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
                                                     if (exitact == true) {
                                                         TastyToast.makeText(getApplicationContext(), "Updated", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
                                                         pathList.clear();
-                                                        startActivity(new Intent(EditJournalEntry.this, MainActivity.class));
+                                                        startActivity(new Intent(EditJournalEntry.this, TabbedMainActivity.class));
                                                         finish();
                                                     }
                                                 }
@@ -1131,7 +1138,7 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
                 //HashMap<String, String> myFilePath = new HashMap<String, String>();
                 JournalEntryModel journalEntryModel = new JournalEntryModel(tvJournalDate.getText().toString(), etJournalLocation.getText().toString(),currentWeather ,
                         currentMood, etJournalTitle.getText().toString(), etJournalMessage.getText().toString(), journalMonth, journalDay,
-                        null, refKey);
+                        null, refKey, "False");
 
                 //adding an upload to firebase database
                 DatabaseReference databaseReference = mDatabase;
@@ -1139,7 +1146,7 @@ public class EditJournalEntry extends AppCompatActivity implements DisplayImages
                 //displaying success toast
                // Toast.makeText(getApplicationContext(), "Updated", Toast.LENGTH_SHORT).show();
                 TastyToast.makeText(getApplicationContext(), "Updated", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-                startActivity(new Intent(EditJournalEntry.this, MainActivity.class));
+                startActivity(new Intent(EditJournalEntry.this, TabbedMainActivity.class));
                 finish();
             }
 

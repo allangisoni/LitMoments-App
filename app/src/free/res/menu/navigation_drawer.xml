@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<group android:checkableBehavior="single">
+
+    <item
+        android:id="@+id/nav_dash"
+        android:icon="@drawable/ic_dash"
+        android:title="@string/dashtoolbar"
+        />
+    <item
+        android:id="@+id/nav_theme"
+        android:icon="@drawable/ic_theme"
+        android:title="@string/allThemes"
+        />
+    <item
+        android:id="@+id/nav_font"
+        android:icon="@drawable/ic_font"
+        android:title="@string/uiThemeFont"
+        />
+   <!-- <item
+        android:id="@+id/nav_removeads"
+        android:title="@string/remove_ads"
+        android:icon="@drawable/ic_ads"
+        /> -->
+    <item
+        android:id="@+id/nav_about"
+        android:title="@string/about"
+        android:icon="@drawable/ic_about"
+        />
+
+    <item
+        android:id="@+id/nav_feedback"
+        android:title="@string/feedback"
+        android:icon="@drawable/ic_feedback"
+        />
+    <item
+    android:id="@+id/nav_share"
+    android:title="@string/tellafriend"
+    android:icon="@drawable/ic_tellafriend"
+    />
+    <item
+        android:id="@+id/nav_rateus"
+        android:title="@string/rateus"
+        android:icon="@drawable/ic_review"
+        />
+    <item
+        android:id="@+id/nav_termsofuse"
+        android:title="@string/termsofuse"
+        android:icon="@drawable/ic_terms"
+        />
+    <item
+        android:id="@+id/nav_privacy"
+        android:title="@string/privacy"
+        android:icon="@drawable/ic_privacy"
+        />
+    <item
+        android:id="@+id/nav_signout"
+        android:title="@string/acc_logout"
+        android:icon="@drawable/ic_signout"
+        />
+</group>
+
+</menu>

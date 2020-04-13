@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 
 import com.lit.litmoments.Main.MainActivity;
+import com.lit.litmoments.Main.TabbedMainActivity;
 import com.lit.litmoments.R;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -124,7 +125,7 @@ public class LoginActivity extends AppCompatActivity  implements
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if (firebaseAuth.getCurrentUser() != null) {
-                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    startActivity(new Intent(LoginActivity.this, TabbedMainActivity.class));
 
                 }
             }
@@ -275,7 +276,7 @@ private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         private void updateUI ( boolean isSignedIn){
 
             if (isSignedIn) {
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                Intent intent = new Intent(LoginActivity.this, TabbedMainActivity.class);
                 startActivity(intent);
                 finish();
 

@@ -61,5 +61,8 @@
  <color name="tyriancolorPrimaryDark">#55002B</color>
  <color name="tyriancolorAccent">#63C9B2</color>
 
+ <color name="barchartstart">#BD343F</color>
+ <color name="barchartend">#2B40AF</color>
+
 
 </resources>

@@ -352,7 +352,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
             prefrateus.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + "Lit Moments")));
+                    startActivity(new Intent(Intent.ACTION_VIEW,
+                            Uri.parse("https://play.google.com/store/apps/details?id=com.lit.litmoments.free")));
                     return true;
                 }
             });

@@ -25,5 +25,7 @@
     <dimen name="imageview_width">80dp</dimen>
     <dimen name="imageview_height">80dp</dimen>
 
+    <dimen name="imageFavheight">40dp</dimen>
+
 
 </resources>

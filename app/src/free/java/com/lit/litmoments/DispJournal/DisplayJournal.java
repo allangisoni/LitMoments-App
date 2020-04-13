@@ -1,5 +1,6 @@
 package com.lit.litmoments.DispJournal;
 
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -11,11 +12,14 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
+import android.graphics.drawable.ScaleDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.res.ResourcesCompat;
@@ -37,10 +41,15 @@ import android.widget.TextView;
 
 import com.ajts.androidmads.fontutils.FontUtils;
 import com.codemybrainsout.ratingdialog.RatingDialog;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.ValueEventListener;
+import com.lit.litmoments.AddJournal.AddJournalEntry;
 import com.lit.litmoments.AddJournal.JournalEntryModel;
+import com.lit.litmoments.Application.Global;
 import com.lit.litmoments.BuildConfig;
+import com.lit.litmoments.Main.TabbedMainActivity;
 import com.lit.litmoments.R;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -75,6 +84,8 @@ public class DisplayJournal extends AppCompatActivity implements SharedPreferenc
     @BindView(R.id.ivdpJournalPhoto)  ImageView ivJournalPhoto;
     @BindView(R.id.ivWeather)  ImageView ivJournalWeather;
     @BindView(R.id.ivMood)  ImageView ivJournalMood;
+    @BindView(R.id.ivFav) ImageView ivFavorite;
+
   //  @BindView(R.id.filterview) ImageView filterView;
 
     JournalEntryModel journalEntry;
@@ -101,12 +112,15 @@ public class DisplayJournal extends AppCompatActivity implements SharedPreferenc
     String AdMobInterstitialId = " ";
     private InterstitialAd mInterstitialAd;
 
+    SharedPreferences sharedPreferences;
+    Boolean isWhite = false;
+    Boolean isFavorite = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
      //   getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
 
-        SharedPreferences sharedPreferences;
-        sharedPreferences  = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        loadUiTheme(sharedPreferences);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
 
         super.onCreate(savedInstanceState);
@@ -130,7 +144,7 @@ public class DisplayJournal extends AppCompatActivity implements SharedPreferenc
 
         //make translucent statusBar on kitkat devices
       if (Build.VERSION.SDK_INT >= 19 && Build.VERSION.SDK_INT < 21) {
-            setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, true);
+          //  setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, true);
           //  getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         }
         if (Build.VERSION.SDK_INT >= 19) {
@@ -138,9 +152,9 @@ public class DisplayJournal extends AppCompatActivity implements SharedPreferenc
         }
         //make fully Android Transparent Status bar
         if (Build.VERSION.SDK_INT >= 21) {
-           setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
+          // setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
 
-           getWindow().setStatusBarColor(Color.BLACK);
+         //  getWindow().setStatusBarColor(Color.BLACK);
 
         }
 
@@ -178,7 +192,8 @@ public class DisplayJournal extends AppCompatActivity implements SharedPreferenc
         AdMobInterstitialId = BuildConfig.TESTADINTERSTITIALKEY;
         mAuth = FirebaseAuth.getInstance();
         String currentUid = mAuth.getCurrentUser().getUid();
-        mDatabase = FirebaseDatabase.getInstance().getReference(DATABASE_UPLOADS).child(currentUid);
+        //mDatabase = FirebaseDatabase.getInstance().getReference(DATABASE_UPLOADS).child(currentUid);
+        mDatabase = Global.getFirebaseInstance().getReference(DATABASE_UPLOADS).child(currentUid);
         sDatabase = FirebaseDatabase.getInstance().getReference(SUBSCRIBER_UPLOADS).child(currentUid);
         getUserData(sDatabase);
 
@@ -242,7 +257,12 @@ public class DisplayJournal extends AppCompatActivity implements SharedPreferenc
 
         }
 
-
+        ivFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setFavorite();
+            }
+        });
         ivJournalPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -381,11 +401,14 @@ public class DisplayJournal extends AppCompatActivity implements SharedPreferenc
 
       tvJournalTitle.setText(journalEntry.getJournalTitle());
       tvJournalMessage.setText(journalEntry.getJournalMessage());
+        Picasso picasso = Picasso.with(DisplayJournal.this);
+        picasso.setIndicatorsEnabled(false);
         try {
             if (journalEntry.getJournalImagePath().get(0) != null) {
                // ivJournalPhoto.setColorFilter(getResources().getColor(R.color.filter), PorterDuff.Mode.DARKEN);
-                Picasso.with(DisplayJournal.this).load(journalEntry.getJournalImagePath().get(0)).networkPolicy(NetworkPolicy.OFFLINE)
-                        .placeholder(R.drawable.ic_vectorjournal).error(R.drawable.ic_offline).into(ivJournalPhoto, new Callback() {
+
+                picasso.with(DisplayJournal.this).load(journalEntry.getJournalImagePath().get(0)).networkPolicy(NetworkPolicy.OFFLINE)
+                        .fit().centerCrop().placeholder(R.drawable.ic_vectorjournal).error(R.drawable.ic_offline).into(ivJournalPhoto, new Callback() {
                     @Override
                     public void onSuccess() {
                        // supportPostponeEnterTransition();
@@ -396,8 +419,8 @@ public class DisplayJournal extends AppCompatActivity implements SharedPreferenc
 
                     @Override
                     public void onError() {
-                        Picasso.with(DisplayJournal.this).load(journalEntry.getJournalImagePath().get(0))
-                                .placeholder(R.drawable.ic_vectorjournal).error(R.drawable.ic_offline).into(ivJournalPhoto, new Callback() {
+                        picasso.with(DisplayJournal.this).load(journalEntry.getJournalImagePath().get(0))
+                                .fit().centerCrop().placeholder(R.drawable.ic_vectorjournal).error(R.drawable.ic_offline).into(ivJournalPhoto, new Callback() {
                             @Override
                             public void onSuccess() {
 
@@ -414,17 +437,23 @@ public class DisplayJournal extends AppCompatActivity implements SharedPreferenc
                     }
                 });
             } else {
-                Picasso.with(DisplayJournal.this).load(R.drawable.ic_vectorjournal).placeholder(R.drawable.ic_vectorjournal).error(R.drawable.ic_offline).into(ivJournalPhoto);
+                picasso.with(DisplayJournal.this).load(R.drawable.ic_vectorjournal).fit().centerCrop().placeholder(R.drawable.ic_vectorjournal).error(R.drawable.ic_offline).into(ivJournalPhoto);
                 supportStartPostponedEnterTransition();
                // scheduleStartPostponedTransition(ivJournalPhoto);
             }
         }
          catch (Exception e){
-                Picasso.with(DisplayJournal.this).load(R.drawable.ic_vectorjournal).placeholder(R.drawable.ic_vectorjournal).error(R.drawable.ic_offline).into(ivJournalPhoto);
+             picasso.with(DisplayJournal.this).load(R.drawable.ic_vectorjournal).fit().centerCrop().placeholder(R.drawable.ic_vectorjournal).error(R.drawable.ic_offline).into(ivJournalPhoto);
                 supportStartPostponedEnterTransition();
                 //scheduleStartPostponedTransition(ivJournalPhoto);
             }
       journalKey = journalEntry.getKey();
+        if(journalEntry.getIsFavorite() != null){
+            if(journalEntry.getIsFavorite().equals("True")){
+                isFavorite = true;
+                ivFavorite.setColorFilter(getResources().getColor(R.color.yellowcolorPrimaryDark));
+            }
+        }
 
        // if(entryToolbar != null){
         //getSupportActionBar().setHomeAsUpIndicator(changeBackArrowColor(this, journalEntry.getIconColor()));
@@ -532,15 +561,34 @@ public class DisplayJournal extends AppCompatActivity implements SharedPreferenc
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // dismiss alert dialog, update preferences with game score and restart play fragment
-                        mDatabase.child(journalKey).removeValue(new DatabaseReference.CompletionListener() {
+                        mDatabase.child(journalKey).removeValue();
+                        TastyToast.makeText(getApplicationContext(), "Deleted successfully", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                        new Handler().postDelayed(new Runnable() {
                             @Override
-                            public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
-                                TastyToast.makeText(getApplicationContext(), "Deleted successfully", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-                                Intent intent = new Intent(DisplayJournal.this, MainActivity.class);
+                            public void run() {
+                                Intent intent = new Intent(DisplayJournal.this, TabbedMainActivity.class);
                                 dialog.dismiss();
                                 startActivity(intent);
                             }
-                        });
+                        }, 700);
+
+
+
+
+
+                       /** mDatabase.child(journalKey).removeValue(new DatabaseReference.CompletionListener() {
+                            @Override
+                            public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+                                TastyToast.makeText(getApplicationContext(), "Deleted successfully", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                                Intent intent = new Intent(DisplayJournal.this, TabbedMainActivity.class);
+                                dialog.dismiss();
+                                startActivity(intent);
+                            }
+
+
+
+
+                        }); **/
                         Log.d("myTag", "positive button clicked");
 
                     }
@@ -560,8 +608,6 @@ public class DisplayJournal extends AppCompatActivity implements SharedPreferenc
         AlertDialog dialog = builder.create();
        // display dialog
         dialog.show();
-
-
 
     }
     @Override
@@ -595,8 +641,22 @@ public class DisplayJournal extends AppCompatActivity implements SharedPreferenc
 
         inflater.inflate(R.menu.display_journal_menu, menu);
         mMenuItem = menu.findItem(R.id.ic_photosize);
-        if(journalEntry != null) {
+       // MenuItem favItem = menu.findItem(R.id.action_fav);
+       // Drawable drawableFav = favItem.getIcon();
 
+      // if(drawableFav != null){
+            //drawableFav.mutate();
+            //drawableFav.setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
+
+            //Drawable dr = getResources().getDrawable(R.drawable.ic_favmenu);
+            //Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
+            //Drawable d = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 24, 24, true));
+            //d.setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
+            //favItem.setIcon(d);
+
+       // }
+
+        if(journalEntry != null) {
             if (ivJournalPhoto != null) {
                 for (int i = 0; i < menu.size(); i++) {
                     Drawable drawable = menu.getItem(i).getIcon();
@@ -780,7 +840,10 @@ public class DisplayJournal extends AppCompatActivity implements SharedPreferenc
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         //prefMethods.changeListenerTheme(sharedPreferences, this);
-        if(key.equals(getResources().getString(R.string.key_uiThemeFont))){
+        if(key.equals(getResources().getString(R.string.key_uiTheme))) {
+            loadUiTheme(sharedPreferences);
+            DisplayJournal.this.recreate();
+        } else if(key.equals(getResources().getString(R.string.key_uiThemeFont))){
             loadWidgetColors(sharedPreferences);
             DisplayJournal.this.recreate();
         }
@@ -844,5 +907,93 @@ public class DisplayJournal extends AppCompatActivity implements SharedPreferenc
             }
         });
 
+    }
+
+    private void loadUiTheme (SharedPreferences sharedPreferences){
+
+        String userTheme = sharedPreferences.getString(getResources().getString(R.string.key_uiTheme), "2");
+        if (userTheme.equals("2")) {
+            setTheme(R.style.LitStyle);
+            isWhite = false;
+            //imgNavHeaderBg.setImageResource(R.color.colorPrimary);
+        }
+        else if (userTheme.equals("1")) {
+            setTheme(R.style.ReddishLitStyle);
+            isWhite = true;
+            // imgNavHeaderBg.setImageResource(R.color.reddishcolorPrimary);
+        }
+        else if (userTheme.equals("0")) {
+            setTheme(R.style.BlueLitStyle);
+            isWhite = true;
+            // imgNavHeaderBg.setImageResource(R.color.bluecolorPrimary);
+        }
+        else if (userTheme.equals("3")) {
+            setTheme(R.style.YellowLitStyle);
+            isWhite=false;
+            //imgNavHeaderBg.setImageResource(R.color.yellowcolorPrimary);
+        } else if (userTheme.equals("4")) {
+            setTheme(R.style.BluishLitStyle);
+            isWhite=true;
+            //imgNavHeaderBg.setImageResource(R.color.bluishcolorPrimary);
+        } else if (userTheme.equals("5")) {
+            setTheme(R.style.GreenishLitStyle);
+            isWhite=false;
+            //imgNavHeaderBg.setImageResource(R.color.greenishcolorPrimary);
+        } else if (userTheme.equals("6")) {
+            setTheme(R.style.TacaoLitStyle);
+            isWhite=false;
+            // imgNavHeaderBg.setImageResource(R.color.tacaocolorPrimary);
+        }
+        else if (userTheme.equals("8")) {
+            setTheme(R.style.TyrianLitStyle);
+            isWhite = true;
+            // imgNavHeaderBg.setImageResource(R.color.tyriancolorPrimary);
+        }
+        else if (userTheme.equals("7")) {
+            setTheme(R.style.DarkLitStyle);
+            isWhite=true;
+            //isDarkTheme = true;
+        }
+
+    }
+
+    private void setFavorite(){
+        if(!isFavorite) {
+            isFavorite = true;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                ValueAnimator anim = ValueAnimator.ofArgb(getResources().getColor(R.color.white), getResources().getColor(R.color.yellowcolorPrimaryDark));
+                anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        ivFavorite.setColorFilter((Integer) animation.getAnimatedValue());
+                    }
+                });
+                anim.setDuration(200);
+                anim.start();
+            } else {
+                ivFavorite.setColorFilter(getResources().getColor(R.color.yellowcolorPrimaryDark));
+            }
+            mDatabase.child(journalKey).child("isFavorite").setValue("True");
+            TastyToast.makeText(this, "Added to Favorites", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+        }else
+            {
+            isFavorite = false;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                    ValueAnimator anim = ValueAnimator.ofArgb(getResources().getColor(R.color.yellowcolorPrimaryDark), getResources().getColor(R.color.white));
+                    anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                        @Override
+                        public void onAnimationUpdate(ValueAnimator animation) {
+                            ivFavorite.setColorFilter((Integer) animation.getAnimatedValue());
+                        }
+                    });
+                    anim.setDuration(200);
+                    anim.start();
+                } else {
+                    ivFavorite.setColorFilter(getResources().getColor(R.color.white));
+                }
+
+            mDatabase.child(journalKey).child("isFavorite").setValue("False");
+            TastyToast.makeText(this, "Removed from Favorites", TastyToast.LENGTH_SHORT, TastyToast.INFO);
+        }
     }
 }

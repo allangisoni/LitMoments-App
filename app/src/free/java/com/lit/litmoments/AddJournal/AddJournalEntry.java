@@ -1,6 +1,7 @@
 package com.lit.litmoments.AddJournal;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
@@ -8,6 +9,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
@@ -24,12 +26,14 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -56,9 +60,23 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ajts.androidmads.fontutils.FontUtils;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResolvableApiException;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResponse;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.google.android.gms.location.SettingsClient;
+import com.google.firebase.storage.OnProgressListener;
 import com.lit.litmoments.BuildConfig;
+import com.lit.litmoments.Main.TabbedMainActivity;
 import com.lit.litmoments.R;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.common.api.ApiException;
@@ -113,13 +131,15 @@ import java.util.concurrent.ScheduledFuture;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import icepick.Injector;
 import id.zelory.compressor.Compressor;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 
-public class AddJournalEntry extends AppCompatActivity implements JournalEntryAdapater.OnClickAction, SharedPreferences.OnSharedPreferenceChangeListener {
+public class AddJournalEntry extends AppCompatActivity implements JournalEntryAdapater.OnClickAction,
+        SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final String TAG = AddJournalEntry.class.getName();
     @BindView(R.id.entrytoolbar)
@@ -219,6 +239,28 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
     Thread locationThread;
     private boolean isPremiumUser;
     Boolean isDarkTheme = false;
+    private Context mContext;
+    private static final int REQUEST_CHECK_SETTINGS = 10001;
+    private FusedLocationProviderClient mFusedLocationClient;
+    LocationRequest locationRequest ;
+    String currentUid = "";
+    private LocationCallback mLocationCallback  = new LocationCallback() {
+        @Override
+        public void onLocationResult(LocationResult locationResult) {
+            if (locationResult == null) {
+                return;
+            }
+            for (Location location : locationResult.getLocations()) {
+                // Update UI with location data
+               // mLocation = location;
+               // Toast.makeText(mContext, "Lat :" + location.getLatitude() + " Long :" + location.getLongitude(),
+                 //       Toast.LENGTH_SHORT).show();
+                getAddress(mContext, location.getLatitude(), location.getLongitude());
+
+            }
+            mFusedLocationClient.removeLocationUpdates(mLocationCallback);
+        }
+    };
 
     private final ScheduledExecutorService scheduler =
             Executors.newScheduledThreadPool(1);
@@ -268,6 +310,7 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
         setContentView(R.layout.activity_add_journal_entry);
         ButterKnife.bind(this);
 
+        mContext = AddJournalEntry.this;
         if (entryToolbar != null) {
             setSupportActionBar(entryToolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -287,9 +330,10 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
 
 
         mAuth = FirebaseAuth.getInstance();
-        storageReference = FirebaseStorage.getInstance().getReference();
-        String currentUid = mAuth.getCurrentUser().getUid();
+
+        currentUid = mAuth.getCurrentUser().getUid();
         mDatabase = FirebaseDatabase.getInstance().getReference(DATABASE_UPLOADS).child(currentUid);
+        storageReference = FirebaseStorage.getInstance().getReference().child(currentUid).child(STORAGE_PATH_UPLOADS );
 
         Bundle bundle = getIntent().getExtras();
         if(bundle != null) {
@@ -322,7 +366,7 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
             photoList = savedInstanceState.getParcelableArrayList("PhotoList");
             imagesUri = savedInstanceState.getParcelableArrayList("ImagesUri");
             fileImages = (ArrayList<File>) savedInstanceState.getSerializable("FileImages");
-            journalEntryAdapater = new JournalEntryAdapater(photoList, getApplicationContext());
+            journalEntryAdapater = new JournalEntryAdapater(photoList, mContext);
 
             rvPhotos.setVisibility(View.VISIBLE);
             rvPhotos.setAdapter(journalEntryAdapater);
@@ -472,9 +516,9 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
 
         journalEntryAdapater.setActionModeReceiver((JournalEntryAdapater.OnClickAction) AddJournalEntry.this);
         // getUserLocation();
-        if (Build.VERSION.SDK_INT >= 23) {
-            if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-                    != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION)
+      /**  if (Build.VERSION.SDK_INT >= 23) {
+            if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION)
                     != PackageManager.PERMISSION_GRANTED) {
 
                 ActivityCompat.requestPermissions(AddJournalEntry.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
@@ -499,7 +543,7 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
                                 //Got the location!
                                 longitude = location.getLongitude();
                                 latitude = location.getLatitude();
-                                getAddress(getApplicationContext(), latitude, longitude);
+                                getAddress(mContext, latitude, longitude);
                             }
                         };
                         CurrentUserLocation myLocation = new CurrentUserLocation();
@@ -509,12 +553,35 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
 
                     }
                 } else {
-                    TastyToast.makeText(getApplicationContext(), " Location is turned off", TastyToast.LENGTH_SHORT, TastyToast.INFO);
+
+                    turnOnLocation();
+                    //TastyToast.makeText(mContext, " Location is turned off", TastyToast.LENGTH_SHORT, TastyToast.INFO);
                 }
             }
         }
+   **/
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        locationRequest = LocationRequest.create();
+         if (Build.VERSION.SDK_INT >= 23) {
+             if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION)
+                     != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION)
+                     != PackageManager.PERMISSION_GRANTED) {
 
+                 ActivityCompat.requestPermissions(AddJournalEntry.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                         Manifest.permission.ACCESS_COARSE_LOCATION}, MY_LOCATION_REQUEST_CODE);
+             } else {
+                 new  AsyncTask<Void, Void, Void>() {
+                     @Override
+                     protected Void doInBackground(Void... voids) {
+                         //checkandRequestLocationUpdates(mContext, AddJournalEntry.this);
+                         //openSettingsDialog();
+                         getLastLocation(mContext);
+                         return null;
+                     }
+                 }.execute();
 
+             }
+         }
         file = new File(Environment.getExternalStorageDirectory()
                 + "/" + IMAGE_DIRECTORY);
         if (!file.exists()) {
@@ -523,7 +590,7 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
 
 
         dateFormatter = new SimpleDateFormat(
-                DATE_FORMAT, Locale.US);
+                DATE_FORMAT, Locale.getDefault());
 
         if (Build.VERSION.SDK_INT >= 23) {
             if (isLit == false) {
@@ -537,18 +604,87 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
 
 
 
-    /**
-     @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-     Bitmap bitmap = ImagePicker.getImageFromResult(this, requestCode, resultCode, data);
-     //pathList.add()
 
-     // TODO do something with the bitmap
-     }
+    private void getLastLocation(Context context){
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
 
-     public void onPickImage(View view) {
-     // Click on image button
-     ImagePicker.pickImage(this, "Select your image:");
-     } **/
+            mFusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(Location location) {
+                    if (location != null) {
+                        //Toast.makeText(context, "Lat :" + location.getLatitude() + " Long :" + location.getLongitude(),
+                               // Toast.LENGTH_SHORT).show();
+                        getAddress(context, location.getLatitude(), location.getLongitude());
+                    } else {
+                        checkandRequestLocationUpdates(context, AddJournalEntry.this);
+                    }
+                }
+            }).addOnFailureListener(this, new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    checkandRequestLocationUpdates(context, AddJournalEntry.this);
+                }
+            });
+
+
+        }
+    }
+
+    private void getLocationUpdates(){
+        if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED){
+            mFusedLocationClient.requestLocationUpdates(locationRequest, mLocationCallback, null );
+        }
+    }
+    private void checkandRequestLocationUpdates(Context context, Activity activity){
+
+        locationRequest.setInterval(10000);
+        locationRequest.setFastestInterval(3000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
+        builder.setAlwaysShow(true);
+        builder.addLocationRequest(locationRequest);
+        SettingsClient client = LocationServices.getSettingsClient(this);
+        Task<LocationSettingsResponse> task = client.checkLocationSettings(builder.build());
+        task.addOnSuccessListener(AddJournalEntry.this, new OnSuccessListener<LocationSettingsResponse>() {
+            @Override
+            public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
+                if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED){
+
+                   getLocationUpdates();
+                }
+
+
+            }
+        }).addOnFailureListener(AddJournalEntry.this, new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+                if (e instanceof ResolvableApiException) {
+                    // Location settings are not satisfied, but this can be fixed
+                    // by showing the user a dialog.
+                    try {
+                        // Show the dialog by calling startResolutionForResult(),
+                        // and check the result in onActivityResult().
+                        ResolvableApiException resolvable = (ResolvableApiException) e;
+                        resolvable.startResolutionForResult(AddJournalEntry.this,
+                                REQUEST_CHECK_SETTINGS);
+                    } catch (IntentSender.SendIntentException sendEx) {
+                        // Ignore the error.
+                        Toast.makeText(context,"Error opening dialog",
+                                Toast.LENGTH_SHORT).show();
+                    }
+            }
+            }
+        });
+    }
+
     public void setUpThemeContent() {
         if (isWhite == true) {
             entryToolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
@@ -583,28 +719,7 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
     }
 
 
-    public void lookupLocation() {
-        final Runnable beeper = new Runnable() {
-            public void run() {
-                if (etJournalLocation.getText().toString().trim().isEmpty()) {
-                    // getUserLocation();
-
-                    Log.d("place", "running");
-                }
-            }
-        };
-        final ScheduledFuture<?> beeperHandle =
-                scheduler.scheduleAtFixedRate(beeper, 10, 10, SECONDS);
-        scheduler.schedule(new Runnable() {
-            public void run() {
-                beeperHandle.cancel(true);
-            }
-        }, 30 * 30, SECONDS);
-    }
-
     private void openImage() {
-
-
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Pick Image From");
         builder.setItems(items, new DialogInterface.OnClickListener() {
@@ -612,7 +727,6 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
             public void onClick(DialogInterface dialog, int i) {
                 if (items[i].equals("Camera")) {
                     //
-
                     /**  if(isWriteStoragePermissionGranted() && isReadStoragePermissionGranted()) {
 
                      EasyImage.openCameraForImage(AddJournalEntry.this, REQUEST_CODE_CAMERA);
@@ -740,7 +854,8 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
             }
         } else if (requestCode == MY_LOCATION_REQUEST_CODE) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                try {
+                getLastLocation(mContext);
+                /**try {
                     LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                     if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                         // TODO: Consider calling
@@ -751,7 +866,7 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
                         getAddress(this, latitude, longitude);
                     } catch (Exception e) {
                        // TastyToast.makeText(getApplicationContext(), "Couldn't get your location", TastyToast.LENGTH_SHORT, TastyToast.INFO);
-                    }
+                    } **/
                 }
             }
 
@@ -882,6 +997,15 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
             }); **/
 
         }
+
+        if(requestCode == REQUEST_CHECK_SETTINGS){
+            if(resultCode == Activity.RESULT_OK){
+                getLocationUpdates();
+            }else{
+                etJournalLocation.setText("Lit Place");
+               // Toast.makeText(this,"Location request not satisfied",Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
 
@@ -889,10 +1013,9 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
 
 
 
-    public void getUserLocation(){
+    private void getUserLocation(){
 
         Places.initialize(getApplicationContext(), apiKey);
-
         // Create a new Places client instance.
         PlacesClient placesClient = Places.createClient(this);
         // Use the builder to create a FindCurrentPlaceRequest.
@@ -934,14 +1057,15 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
 
     }
 
-    public  void getAddress(Context context, double LATITUDE, double LONGITUDE) {
+    /**
+     *     get user exact Location from latitude and longitude
+     **/
 
-//Set Address
+    private void getAddress(Context context, double LATITUDE, double LONGITUDE) {
         try {
             Geocoder geocoder = new Geocoder(context, Locale.getDefault());
             List<Address> addresses = geocoder.getFromLocation(LATITUDE, LONGITUDE, 1);
             if (addresses != null && addresses.size() > 0) {
-
 
                 String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
                 String city = addresses.get(0).getLocality();
@@ -975,33 +1099,44 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
         return;
     }
 
-   public void getLocationPermission() {
+   private void getLocationPermission() {
 
 
-       if (ContextCompat.checkSelfPermission(getApplicationContext(), ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+       if (ContextCompat.checkSelfPermission(mContext, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+               && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) !=
+               PackageManager.PERMISSION_GRANTED) {
 
-           ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 101);
+           ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                   101);
        }
-
-    //  getUserLocation();
 
    }
 
 
-   public void uploadJournal() {
+   private  void openSettingsDialog(){
+        Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        Uri uri = Uri.fromParts("package", BuildConfig.APPLICATION_ID, null);
+        intent.setData(uri);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+   }
+   /**
+    * save journal entry
+    **/
 
-
+   private void uploadJournal() {
 
        if (TextUtils.isEmpty(etJournalTitle.getText().toString()))
        {
            //Toast.makeText(AddJournalEntry.this, "Journal title is empty", Toast.LENGTH_SHORT).show();
-           TastyToast.makeText(getApplicationContext(), "Journal title is empty", TastyToast.LENGTH_SHORT, TastyToast.INFO);
+           TastyToast.makeText(mContext, "Journal title is empty", TastyToast.LENGTH_SHORT, TastyToast.INFO);
        }
 
        else if (TextUtils.isEmpty(etJournalMessage.getText().toString() ))
        {
           // Toast.makeText(AddJournalEntry.this, "Journal message is empty", Toast.LENGTH_SHORT).show();
-           TastyToast.makeText(getApplicationContext(), "Journal message is empty", TastyToast.LENGTH_SHORT, TastyToast.INFO);
+           TastyToast.makeText(mContext, "Journal message is empty", TastyToast.LENGTH_SHORT, TastyToast.INFO);
        }
 
        else
@@ -1042,7 +1177,6 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
                    HashMap<String, Object> myFilePath = new HashMap<String, Object>();
                        for ( int count =0; count < photoList.size(); count++ ) {
 
-
                            photocount = 0;
                        // File myFile = fileImages.get(count);
                            String path =imagesUri.get(count).toString();
@@ -1062,7 +1196,7 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
 
                            }
 
-                        StorageReference sRef = storageReference.child(STORAGE_PATH_UPLOADS + System.currentTimeMillis() + "." + getFileExtension(Uri.fromFile(fileImages.get(count))));
+                        StorageReference sRef = storageReference.child(System.currentTimeMillis() + "." + getFileExtension(Uri.fromFile(fileImages.get(count))));
                          //  StorageReference sRef = storageReference.child(STORAGE_PATH_UPLOADS + System.currentTimeMillis() + "." + getFileExtension(imagesUri.get(count)));
 
 
@@ -1073,8 +1207,14 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
                            mUploadTask=sRef.putFile(Uri.fromFile(destFile));
 
 
-                          mUploadTask.addOnFailureListener(exception -> Log.i("It didn't work", "double check"))
-                                  .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>(){
+                          mUploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                              @Override
+                              public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                                  double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                                  Log.d("Upload is ",  + progress + "% done");
+                              }
+                          }).addOnFailureListener(exception -> Log.i("It didn't work", "double check"))
+                            .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>(){
                               @Override
                               public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                   sRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -1086,7 +1226,7 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
 
                                           JournalEntryModel journalEntryModel = new JournalEntryModel(tvJournalDate.getText().toString(), etJournalLocation.getText().toString(), currentWeather,
                                                   currentMood, etJournalTitle.getText().toString(), etJournalMessage.getText().toString(), journalMonth, journalDay,
-                                                  uploadedImages, refKey);
+                                                  uploadedImages, refKey, "False");
 
                                           Map<String, Object> productValues = oMapper.convertValue(journalEntryModel, Map.class);
 
@@ -1104,7 +1244,7 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
 
                                               progressDialog.dismiss();
                                               TastyToast.makeText(getApplicationContext(), "Saved successfully", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-                                              startActivity(new Intent(AddJournalEntry.this, MainActivity.class));
+                                              startActivity(new Intent(AddJournalEntry.this, TabbedMainActivity.class));
                                               finish();
                                           }
                                          //Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_SHORT).show();
@@ -1214,7 +1354,7 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
            //HashMap<String, String> myFilePath = new HashMap<String, String>();
                    JournalEntryModel journalEntryModel = new JournalEntryModel(tvJournalDate.getText().toString(), etJournalLocation.getText().toString(), currentWeather,
                            currentMood, etJournalTitle.getText().toString(), etJournalMessage.getText().toString(), journalMonth, journalDay,
-                           null, refKey);
+                           null, refKey, "False");
 
            databaseReference.setValue(journalEntryModel);
            //displaying success toast
@@ -1230,7 +1370,7 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
            journalMonth="";
            journalDay = " ";
            refKey = " "; **/
-           startActivity(new Intent(AddJournalEntry.this, MainActivity.class));
+           startActivity(new Intent(AddJournalEntry.this, TabbedMainActivity.class));
            finish();
            }
 
@@ -1276,45 +1416,7 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
     }
 
 
-// Request permissions
 
-    public  boolean isReadStoragePermissionGranted() {
-        if (Build.VERSION.SDK_INT >= 23) {
-            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-                    == PackageManager.PERMISSION_GRANTED) {
-                Log.v(TAG,"Permission is granted1");
-                return true;
-            } else {
-
-                Log.v(TAG,"Permission is revoked1");
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 3);
-                return false;
-            }
-        }
-        else { //permission is automatically granted on sdk<23 upon installation
-            Log.v(TAG,"Permission is granted1");
-            return true;
-        }
-    }
-
-    public  boolean isWriteStoragePermissionGranted() {
-        if (Build.VERSION.SDK_INT >= 23) {
-            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    == PackageManager.PERMISSION_GRANTED) {
-                Log.v(TAG,"Permission is granted2");
-                return true;
-            } else {
-
-                Log.v(TAG,"Permission is revoked2");
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
-                return false;
-            }
-        }
-        else { //permission is automatically granted on sdk<23 upon installation
-            Log.v(TAG,"Permission is granted2");
-            return true;
-        }
-    }
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -1331,6 +1433,7 @@ public class AddJournalEntry extends AppCompatActivity implements JournalEntryAd
         MenuItem menuPhotoItem = menu.findItem(R.id.item_image);
 
         if (menuItem != null) {
+
             tintMenuIcon(AddJournalEntry.this, menuItem);
         }
         if (menuPhotoItem!= null) {

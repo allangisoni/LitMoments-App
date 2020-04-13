@@ -8,7 +8,7 @@
     android:id="@+id/coordinatorlayout"
     android:background="@color/background">
 
-    <android.support.design.widget.AppBarLayout
+  <!--  <android.support.design.widget.AppBarLayout
         android:id="@+id/toolbar_container"
         android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize">
@@ -18,7 +18,7 @@
 
 
     </android.support.design.widget.AppBarLayout>
-
+  -->
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -28,7 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clipToPadding="false"
-        android:paddingTop="@dimen/recyclerviewPadding_Top"
+        android:paddingTop="4dp"
         android:paddingLeft="@dimen/recyclerviewPadding_Left"
         android:paddingRight="@dimen/recyclerviewPadding_Right"
         android:paddingBottom="@dimen/recyclerviewPadding_Bottom"

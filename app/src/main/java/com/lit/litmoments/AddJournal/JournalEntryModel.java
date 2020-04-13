@@ -8,12 +8,12 @@ import java.util.List;
 
 public class JournalEntryModel implements Parcelable  {
 
-    private  String journalDate, journalLocation, journalWeather, journalMood, journalTitle, journalMessage, month, day, key;
+    private  String journalDate, journalLocation, journalWeather, journalMood, journalTitle, journalMessage, month, day, key, isFavorite;
     private List<String> journalImagePath = new ArrayList<>();
     private  int iconColor;
 
 
-    public JournalEntryModel(String journalDate, String journalLocation, String journalWeather, String journalMood, String journalTitle, String journalMessage, String month, String day, ArrayList<String>journalImagePath, String key){
+    public JournalEntryModel(String journalDate, String journalLocation, String journalWeather, String journalMood, String journalTitle, String journalMessage, String month, String day, ArrayList<String>journalImagePath, String key, String isFavorite){
 
         this.journalDate = journalDate;
         this.journalLocation= journalLocation;
@@ -25,6 +25,7 @@ public class JournalEntryModel implements Parcelable  {
         this.day = day;
         this.journalImagePath = journalImagePath;
         this.key = key;
+        this.isFavorite = isFavorite;
         //this.timestamp =  ServerValue.TIMESTAMP;
 
 
@@ -33,7 +34,7 @@ public class JournalEntryModel implements Parcelable  {
        // this.creationDate = (Long) getCreationDate();
     }
 
-    public JournalEntryModel(String journalDate, String journalLocation, String journalWeather, String journalMood, String journalTitle, String journalMessage, String month, String day, String key){
+    public JournalEntryModel(String journalDate, String journalLocation, String journalWeather, String journalMood, String journalTitle, String journalMessage, String month, String day, String key, String isFavorite){
 
         this.journalDate = journalDate;
         this.journalLocation= journalLocation;
@@ -44,6 +45,7 @@ public class JournalEntryModel implements Parcelable  {
         this.month = month;
         this.day = day;
         this.key = key;
+        this.isFavorite = isFavorite;
        // this.timestamp =  ServerValue.TIMESTAMP;
        // HashMap<String, Object> timestampNow = new HashMap<>();
        // timestampNow.put("timestamp", ServerValue.TIMESTAMP);
@@ -133,6 +135,15 @@ public class JournalEntryModel implements Parcelable  {
         this.key = key;
     }
 
+
+    public String getIsFavorite() {
+        return isFavorite;
+    }
+
+    public void setIsFavorite(String isFavorite) {
+        this.isFavorite = isFavorite;
+    }
+
     public int getIconColor() {
         return iconColor;
     }
@@ -155,6 +166,7 @@ public class JournalEntryModel implements Parcelable  {
         day = parcel.readString();
         month = parcel.readString();
         iconColor = parcel.readInt();
+        isFavorite = parcel.readString();
        // time = parcel.readMap(time ,);
 
 
@@ -182,6 +194,7 @@ public class JournalEntryModel implements Parcelable  {
         dest.writeString(day);
         dest.writeString(month);
         dest.writeInt(iconColor);
+        dest.writeString(isFavorite);
        // dest.writeMap(time);
 
 

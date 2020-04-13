@@ -75,13 +75,13 @@
     <string name="yearlySubscription">Buy Yearly Premium</string>
     <string name="subscriberbenefits">Premium benefits:</string>
     <string name="noAds">Ad free experience</string>
-    <string name="allThemes">Get all Color themes</string>
+    <string name="allThemes">Ui Theme</string>
     <string name="litboard">Access to all Lit board features</string>
     <string name="reminders">Timely reminders</string>
     <string name="moods">More Lit moods</string>
     <string name="buyPremium">Buy Premium</string>
     <string name="account">Account</string>
-    <string name="dashtoolbar">LitBoard</string>
+    <string name="dashtoolbar">Lit Board</string>
     <string name="piechartMood">Lit Mood Stats</string>
     <string name="barchartTitle">Lit Moments Stats</string>
     <string name="TreechartTitle">Favorite Places</string>

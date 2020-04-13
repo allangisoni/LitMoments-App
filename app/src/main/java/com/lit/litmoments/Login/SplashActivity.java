@@ -9,6 +9,8 @@ import android.widget.ImageView;
 
 
 import com.lit.litmoments.Main.MainActivity;
+import com.lit.litmoments.Main.NavDrawerHome;
+import com.lit.litmoments.Main.TabbedMainActivity;
 import com.lit.litmoments.R;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -87,7 +89,7 @@ public class SplashActivity extends AppCompatActivity {
     private void updateUI(boolean isSignedIn) {
 
         if (isSignedIn) {
-            Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+            Intent intent = new Intent(SplashActivity.this, TabbedMainActivity.class);
             startActivity(intent);
             finish();
 

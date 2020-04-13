@@ -20,7 +20,7 @@
         <activity android:name="com.lit.litmoments.RemoveAdsActivity"
             android:theme="@style/RemoveAdsStyle"></activity>
         <activity
-            android:name="com.lit.litmoments.Main.MainActivity"
+            android:name="com.lit.litmoments.Main.TabbedMainActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoActionBar">
@@ -38,7 +38,7 @@
         <activity android:name="com.lit.litmoments.AddJournal.AddJournalEntry" />
         <activity
             android:name="com.lit.litmoments.Settings.SettingsActivity"
-            android:parentActivityName="com.lit.litmoments.Main.MainActivity"
+            android:parentActivityName="com.lit.litmoments.Main.TabbedMainActivity"
             android:theme="@style/SettingsStyle" />
         <activity android:name="com.lit.litmoments.DispJournal.DisplayJournal" />
         <activity android:name="com.lit.litmoments.DispJournal.ImageSliderActivity" />
@@ -59,13 +59,13 @@
         <activity android:name="com.lit.litmoments.EditJournal.EditJournalEntry" />
         <activity android:name="com.lit.litmoments.AddJournal.AddJournalImageSlider" />
         <activity android:name="com.lit.litmoments.DashboardActivity"
-            android:parentActivityName="com.lit.litmoments.Main.MainActivity"/>
+            android:parentActivityName="com.lit.litmoments.Main.TabbedMainActivity"/>
         <activity android:name="com.lit.litmoments.AboutusActivity"
             android:parentActivityName="com.lit.litmoments.Settings.SettingsActivity"/>
 
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.lit.litmoments.fileprovider"
+            android:authorities="com.lit.litmoments.free.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
@@ -79,7 +79,9 @@
         <activity android:name="com.lit.litmoments.TermsActivity"
             android:parentActivityName="com.lit.litmoments.Settings.SettingsActivity"/>
 
-
+        <activity android:name="com.lit.litmoments.Favorites.FavoritesFragment"></activity>
+        <!--<activity android:name="com.lit.litmoments.Main.TabbedMainActivity" />-->
+        <activity android:name="com.lit.litmoments.Photos.PhotosActivity" />
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-3164465598717629~1419354308"

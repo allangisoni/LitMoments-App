@@ -18,6 +18,7 @@
         <item name="android:actionModeBackground">@color/colorPrimaryDark</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
         <item name="android:windowAnimationStyle">@style/FadeWindowAnimationTransition</item>
+        <item name="android:textColorSecondary">@color/black</item>
     </style>
 
     <style name="BlueLitStyle" parent="Theme.AppCompat.Light.NoActionBar">

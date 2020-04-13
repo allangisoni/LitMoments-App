@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.lit.litmoments.DispJournal.DisplayJournal"
-    android:theme="@style/DisplayStyle">
+    tools:context="com.lit.litmoments.DispJournal.DisplayJournal">
 
 
     <ScrollView
@@ -19,19 +18,31 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-
-            <ImageView
-                android:id="@+id/ivdpJournalPhoto"
+            <android.support.design.widget.AppBarLayout
+                android:id="@+id/appBarLayout"
                 android:layout_width="match_parent"
-                android:layout_height="910dp"
-                android:contentDescription="@string/journalPhoto"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_letstravel"
-                android:transitionName="journaltrans"/>
+                android:layout_height="wrap_content"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                app:layout_constraintBottom_toTopOf="@+id/ivdpJournalPhoto"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-            <View
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/entrytoolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="?attr/colorPrimary"
+                    app:layout_scrollFlags="enterAlways"
+                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+            </android.support.design.widget.AppBarLayout>
+
+
+            <!-- <View
+                android:id="@+id/view3"
                 android:layout_width="match_parent"
-                android:layout_height="910dp"
+                android:layout_height="720dp"
                 android:layout_gravity="bottom"
                 android:background="@drawable/scrim"
                 tools:layout_editor_absoluteX="0dp"
@@ -43,27 +54,38 @@
                 android:layout_height="130dp"
                 android:layout_gravity="bottom"
                 android:background="@drawable/titlescrim"
-                app:layout_constraintBottom_toBottomOf="@+id/ivdpJournalPhoto" />
+                app:layout_constraintBottom_toBottomOf="@+id/ivdpJournalPhoto"
+                tools:layout_editor_absoluteX="0dp" /> -->
 
-            <TextView
-                android:gravity="center_horizontal"
-                android:id="@+id/tvdpJournalTitle"
-                style="@style/Base.TextAppearance.AppCompat.Medium"
-                android:layout_width="350dp"
-                android:layout_height="wrap_content"
-                android:maxHeight="80dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="776dp"
-                android:textSize="26sp"
-                android:fontFamily="sans-serif"
-                android:hint="@string/journalTitle"
-                android:textColor="@color/quantum_white_100"
-                android:textColorHint="@color/colorAccent"
+            <ImageView
+                android:id="@+id/ivdpJournalPhoto"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:contentDescription="@string/journalPhoto"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_letstravel"
+                android:transitionName="journaltrans"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/ivdpJournalPhoto" />
+                app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
+
+            <TextView
+                android:id="@+id/tvdpJournalTitle"
+                style="@style/Base.TextAppearance.AppCompat.Medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="8dp"
+                android:fontFamily="sans-serif"
+                android:hint="@string/journalTitle"
+                android:textColor="@color/colorAccent"
+                android:textColorHint="@color/colorAccent"
+                android:textSize="26sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ivdpJournalPhoto" />
 
 
             <TextView
@@ -71,49 +93,58 @@
                 style="@style/Base.TextAppearance.AppCompat.Medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="346dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginTop="556dp"
                 android:fontFamily="sans-serif"
                 android:hint="@string/dumy"
-                android:visibility="invisible"
                 android:textColor="@color/quantum_white_100"
                 android:textColorHint="@color/colorAccent"
+                android:visibility="invisible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/ivdpJournalPhoto" />
 
+            <ImageView
+                android:id="@+id/ivFav"
+                android:layout_width="@dimen/imageFavheight"
+                android:layout_height="@dimen/imageFavheight"
+                android:layout_marginTop="28dp"
+                android:layout_marginEnd="16dp"
+                android:contentDescription="@string/journalPhoto"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_fav"
+                android:tint="@color/yellowcolorPrimaryDark"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/textView3" />
 
             <TextView
                 android:id="@+id/tvdpJournalLocation"
                 android:layout_width="wrap_content"
                 android:layout_height="15dp"
                 android:layout_below="@id/ivdpJournalPhoto"
-                android:layout_marginLeft="8dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="16dp"
                 android:hint="@string/journalLocation"
                 android:textColor="@color/colorAccent"
                 android:textColorHint="@color/colorAccent"
                 android:textSize="12sp"
                 app:layout_constraintStart_toEndOf="@+id/ivLocation"
-                app:layout_constraintTop_toBottomOf="@+id/ivdpJournalPhoto" />
+                app:layout_constraintTop_toBottomOf="@+id/tvdpJournalTitle" />
 
             <TextView
                 android:id="@+id/tvdpJournalWeather"
                 android:layout_width="wrap_content"
                 android:layout_height="19dp"
                 android:layout_below="@id/ivdpJournalPhoto"
-                android:layout_marginLeft="8dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="16dp"
                 android:layout_toRightOf="@id/tvdpJournalLocation"
                 android:hint="@string/journalWeather"
                 android:textColor="@color/colorAccent"
                 android:textColorHint="@color/colorAccent"
                 android:textSize="14sp"
                 app:layout_constraintStart_toEndOf="@+id/ivWeather"
-                app:layout_constraintTop_toBottomOf="@+id/ivdpJournalPhoto" />
+                app:layout_constraintTop_toBottomOf="@+id/tvdpJournalTitle" />
 
             <TextView
                 android:id="@+id/tvdpJournalDate"
@@ -153,13 +184,12 @@
                 android:id="@+id/ivLocation"
                 android:layout_width="22dp"
                 android:layout_height="22dp"
-                android:layout_marginLeft="8dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="16dp"
                 android:contentDescription="@string/journalLocation"
                 android:src="@drawable/ic_location"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ivdpJournalPhoto" />
+                app:layout_constraintTop_toBottomOf="@+id/tvdpJournalTitle" />
 
             <ImageView
                 android:id="@+id/ivMood"
@@ -177,13 +207,12 @@
                 android:id="@+id/ivWeather"
                 android:layout_width="22dp"
                 android:layout_height="22dp"
-                android:layout_marginLeft="90dp"
                 android:layout_marginStart="90dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="16dp"
                 android:contentDescription="@string/journalWeather"
                 android:src="@drawable/ic_weather"
                 app:layout_constraintStart_toStartOf="@+id/textView3"
-                app:layout_constraintTop_toBottomOf="@+id/ivdpJournalPhoto" />
+                app:layout_constraintTop_toBottomOf="@+id/tvdpJournalTitle" />
 
             <ImageView
                 android:id="@+id/ivCalender"
@@ -215,42 +244,36 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tvdpJournalMood"
-                android:layout_marginBottom="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
                 android:hint="@string/journalMessage"
                 android:textColor="@color/colorAccent"
                 android:textColorHint="@color/colorAccent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/view" />
+                app:layout_constraintTop_toTopOf="@+id/view"
+                app:layout_constraintVertical_bias="0.58000004" />
 
-            <ImageView
+            <!--<ImageView
                 android:id="@+id/ivSlideUp"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginBottom="28dp"
+                android:layout_marginBottom="58dp"
                 android:contentDescription="@string/journalMood"
                 android:src="@drawable/ic_up"
                 android:tint="@color/background"
                 app:layout_constraintBottom_toBottomOf="@+id/view2"
                 app:layout_constraintEnd_toEndOf="@+id/view2"
                 app:layout_constraintHorizontal_bias="0.50"
-                app:layout_constraintStart_toStartOf="@+id/view2" />
+                app:layout_constraintStart_toStartOf="@+id/view2" />-->
         </android.support.constraint.ConstraintLayout>
     </ScrollView>
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/entrytoolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@android:color/transparent"
-        app:elevation="0dp"
-        />
+
 
 </RelativeLayout>
